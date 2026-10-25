@@ -3,452 +3,466 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Kids Car City</title>
+<title>Crystal Bloom</title>
 
 <style>
 *{box-sizing:border-box}
-body{
+
+html,body{
   margin:0;
+  width:100%;
+  height:100%;
   overflow:hidden;
-  background:#75c96b;
   font-family:Arial,sans-serif;
+  background:#090d1c;
+  color:white;
   touch-action:none;
 }
 
 #game{
-  position:relative;
   width:100vw;
   height:100vh;
-  overflow:hidden;
-  background:#75c96b;
-}
-
-#world{
-  position:absolute;
-  width:1600px;
-  height:1000px;
+  min-height:500px;
+  display:flex;
+  flex-direction:column;
   background:
-    linear-gradient(90deg,transparent 47%,#555 47%,#555 53%,transparent 53%),
-    linear-gradient(0deg,transparent 42%,#555 42%,#555 58%,transparent 58%),
-    #75c96b;
+    radial-gradient(circle at 50% 30%,#263866 0,#111936 45%,#090d1c 100%);
 }
 
-/* Roads */
-.road{
-  position:absolute;
-  background:#555;
-}
-.road.h{
-  left:0;
-  width:1600px;
-  height:160px;
-  top:420px;
-}
-.road.v{
-  top:0;
-  height:1000px;
-  width:160px;
-  left:720px;
-}
-
-.line{
-  position:absolute;
-  background:#f7d85a;
-  z-index:2;
-}
-.line.h{
-  width:70px;
-  height:6px;
-  top:497px;
-}
-.line.v{
-  width:6px;
-  height:70px;
-  left:797px;
-}
-
-/* Buildings */
-.building{
-  position:absolute;
-  width:180px;
-  height:130px;
-  border-radius:16px;
+#top{
+  height:75px;
   display:flex;
   align-items:center;
-  justify-content:center;
-  font-size:48px;
-  box-shadow:0 8px 15px #0003;
-}
-.shop{background:#ffcc66}
-.house{background:#8bc7ff}
-.garage{background:#b894e8}
-
-/* Player */
-#player{
-  position:absolute;
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  background:#ffcf45;
-  border:4px solid white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  z-index:10;
-  box-shadow:0 4px 10px #0005;
-}
-
-/* Cars */
-.car{
-  position:absolute;
-  width:65px;
-  height:38px;
-  border-radius:10px;
-  background:#e94b55;
-  border:3px solid white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  z-index:6;
-}
-.car.blue{background:#4d9cff}
-.car.green{background:#50c878}
-.car.purple{background:#a56cff}
-
-#hud{
-  position:fixed;
-  top:12px;
-  left:12px;
-  right:12px;
-  z-index:30;
-  display:flex;
   justify-content:space-between;
-  pointer-events:none;
+  padding:10px 22px;
+  flex-shrink:0;
 }
 
-.panel{
-  background:#142038ee;
-  color:white;
-  padding:10px 14px;
+.title{
+  font-size:25px;
+  font-weight:900;
+}
+
+.subtitle{
+  color:#9eacd0;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.stats{
+  display:flex;
+  gap:10px;
+}
+
+.stat{
+  min-width:110px;
+  padding:9px 14px;
   border-radius:14px;
-  font-weight:bold;
-  box-shadow:0 5px 15px #0004;
+  background:#151e38dd;
+  border:1px solid #344568;
+  text-align:center;
+}
+
+.stat small{
+  display:block;
+  color:#9eacd0;
+  font-size:10px;
+}
+
+.stat b{
+  font-size:18px;
+}
+
+#area{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+}
+
+#board{
+  position:relative;
+  width:min(78vh,650px);
+  height:min(78vh,650px);
+  aspect-ratio:1/1;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:repeat(6,1fr);
+  gap:8px;
+  padding:10px;
+  border-radius:24px;
+  background:#0c1329dd;
+  border:2px solid #33466e;
+  box-shadow:0 20px 60px #0008;
+}
+
+.cell{
+  border-radius:15px;
+  background:#151f3b;
+  border:1px solid #263758;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  user-select:none;
+}
+
+.gem{
+  width:82%;
+  height:82%;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(18px,4vw,34px);
+  cursor:pointer;
+  border:3px solid #ffffff55;
+  box-shadow:0 7px 18px #0007,inset 0 3px 8px #fff5;
+  transition:.15s;
+}
+
+.gem:active{
+  transform:scale(.88);
+}
+
+.g1{background:radial-gradient(circle at 35% 30%,#b9fff0,#32d6bd 50%,#087f7b)}
+.g2{background:radial-gradient(circle at 35% 30%,#d5c5ff,#9170ff 50%,#5030b9)}
+.g3{background:radial-gradient(circle at 35% 30%,#ffd7a8,#ff9a43 50%,#c64d12)}
+.g4{background:radial-gradient(circle at 35% 30%,#ffb5cf,#ff5d98 50%,#b51d63)}
+.g5{background:radial-gradient(circle at 35% 30%,#aee5ff,#40a9ff 50%,#1555bd)}
+.g6{background:radial-gradient(circle at 35% 30%,#fff3a5,#ffd83d 50%,#b68b00)}
+
+#side{
+  width:210px;
+  margin-left:18px;
+}
+
+.info{
+  background:#121a32dd;
+  border:1px solid #344568;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.info h3{
+  margin:0 0 8px;
+}
+
+.info p{
+  margin:6px 0;
+  color:#aab7d3;
+  font-size:13px;
+  line-height:1.5;
 }
 
 #message{
   position:fixed;
-  top:75px;
   left:50%;
-  transform:translateX(-50%);
-  z-index:40;
-  background:#142038ee;
-  color:white;
-  padding:10px 18px;
-  border-radius:12px;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.9);
+  background:#101a34f5;
+  border:1px solid #6076a8;
+  padding:18px 25px;
+  border-radius:18px;
+  font-size:20px;
+  font-weight:bold;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:50;
+}
+
+#message.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+#portrait{
   display:none;
 }
 
-/* Controls */
-#controls{
-  position:fixed;
-  bottom:25px;
-  left:25px;
-  z-index:50;
-  width:150px;
-  height:150px;
+@media (orientation:portrait){
+  #portrait{
+    display:flex;
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:#090d1c;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+  }
+
+  #portrait div{
+    max-width:320px;
+  }
+
+  #portrait h2{
+    font-size:28px;
+  }
+
+  #portrait p{
+    color:#aab7d3;
+  }
 }
 
-.control{
-  position:absolute;
-  width:55px;
-  height:55px;
-  border:0;
-  border-radius:16px;
-  background:#142038dd;
-  color:white;
-  font-size:25px;
-  font-weight:bold;
-  box-shadow:0 5px 12px #0005;
-}
+@media(max-width:850px){
+  #side{
+    display:none;
+  }
 
-#up{left:48px;top:0}
-#down{left:48px;bottom:0}
-#left{left:0;top:48px}
-#right{right:0;top:48px}
+  #top{
+    padding:8px 12px;
+  }
 
-#interact{
-  position:fixed;
-  right:25px;
-  bottom:35px;
-  z-index:50;
-  width:75px;
-  height:75px;
-  border:0;
-  border-radius:50%;
-  background:#57d68d;
-  color:#07130d;
-  font-size:16px;
-  font-weight:bold;
-  box-shadow:0 6px 15px #0005;
-}
+  .title{
+    font-size:20px;
+  }
 
-#start{
-  position:fixed;
-  inset:0;
-  z-index:100;
-  background:linear-gradient(135deg,#162746,#0b1020);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:25px;
-}
+  .stat{
+    min-width:75px;
+    padding:7px;
+  }
 
-.startBox{
-  max-width:420px;
-}
+  .stat b{
+    font-size:15px;
+  }
 
-.startBox h1{
-  font-size:38px;
-  margin:0 0 10px;
-}
-
-.startBox p{
-  color:#b9c7df;
-}
-
-.startBtn{
-  border:0;
-  background:#57d68d;
-  color:#07130d;
-  padding:15px 30px;
-  border-radius:14px;
-  font-size:18px;
-  font-weight:bold;
-}
-
-@media(min-width:800px){
-  #controls{left:40px;bottom:40px}
-  #interact{right:40px;bottom:40px}
+  #board{
+    width:min(82vh,92vw);
+    height:min(82vh,92vw);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div id="start">
-  <div class="startBox">
-    <h1>🚗 Kids Car City</h1>
-    <p>
-      Explore the city, walk around and discover cars.
-      This is a fictional game world with simulated Coins.
-    </p>
-    <button class="startBtn" onclick="startGame()">PLAY 🎮</button>
+<div id="portrait">
+  <div>
+    <h2>📱↔️ Rotate Your Device</h2>
+    <p>Please use landscape mode to play Crystal Bloom.</p>
   </div>
 </div>
 
 <div id="game">
 
-  <div id="world">
+  <div id="top">
+    <div>
+      <div class="title">💎 Crystal Bloom</div>
+      <div class="subtitle">Merge • Grow • Discover</div>
+    </div>
 
-    <div class="road h"></div>
-    <div class="road v"></div>
+    <div class="stats">
+      <div class="stat">
+        <small>SCORE</small>
+        <b id="score">0</b>
+      </div>
 
-    <div class="line h" style="left:120px"></div>
-    <div class="line h" style="left:260px"></div>
-    <div class="line h" style="left:400px"></div>
-    <div class="line h" style="left:540px"></div>
-    <div class="line h" style="left:960px"></div>
-    <div class="line h" style="left:1100px"></div>
-    <div class="line h" style="left:1240px"></div>
-    <div class="line h" style="left:1380px"></div>
-
-    <div class="line v" style="top:100px"></div>
-    <div class="line v" style="top:230px"></div>
-    <div class="line v" style="top:650px"></div>
-    <div class="line v" style="top:780px"></div>
-
-    <!-- Buildings -->
-    <div class="building shop" style="left:80px;top:80px">🏪</div>
-    <div class="building house" style="left:330px;top:90px">🏠</div>
-    <div class="building garage" style="left:1040px;top:90px">🏢</div>
-    <div class="building shop" style="left:1280px;top:100px">🛒</div>
-
-    <div class="building house" style="left:100px;top:700px">🏡</div>
-    <div class="building garage" style="left:350px;top:720px">🔧</div>
-    <div class="building shop" style="left:1060px;top:700px">🏪</div>
-    <div class="building house" style="left:1300px;top:720px">🏠</div>
-
-    <!-- Cars -->
-    <div class="car" style="left:580px;top:475px">🚗</div>
-    <div class="car blue" style="left:900px;top:535px">🚙</div>
-    <div class="car green" style="left:750px;top:330px">🚘</div>
-    <div class="car purple" style="left:815px;top:620px">🏎️</div>
-
-    <!-- Player -->
-    <div id="player" style="left:680px;top:480px">🧒</div>
-
+      <div class="stat">
+        <small>COINS</small>
+        <b id="coins">100</b>
+      </div>
+    </div>
   </div>
 
-  <div id="hud">
-    <div class="panel">⭐ Level 1</div>
-    <div class="panel">🪙 <span id="coins">1000</span></div>
+  <div id="area">
+
+    <div id="board"></div>
+
+    <div id="side">
+      <div class="info">
+        <h3>💠 How to Play</h3>
+        <p>Tap two matching crystals to merge them.</p>
+        <p>Higher crystals give more score.</p>
+      </div>
+
+      <div class="info">
+        <h3>⭐ Current Level</h3>
+        <p id="level">Level 1</p>
+      </div>
+    </div>
+
   </div>
-
-  <div id="message"></div>
-
-  <div id="controls">
-    <button class="control" id="up">▲</button>
-    <button class="control" id="left">◀</button>
-    <button class="control" id="right">▶</button>
-    <button class="control" id="down">▼</button>
-  </div>
-
-  <button id="interact">ACTION</button>
 
 </div>
 
+<div id="message"></div>
+
 <script>
-const player=document.getElementById("player");
-const world=document.getElementById("world");
-const game=document.getElementById("game");
-const message=document.getElementById("message");
 
-let x=680;
-let y=480;
-let speed=5;
-let keys={};
-let playing=false;
+const SIZE=6;
 
-function startGame(){
-  document.getElementById("start").style.display="none";
-  playing=true;
-  showMessage("Welcome to Kids Car City! 🧒🚗");
+const TYPES=[
+  {emoji:"💎",class:"g1"},
+  {emoji:"🔮",class:"g2"},
+  {emoji:"🟠",class:"g3"},
+  {emoji:"💗",class:"g4"},
+  {emoji:"🔵",class:"g5"},
+  {emoji:"🌟",class:"g6"}
+];
+
+let board=[];
+let score=0;
+let coins=100;
+let selected=null;
+
+function createBoard(){
+
+  board=[];
+
+  for(let i=0;i<SIZE*SIZE;i++){
+
+    board.push({
+      type:Math.floor(Math.random()*3),
+      level:1
+    });
+
+  }
+
+  render();
 }
 
-function move(dx,dy){
-  if(!playing)return;
+function render(){
 
-  x+=dx;
-  y+=dy;
+  const el=document.getElementById("board");
 
-  x=Math.max(0,Math.min(1555,x));
-  y=Math.max(0,Math.min(955,y));
+  el.innerHTML="";
 
-  player.style.left=x+"px";
-  player.style.top=y+"px";
+  board.forEach((gem,index)=>{
 
-  camera();
-}
+    const cell=document.createElement("div");
+    cell.className="cell";
 
-function camera(){
+    if(gem){
 
-  const maxX=1600-window.innerWidth;
-  const maxY=1000-window.innerHeight;
+      const crystal=document.createElement("div");
 
-  let cx=x-window.innerWidth/2;
-  let cy=y-window.innerHeight/2;
+      crystal.className="gem "+TYPES[gem.type].class;
 
-  cx=Math.max(0,Math.min(maxX,cx));
-  cy=Math.max(0,Math.min(maxY,cy));
+      crystal.textContent=TYPES[gem.type].emoji;
 
-  world.style.transform=
-    `translate(${-cx}px,${-cy}px)`;
-}
+      if(selected===index){
+        crystal.style.outline="4px solid white";
+        crystal.style.transform="scale(1.08)";
+      }
 
-function showMessage(text){
-  message.textContent=text;
-  message.style.display="block";
+      crystal.onclick=()=>selectGem(index);
 
-  clearTimeout(window.msgTimer);
+      cell.appendChild(crystal);
 
-  window.msgTimer=setTimeout(()=>{
-    message.style.display="none";
-  },2200);
-}
-
-/* Keyboard */
-document.addEventListener("keydown",e=>{
-  keys[e.key.toLowerCase()]=true;
-});
-
-document.addEventListener("keyup",e=>{
-  keys[e.key.toLowerCase()]=false;
-});
-
-/* Touch buttons */
-function holdButton(id,dx,dy){
-
-  const button=document.getElementById(id);
-
-  const start=e=>{
-    e.preventDefault();
-    keys[id]=true;
-  };
-
-  const end=e=>{
-    e.preventDefault();
-    keys[id]=false;
-  };
-
-  button.addEventListener("touchstart",start,{passive:false});
-  button.addEventListener("touchend",end,{passive:false});
-  button.addEventListener("touchcancel",end,{passive:false});
-
-  button.addEventListener("mousedown",start);
-  button.addEventListener("mouseup",end);
-  button.addEventListener("mouseleave",end);
-}
-
-holdButton("up");
-holdButton("down");
-holdButton("left");
-holdButton("right");
-
-function gameLoop(){
-
-  if(keys["arrowup"]||keys["w"]||keys["up"]) move(0,-speed);
-  if(keys["arrowdown"]||keys["s"]||keys["down"]) move(0,speed);
-  if(keys["arrowleft"]||keys["a"]||keys["left"]) move(-speed,0);
-  if(keys["arrowright"]||keys["d"]||keys["right"]) move(speed,0);
-
-  requestAnimationFrame(gameLoop);
-}
-
-document.getElementById("interact").addEventListener("click",()=>{
-
-  const cars=document.querySelectorAll(".car");
-
-  let near=false;
-
-  cars.forEach(car=>{
-
-    const cx=parseInt(car.style.left);
-    const cy=parseInt(car.style.top);
-
-    const distance=Math.hypot(
-      x-cx,
-      y-cy
-    );
-
-    if(distance<100){
-      near=true;
-      showMessage("🚗 You found a car! More features coming soon.");
     }
+
+    el.appendChild(cell);
 
   });
 
-  if(!near){
-    showMessage("👀 Explore the city and find a car!");
+  document.getElementById("score").textContent=score.toLocaleString();
+  document.getElementById("coins").textContent=coins.toLocaleString();
+
+  document.getElementById("level").textContent=
+    "Level "+(Math.floor(score/1000)+1);
+}
+
+function selectGem(index){
+
+  if(!board[index])return;
+
+  if(selected===null){
+
+    selected=index;
+    render();
+    return;
+
   }
 
-});
+  if(selected===index){
 
-gameLoop();
-camera();
+    selected=null;
+    render();
+    return;
+
+  }
+
+  const a=board[selected];
+  const b=board[index];
+
+  if(a.type===b.type && a.level===b.level){
+
+    merge(selected,index);
+
+  }else{
+
+    selected=index;
+    render();
+
+  }
+
+}
+
+function merge(a,b){
+
+  const old=board[a];
+
+  board[a]={
+    type:old.type,
+    level:old.level+1
+  };
+
+  board[b]=null;
+
+  score+=old.level*100;
+  coins+=old.level*5;
+
+  selected=null;
+
+  showMessage("✨ MERGED!");
+
+  fillEmpty();
+
+  render();
+
+}
+
+function fillEmpty(){
+
+  const empty=[];
+
+  board.forEach((g,i)=>{
+    if(!g)empty.push(i);
+  });
+
+  empty.forEach(i=>{
+
+    board[i]={
+      type:Math.floor(Math.random()*3),
+      level:1
+    };
+
+  });
+
+}
+
+function showMessage(text){
+
+  const el=document.getElementById("message");
+
+  el.textContent=text;
+
+  el.classList.add("show");
+
+  clearTimeout(window.messageTimer);
+
+  window.messageTimer=setTimeout(()=>{
+    el.classList.remove("show");
+  },700);
+
+}
+
+createBoard();
+
 </script>
 
 </body>
