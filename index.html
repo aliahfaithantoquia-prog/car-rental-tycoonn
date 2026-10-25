@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>Orb Breaker</title>
 
 <style>
@@ -16,20 +16,16 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#05070d;
+  background:#050711;
   font-family:Arial,sans-serif;
   color:white;
-  touch-action:none;
 }
 
 #game{
   position:relative;
   width:100%;
   height:100%;
-  max-width:430px;
-  margin:auto;
   overflow:hidden;
-  background:#05070d;
 }
 
 canvas{
@@ -37,175 +33,147 @@ canvas{
   inset:0;
   width:100%;
   height:100%;
+  display:block;
+  background:
+    radial-gradient(circle at 50% 45%,#121a35 0%,#070a16 55%,#03040a 100%);
 }
 
 #hud{
   position:absolute;
   top:0;
   left:0;
-  right:0;
-  z-index:10;
-  padding:9px;
+  width:100%;
+  padding:10px;
+  display:flex;
+  justify-content:center;
   pointer-events:none;
+  z-index:10;
 }
 
-.topbar{
+.stats{
   display:flex;
-  align-items:center;
-  gap:5px;
+  gap:7px;
   flex-wrap:wrap;
+  justify-content:center;
 }
 
 .stat{
-  background:rgba(10,15,28,.9);
-  border:1px solid rgba(255,255,255,.12);
+  background:rgba(10,15,30,.82);
+  border:1px solid rgba(255,255,255,.14);
   border-radius:10px;
-  padding:7px 9px;
-  font-size:11px;
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:8px 10px;
-  font-weight:bold;
-  cursor:pointer;
-  touch-action:manipulation;
+  padding:7px 10px;
+  font-size:12px;
+  box-shadow:0 5px 20px rgba(0,0,0,.3);
 }
 
 #shopBtn{
-  margin-left:auto;
-  pointer-events:auto;
-  background:white;
+  position:absolute;
+  top:65px;
+  right:10px;
+  z-index:20;
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  background:#ffd21c;
   color:#111;
+  font-weight:bold;
 }
 
 #speedBoostBtn{
-  pointer-events:auto;
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  z-index:15;
+  padding:14px 25px;
+  border:2px solid rgba(255,255,255,.35);
+  border-radius:15px;
   background:#ffc400;
   color:#111;
+  font-size:14px;
+  font-weight:bold;
+  touch-action:none;
+  user-select:none;
+  box-shadow:0 5px 20px rgba(0,0,0,.4);
+}
+
+#speedBoostBtn.active{
+  transform:translateX(-50%) scale(1.06);
+  background:#fff36b;
+  box-shadow:0 0 28px rgba(255,210,0,.9);
 }
 
 #shop{
   position:absolute;
+  top:0;
+  right:0;
+  width:min(340px,92%);
+  height:100%;
+  background:rgba(7,10,22,.97);
+  border-left:1px solid rgba(255,255,255,.15);
+  padding:70px 15px 20px;
   z-index:30;
-  left:9px;
-  right:9px;
-  top:64px;
-  max-height:calc(100% - 74px);
+  transform:translateX(100%);
+  transition:.25s;
   overflow-y:auto;
-  display:none;
-  padding:14px;
-  border-radius:16px;
-  background:rgba(7,10,20,.98);
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 15px 50px rgba(0,0,0,.7);
 }
 
-#shop.show{
-  display:block;
+#shop.open{
+  transform:translateX(0);
 }
 
-.shopHead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.shopTitle{
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.shopItem{
+  background:#11182c;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:13px;
   margin-bottom:10px;
 }
 
-.shopHead h2{
-  margin:0;
-}
-
-.closeBtn{
-  background:#252b3d;
-  color:white;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.item{
-  padding:10px;
-  border-radius:12px;
-  background:#11172a;
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.item.full{
-  grid-column:1/-1;
-}
-
-.item h3{
+.shopItem h3{
   margin:0 0 5px;
-  font-size:14px;
+  font-size:15px;
 }
 
-.item p{
-  min-height:27px;
-  margin:0 0 8px;
-  color:#aeb6cb;
-  font-size:11px;
-}
-
-.item button{
-  width:100%;
-  background:white;
-  color:#111;
-}
-
-.item button:disabled{
-  opacity:.35;
-}
-
-.ballInfo{
-  margin-top:10px;
-  text-align:center;
-  color:#aeb6cb;
-  font-size:11px;
-}
-
-#toast{
-  position:absolute;
-  z-index:100;
-  left:50%;
-  bottom:25px;
-  transform:translate(-50%,20px);
-  opacity:0;
-  padding:9px 14px;
-  border-radius:10px;
-  background:rgba(0,0,0,.9);
-  transition:.2s;
-  pointer-events:none;
+.shopItem p{
+  margin:4px 0 10px;
+  color:#aeb7d1;
   font-size:12px;
 }
 
-#toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+.shopItem button,
+#closeShop{
+  border:0;
+  border-radius:10px;
+  padding:10px 13px;
+  font-weight:bold;
+  background:#36e0a1;
+  color:#07100c;
 }
 
-@media(max-width:360px){
-  .grid{
-    grid-template-columns:1fr;
-  }
+#closeShop{
+  background:#ff6262;
+  color:white;
+  margin-bottom:15px;
+}
 
-  .item.full{
-    grid-column:auto;
-  }
-
-  .stat{
-    padding:6px;
-    font-size:10px;
-  }
-
-  #speedBoostBtn{
-    font-size:10px;
-    padding:7px;
-  }
+#mergeText{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:8;
+  font-size:20px;
+  font-weight:bold;
+  text-shadow:0 0 15px white;
+  pointer-events:none;
+  opacity:0;
 }
 </style>
 </head>
@@ -217,153 +185,97 @@ button{
 <canvas id="canvas"></canvas>
 
 <div id="hud">
-  <div class="topbar">
-
-    <div class="stat">
-      💰 <span id="credits">0</span>
-    </div>
-
-    <div class="stat">
-      ⭐ Lv <span id="level">1</span>
-    </div>
-
-    <div class="stat">
-      💎 <span id="shards">0</span>
-    </div>
-
-    <button id="speedBoostBtn">
-      ⚡ +50% SPEED
-    </button>
-
-    <button id="shopBtn">
-      SHOP
-    </button>
-
+  <div class="stats">
+    <div class="stat">💰 <span id="credits">0</span></div>
+    <div class="stat">⭐ Level <span id="level">1</span>/200</div>
+    <div class="stat">💎 <span id="shards">0</span></div>
+    <div class="stat">⚪ <span id="ballCount">1</span></div>
   </div>
 </div>
+
+<button id="shopBtn">🛒 SHOP</button>
+
+<button id="speedBoostBtn">
+  ⚡ HOLD +50% SPEED
+</button>
+
+<div id="mergeText"></div>
 
 <div id="shop">
+  <button id="closeShop">CLOSE</button>
+  <div class="shopTitle">🛒 Shop</div>
 
-  <div class="shopHead">
-    <h2>🛒 Store</h2>
-    <button class="closeBtn" id="closeShop">×</button>
+  <div class="shopItem">
+    <h3>⚪ Buy Basic Ball</h3>
+    <p>Current price: <b id="ballPriceText">100</b> credits</p>
+    <button id="buyBall">BUY BALL</button>
   </div>
 
-  <div class="grid">
-
-    <div class="item">
-      <h3>⚪ Buy Ball</h3>
-      <p id="ballPriceInfo">
-        Add a basic ball.
-      </p>
-      <button id="buyBall">
-        Buy
-      </button>
-    </div>
-
-    <div class="item">
-      <h3>⚔️ Damage</h3>
-      <p id="damageInfo"></p>
-      <button id="upgradeDamage">
-        Upgrade
-      </button>
-    </div>
-
-    <div class="item">
-      <h3>💨 Speed</h3>
-      <p id="speedInfo"></p>
-      <button id="upgradeSpeed">
-        Upgrade
-      </button>
-    </div>
-
-    <div class="item">
-      <h3>💰 Low Ball Price</h3>
-      <p id="lowPriceInfo">
-        Lower the price of new balls.
-      </p>
-      <button id="lowPriceBtn">
-        Upgrade
-      </button>
-    </div>
-
-    <div class="item">
-      <h3>🔥 Double Damage</h3>
-      <p>Double all ball damage.</p>
-      <button id="doubleDamageBtn">
-        Buy
-      </button>
-    </div>
-
-    <div class="item">
-      <h3>💎 Rebirth</h3>
-      <p id="rebirthInfo">
-        Reach Level 100.
-      </p>
-      <button id="rebirthBtn">
-        Level 100 Required
-      </button>
-    </div>
-
+  <div class="shopItem">
+    <h3>💥 Damage Upgrade</h3>
+    <p>Increase basic ball damage.</p>
+    <button id="damageUpgrade">UPGRADE</button>
   </div>
 
-  <div class="ballInfo">
-    ⚪ <span id="basicCount">1</span>
-    &nbsp; 🟢 <span id="greenCount">0</span>
-    &nbsp; 🩷 <span id="pinkCount">0</span>
-    &nbsp; 🔥 <span id="flameCount">0</span>
+  <div class="shopItem">
+    <h3>🏃 Ball Speed</h3>
+    <p>Increase normal ball speed.</p>
+    <button id="speedUpgrade">UPGRADE</button>
   </div>
+
+  <div class="shopItem">
+    <h3>⚡ Double Damage</h3>
+    <p>Double all ball damage.</p>
+    <button id="doubleDamage">BUY</button>
+  </div>
+
+  <div class="shopItem">
+    <h3>💸 Low Ball Price</h3>
+    <p>Reduce the price of future balls by 10% per level.</p>
+    <button id="lowPriceUpgrade">UPGRADE</button>
+  </div>
+
+  <div class="shopItem">
+    <h3>🔥 Rebirth</h3>
+    <p>Reset the level for permanent shards.</p>
+    <button id="rebirth">REBIRTH</button>
+  </div>
+</div>
 
 </div>
 
-<div id="toast"></div>
-
 <script>
-"use strict";
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
 
-/* =========================================================
-   SETUP
-========================================================= */
+let W=innerWidth;
+let H=innerHeight;
 
-const canvas =
-  document.getElementById("canvas");
+function resize(){
+  W=innerWidth;
+  H=innerHeight;
+  canvas.width=W*devicePixelRatio;
+  canvas.height=H*devicePixelRatio;
+  canvas.style.width=W+"px";
+  canvas.style.height=H+"px";
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
 
-const ctx =
-  canvas.getContext("2d");
+addEventListener("resize",resize);
+resize();
 
-const game =
-  document.getElementById("game");
+const SAVE_KEY="orbBreakerSave_v3";
 
-const shop =
-  document.getElementById("shop");
-
-const toastEl =
-  document.getElementById("toast");
-
-const SAVE_KEY =
-  "orbBreakerSave_v2";
-
-const MAX_LEVEL = 200;
-const MAX_ACTIVE_BALLS = 80;
-
-/* =========================================================
-   DATA
-========================================================= */
-
-const defaultData = {
+const defaultData={
   credits:500,
   level:1,
   totalShards:0,
   runShards:0,
-
   damageLevel:1,
   speedLevel:1,
-
   doubleDamage:false,
-
   ballBuyCount:0,
   lowPriceLevel:0,
-
   balls:{
     basic:1,
     green:0,
@@ -372,402 +284,204 @@ const defaultData = {
   }
 };
 
-let data =
-  loadSave();
+let data;
 
-let W=0;
-let H=0;
-let dpr=1;
-
-let balls=[];
-let blocks=[];
-let particles=[];
-
-let lastTime =
-  performance.now();
-
-let levelChanging=false;
-
-let speedBoost =
-  1;
-
-let mergeState=null;
-
-let toastTimer=null;
-
-/* =========================================================
-   LOAD
-========================================================= */
-
-function loadSave(){
-
-  try{
-
-    const saved =
-      localStorage.getItem(
-        SAVE_KEY
-      );
-
-    if(!saved){
-      return structuredClone(
-        defaultData
-      );
-    }
-
-    const raw =
-      JSON.parse(saved);
-
-    const d =
-      structuredClone(
-        defaultData
-      );
-
-    d.credits =
-      Math.max(
-        0,
-        Math.floor(
-          Number(raw.credits)||500
-        )
-      );
-
-    d.level =
-      Math.max(
-        1,
-        Math.min(
-          MAX_LEVEL,
-          Math.floor(
-            Number(raw.level)||1
-          )
-        )
-      );
-
-    d.totalShards =
-      Math.max(
-        0,
-        Math.floor(
-          Number(raw.totalShards)||0
-        )
-      );
-
-    d.runShards =
-      Math.max(
-        0,
-        Math.floor(
-          Number(raw.runShards)||0
-        )
-      );
-
-    d.damageLevel =
-      Math.max(
-        1,
-        Math.floor(
-          Number(raw.damageLevel)||1
-        )
-      );
-
-    d.speedLevel =
-      Math.max(
-        1,
-        Math.min(
-          8,
-          Math.floor(
-            Number(raw.speedLevel)||1
-          )
-        )
-      );
-
-    d.doubleDamage =
-      !!raw.doubleDamage;
-
-    d.ballBuyCount =
-      Math.max(
-        0,
-        Math.floor(
-          Number(raw.ballBuyCount)||0
-        )
-      );
-
-    d.lowPriceLevel =
-      Math.max(
-        0,
-        Math.floor(
-          Number(raw.lowPriceLevel)||0
-        )
-      );
-
-    if(raw.balls){
-
-      for(
-        const type of
-        ["basic","green","pink","flame"]
-      ){
-
-        d.balls[type] =
-          Math.max(
-            0,
-            Math.floor(
-              Number(
-                raw.balls[type]
-              )||0
-            )
-          );
-      }
-    }
-
-    if(
-      d.balls.basic +
-      d.balls.green +
-      d.balls.pink +
-      d.balls.flame <= 0
-    ){
-      d.balls.basic=1;
-    }
-
-    return d;
-
-  }catch{
-
-    return structuredClone(
-      defaultData
-    );
-  }
+try{
+  data=JSON.parse(localStorage.getItem(SAVE_KEY))||structuredClone(defaultData);
+}catch{
+  data=structuredClone(defaultData);
 }
 
+function fixSave(){
+  if(!data || typeof data!=="object") data=structuredClone(defaultData);
+
+  for(const k of Object.keys(defaultData)){
+    if(!(k in data)) data[k]=defaultData[k];
+  }
+
+  if(!data.balls)data.balls={...defaultData.balls};
+
+  for(const t of Object.keys(defaultData.balls)){
+    if(typeof data.balls[t]!=="number")data.balls[t]=0;
+  }
+
+  data.level=Math.max(1,Math.min(200,Math.floor(data.level)));
+  data.credits=Math.max(0,Math.floor(data.credits));
+}
+
+fixSave();
+
 function save(){
-
   try{
-
-    localStorage.setItem(
-      SAVE_KEY,
-      JSON.stringify(data)
-    );
-
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
   }catch{}
 }
 
-/* =========================================================
-   RESIZE
-========================================================= */
-
-function resize(){
-
-  const rect =
-    game.getBoundingClientRect();
-
-  W=rect.width;
-  H=rect.height;
-
-  dpr =
-    Math.min(
-      window.devicePixelRatio||1,
-      2
-    );
-
-  canvas.width =
-    W*dpr;
-
-  canvas.height =
-    H*dpr;
-
-  canvas.style.width =
-    W+"px";
-
-  canvas.style.height =
-    H+"px";
-
-  ctx.setTransform(
-    dpr,0,0,dpr,0,0
-  );
-}
-
-window.addEventListener(
-  "resize",
-  resize
-);
-
-/* =========================================================
+/* =========================
    BALL TYPES
-========================================================= */
+========================= */
 
 const BALL_TYPES={
-
   basic:{
     damage:1,
     radius:7,
-    color:"#ffffff"
+    color:"#f7fbff"
   },
 
   green:{
     damage:10,
     radius:8,
-    color:"#43ff86"
+    color:"#35ff89"
   },
 
   pink:{
     damage:100,
     radius:9,
-    color:"#ff62d6"
+    color:"#ff65bd"
   },
 
   flame:{
     damage:1000,
     radius:10,
-    color:"#ff7b25"
+    color:"#ff8a19"
   }
 };
 
-/* =========================================================
-   BALL DAMAGE
-========================================================= */
+let balls=[];
+let blocks=[];
+let particles=[];
 
-function ballDamage(type){
+let lastTime=performance.now();
 
-  let value =
-    BALL_TYPES[type].damage;
+let noHitTimer=0;
+const NO_HIT_LIMIT=10;
 
-  value *=
-    Math.pow(
-      1.25,
-      data.damageLevel-1
-    );
+let speedBoostActive=false;
 
-  value *=
-    1 + data.totalShards/100;
+let mergeState=null;
 
-  if(data.doubleDamage){
-    value*=2;
+/* =========================
+   LEVEL
+========================= */
+
+function buildLevel(){
+
+  blocks=[];
+
+  const maxLevel=200;
+  const level=Math.min(data.level,maxLevel);
+
+  const cols=Math.min(7,4+Math.floor(level/45));
+  const rows=Math.min(8,3+Math.floor(level/30));
+
+  const gap=6;
+  const side=14;
+
+  const bw=(W-side*2-gap*(cols-1))/cols;
+  const bh=Math.max(23,Math.min(39,31+Math.floor(level/40)));
+
+  /*
+    Difficulty increases gradually.
+    Level 1 is easy.
+    Level 200 is much harder.
+  */
+
+  const baseHP=
+    3+
+    Math.floor(level*0.75)+
+    Math.floor(Math.pow(level,1.08)*0.35);
+
+  for(let r=0;r<rows;r++){
+
+    for(let c=0;c<cols;c++){
+
+      const variation=(r*1.15)+(c%3)*0.7;
+
+      const hp=Math.max(
+        1,
+        Math.floor(baseHP+variation)
+      );
+
+      blocks.push({
+        x:side+c*(bw+gap),
+        y:95+r*(bh+gap),
+        w:bw,
+        h:bh,
+        hp,
+        maxHp:hp,
+        alive:true
+      });
+    }
   }
-
-  return Math.max(
-    1,
-    Math.floor(value)
-  );
 }
 
-/* =========================================================
-   SPEED
-========================================================= */
+/* =========================
+   BALL SPEED
+========================= */
 
 function baseSpeed(){
-
-  return (
-    145 +
-    data.speedLevel*10
-  ) *
-  (
-    1 +
-    (data.speedLevel-1)*.12
-  );
+  return 125 + (data.speedLevel-1)*12;
 }
 
-/* =========================================================
+function currentSpeedMultiplier(){
+  return speedBoostActive ? 1.5 : 1;
+}
+
+/* =========================
    CREATE BALL
-========================================================= */
+========================= */
 
-function createBall(
-  type,
-  x=W/2,
-  y=H/2
-){
+function createBall(type,x=W/2,y=H/2){
 
-  let angle;
-
-  do{
-
-    angle =
-      Math.random() *
-      Math.PI*2;
-
-  }while(
-    Math.abs(
-      Math.sin(angle)
-    ) < .28
-  );
-
-  const speed =
-    baseSpeed() *
-    speedBoost;
+  const angle=Math.random()*Math.PI*2;
+  const speed=baseSpeed();
 
   return{
-
+    type,
     x,
     y,
-
-    vx:
-      Math.cos(angle)*speed,
-
-    vy:
-      Math.sin(angle)*speed,
-
-    radius:
-      BALL_TYPES[type].radius,
-
-    type,
-
-    color:
-      BALL_TYPES[type].color,
-
-    trail:[],
-
-    hitCooldown:new Map(),
-
-    mergeLocked:false,
-
-    alive:true
+    vx:Math.cos(angle)*speed,
+    vy:Math.sin(angle)*speed,
+    r:BALL_TYPES[type].radius,
+    trail:[]
   };
 }
 
-/* =========================================================
-   TOTAL BALLS
-========================================================= */
-
-function totalBallCount(){
-
-  return (
-    data.balls.basic+
-    data.balls.green+
-    data.balls.pink+
-    data.balls.flame
-  );
-}
-
-/* =========================================================
-   REBUILD
-========================================================= */
+/* =========================
+   REBUILD BALLS
+========================= */
 
 function rebuildBalls(){
 
   balls=[];
 
-  const types=[
-    "basic",
-    "green",
-    "pink",
-    "flame"
-  ];
+  const types=["basic","green","pink","flame"];
 
-  for(
-    const type of types
-  ){
+  for(const type of types){
 
-    let count =
-      data.balls[type];
+    const amount=Math.max(
+      0,
+      Math.floor(data.balls[type])
+    );
 
-    while(
-      count>0 &&
-      balls.length<
-      MAX_ACTIVE_BALLS
-    ){
+    /*
+      Prevent huge rendering load.
+    */
+    const count=Math.min(amount,80-balls.length);
+
+    for(let i=0;i<count;i++){
 
       balls.push(
-        createBall(type)
+        createBall(
+          type,
+          W/2,
+          H/2
+        )
       );
-
-      count--;
     }
   }
 
-  if(!balls.length){
+  if(balls.length===0){
 
     data.balls.basic=1;
 
@@ -781,1007 +495,156 @@ function rebuildBalls(){
   }
 }
 
-/* =========================================================
-   BUILD LEVEL
-========================================================= */
-
-function buildLevel(){
-
-  blocks=[];
-
-  const cols=5;
-  const gap=5;
-  const margin=12;
-
-  const blockWidth=
-    (
-      W-
-      margin*2-
-      gap*(cols-1)
-    )/cols;
-
-  const blockHeight=45;
-
-  const rows=
-    Math.min(
-      11,
-      4+
-      Math.floor(
-        (data.level-1)/12
-      )
-    );
-
-  for(
-    let row=0;
-    row<rows;
-    row++
-  ){
-
-    for(
-      let col=0;
-      col<cols;
-      col++
-    ){
-
-      /*
-        Lower HP than before.
-      */
-
-      const hp=
-        Math.max(
-          1,
-          Math.floor(
-            3+
-            data.level*.9+
-            row*1.2
-          )
-        );
-
-      blocks.push({
-
-        x:
-          margin+
-          col*(blockWidth+gap),
-
-        y:
-          125+
-          row*(blockHeight+gap),
-
-        width:blockWidth,
-        height:blockHeight,
-
-        hp,
-        maxHp:hp,
-
-        dead:false,
-
-        hitFlash:0
-      });
-    }
-  }
-
-  for(
-    const ball of balls
-  ){
-    ball.hitCooldown.clear();
-  }
-}
-
-/* =========================================================
-   BLOCK COLLISION
-========================================================= */
-
-function collideBallBlock(
-  ball,
-  block
-){
-
-  if(
-    block.dead ||
-    ball.mergeLocked
-  ){
-    return false;
-  }
-
-  if(
-    (ball.hitCooldown.get(block)||0)>0
-  ){
-    return false;
-  }
-
-  const cx=
-    Math.max(
-      block.x,
-      Math.min(
-        ball.x,
-        block.x+block.width
-      )
-    );
-
-  const cy=
-    Math.max(
-      block.y,
-      Math.min(
-        ball.y,
-        block.y+block.height
-      )
-    );
-
-  const dx=
-    ball.x-cx;
-
-  const dy=
-    ball.y-cy;
-
-  if(
-    dx*dx+
-    dy*dy >
-    ball.radius*
-    ball.radius
-  ){
-    return false;
-  }
-
-  /* Bounce */
-
-  if(
-    Math.abs(dx) >
-    Math.abs(dy)
-  ){
-
-    ball.vx*=-1;
-
-  }else{
-
-    ball.vy*=-1;
-  }
-
-  /* Prevent sticking */
-
-  const len=
-    Math.hypot(
-      ball.vx,
-      ball.vy
-    );
-
-  const wanted=
-    baseSpeed()*
-    speedBoost;
-
-  if(len>0){
-
-    ball.vx=
-      ball.vx/len*wanted;
-
-    ball.vy=
-      ball.vy/len*wanted;
-  }
-
-  /* +3 credits per bounce */
-
-  data.credits+=3;
-
-  ball.hitCooldown.set(
-    block,
-    .08
-  );
-
-  block.hp -=
-    ballDamage(
-      ball.type
-    );
-
-  block.hitFlash=.12;
-
-  createImpact(
-    ball.x,
-    ball.y,
-    ball.color
-  );
-
-  if(block.hp<=0){
-
-    block.hp=0;
-    block.dead=true;
-
-    data.credits+=
-      Math.max(
-        1,
-        Math.floor(
-          block.maxHp*.5
-        )
-      );
-
-    createBreakEffect(
-      block.x+
-      block.width/2,
-      block.y+
-      block.height/2
-    );
-  }
-
-  updateHUD();
-
-  return true;
-}
-
-/* =========================================================
-   LEVEL CHECK
-========================================================= */
-
-function checkLevelComplete(){
-
-  if(levelChanging){
-    return;
-  }
-
-  if(
-    blocks.length &&
-    blocks.every(
-      b=>b.dead
-    )
-  ){
-
-    levelChanging=true;
-
-    setTimeout(()=>{
-
-      if(
-        data.level<
-        MAX_LEVEL
-      ){
-
-        data.level++;
-
-        if(
-          data.level%10===0
-        ){
-          data.runShards++;
-        }
-
-        buildLevel();
-
-        save();
-
-        updateHUD();
-
-        showToast(
-          "⭐ Level "+
-          data.level
-        );
-      }
-
-      levelChanging=false;
-
-    },120);
-  }
-}
-
-/* =========================================================
-   AUTOMATIC MERGE
-========================================================= */
-
-function checkAutoMerge(){
-
-  if(mergeState){
-    return;
-  }
-
-  const order=[
-    ["basic","green"],
-    ["green","pink"],
-    ["pink","flame"]
-  ];
-
-  for(
-    const [from,to] of order
-  ){
-
-    if(
-      data.balls[from]>=10
-    ){
-
-      startMerge(
-        from,
-        to
-      );
-
-      return;
-    }
-  }
-}
-
-/* =========================================================
-   START MERGE
-========================================================= */
-
-function startMerge(
-  from,
-  to
-){
-
-  if(mergeState){
-    return;
-  }
-
-  const selected=
-    balls
-      .filter(
-        b=>
-          b.type===from &&
-          b.alive
-      )
-      .slice(0,10);
-
-  if(
-    selected.length<10
-  ){
-    return;
-  }
-
-  data.balls[from]-=10;
-
-  for(
-    const ball of selected
-  ){
-
-    ball.mergeLocked=true;
-  }
-
-  const centerX=W/2;
-  const centerY=H/2;
-
-  mergeState={
-
-    from,
-    to,
-
-    balls:selected,
-
-    centerX,
-    centerY,
-
-    timer:0,
-
-    duration:1.7
-  };
-
-  showToast(
-    "✨ 10 "+
-    from+
-    " balls merging..."
-  );
-}
-
-/* =========================================================
-   UPDATE MERGE
-========================================================= */
-
-function updateMerge(dt){
-
-  if(!mergeState){
-    return;
-  }
-
-  const m=
-    mergeState;
-
-  m.timer+=dt;
-
-  const progress=
-    Math.min(
-      1,
-      m.timer/
-      m.duration
-    );
-
-  /*
-    Smooth movement toward center.
-  */
-
-  const ease=
-    1-
-    Math.pow(
-      1-progress,
-      3
-    );
-
-  for(
-    let i=0;
-    i<m.balls.length;
-    i++
-  ){
-
-    const ball=
-      m.balls[i];
-
-    const angle=
-      i/
-      m.balls.length*
-      Math.PI*2;
-
-    const startRadius=
-      75;
-
-    const radius=
-      startRadius*
-      (1-ease);
-
-    const targetX=
-      m.centerX+
-      Math.cos(angle)*
-      radius;
-
-    const targetY=
-      m.centerY+
-      Math.sin(angle)*
-      radius;
-
-    ball.x +=
-      (
-        targetX-
-        ball.x
-      )*
-      Math.min(
-        1,
-        dt*8
-      );
-
-    ball.y +=
-      (
-        targetY-
-        ball.y
-      )*
-      Math.min(
-        1,
-        dt*8
-      );
-
-    ball.vx=0;
-    ball.vy=0;
-
-    ball.trail=[];
-  }
-
-  if(
-    progress>=1
-  ){
-
-    for(
-      const ball of
-      m.balls
-    ){
-
-      ball.alive=false;
-    }
-
-    data.balls[m.to]++;
-
-    createMergeEffect(
-      m.centerX,
-      m.centerY
-    );
-
-    mergeState=null;
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    /*
-      Check if another
-      automatic merge is ready.
-    */
-
-    setTimeout(
-      checkAutoMerge,
-      80
-    );
-  }
-}
-
-/* =========================================================
-   UPDATE BALL
-========================================================= */
-
-function updateBall(
-  ball,
-  dt
-){
-
-  if(
-    !ball.alive ||
-    ball.mergeLocked
-  ){
-    return;
-  }
-
-  for(
-    const [block,time]
-    of ball.hitCooldown
-  ){
-
-    const next=
-      time-dt;
-
-    if(next<=0){
-      ball.hitCooldown.delete(
-        block
-      );
-    }else{
-      ball.hitCooldown.set(
-        block,
-        next
-      );
-    }
-  }
-
-  ball.trail.push({
-    x:ball.x,
-    y:ball.y
-  });
-
-  if(
-    ball.trail.length>8
-  ){
-    ball.trail.shift();
-  }
-
-  ball.x+=
-    ball.vx*dt;
-
-  ball.y+=
-    ball.vy*dt;
-
-  /* Walls */
-
-  if(
-    ball.x-
-    ball.radius<=0
-  ){
-
-    ball.x=
-      ball.radius;
-
-    ball.vx=
-      Math.abs(
-        ball.vx
-      );
-  }
-
-  if(
-    ball.x+
-    ball.radius>=W
-  ){
-
-    ball.x=
-      W-ball.radius;
-
-    ball.vx=
-      -Math.abs(
-        ball.vx
-      );
-  }
-
-  if(
-    ball.y-
-    ball.radius<=0
-  ){
-
-    ball.y=
-      ball.radius;
-
-    ball.vy=
-      Math.abs(
-        ball.vy
-      );
-  }
-
-  if(
-    ball.y+
-    ball.radius>=H
-  ){
-
-    ball.y=
-      H-ball.radius;
-
-    ball.vy=
-      -Math.abs(
-        ball.vy
-      );
-  }
-
-  for(
-    const block of blocks
-  ){
-
-    if(
-      collideBallBlock(
-        ball,
-        block
-      )
-    ){
-      break;
-    }
-  }
-}
-
-/* =========================================================
+/* =========================
    PARTICLES
-========================================================= */
+========================= */
 
-function createImpact(
-  x,
-  y,
-  color
-){
+function particle(x,y,color,count=8){
 
-  for(
-    let i=0;
-    i<5;
-    i++
-  ){
+  for(let i=0;i<count;i++){
 
-    const angle=
-      Math.random()*
-      Math.PI*2;
-
-    const speed=
-      35+
-      Math.random()*70;
+    const a=Math.random()*Math.PI*2;
+    const s=30+Math.random()*120;
 
     particles.push({
-
       x,
       y,
-
-      vx:
-        Math.cos(angle)*
-        speed,
-
-      vy:
-        Math.sin(angle)*
-        speed,
-
-      life:
-        .25+
-        Math.random()*.25,
-
-      size:
-        1.5+
-        Math.random()*2,
-
-      color
-    });
-  }
-}
-
-function createBreakEffect(
-  x,
-  y
-){
-
-  for(
-    let i=0;
-    i<12;
-    i++
-  ){
-
-    const angle=
-      Math.random()*
-      Math.PI*2;
-
-    const speed=
-      40+
-      Math.random()*100;
-
-    particles.push({
-
-      x,
-      y,
-
-      vx:
-        Math.cos(angle)*
-        speed,
-
-      vy:
-        Math.sin(angle)*
-        speed,
-
-      life:
-        .4+
-        Math.random()*.3,
-
-      size:
-        2+
-        Math.random()*2,
-
-      color:
-        "#ffffff"
-    });
-  }
-}
-
-function createMergeEffect(
-  x,
-  y
-){
-
-  for(
-    let i=0;
-    i<35;
-    i++
-  ){
-
-    const angle=
-      Math.random()*
-      Math.PI*2;
-
-    const speed=
-      40+
-      Math.random()*150;
-
-    particles.push({
-
-      x,
-      y,
-
-      vx:
-        Math.cos(angle)*
-        speed,
-
-      vy:
-        Math.sin(angle)*
-        speed,
-
-      life:
-        .5+
-        Math.random()*.5,
-
-      size:
-        2+
-        Math.random()*3,
-
-      color:
-        i%2?
-        "#ffffff":
-        "#7dffcf"
+      vx:Math.cos(a)*s,
+      vy:Math.sin(a)*s,
+      life:.4+.5*Math.random(),
+      max:.9,
+      color,
+      size:1+Math.random()*3
     });
   }
 }
 
 function updateParticles(dt){
 
-  for(
-    let i=
-      particles.length-1;
-    i>=0;
-    i--
-  ){
+  for(let i=particles.length-1;i>=0;i--){
 
-    const p=
-      particles[i];
-
-    p.x+=
-      p.vx*dt;
-
-    p.y+=
-      p.vy*dt;
-
-    p.vx*=
-      Math.pow(
-        .08,
-        dt
-      );
-
-    p.vy*=
-      Math.pow(
-        .08,
-        dt
-      );
+    const p=particles[i];
 
     p.life-=dt;
 
-    if(
-      p.life<=0
-    ){
-      particles.splice(
-        i,
-        1
-      );
+    p.x+=p.vx*dt;
+    p.y+=p.vy*dt;
+
+    p.vx*=.97;
+    p.vy*=.97;
+
+    if(p.life<=0){
+      particles.splice(i,1);
     }
   }
 }
 
-/* =========================================================
-   DRAW BACKGROUND
-========================================================= */
+function drawParticles(){
 
-function drawBackground(){
+  for(const p of particles){
 
-  ctx.fillStyle=
-    "#05070d";
+    ctx.globalAlpha=Math.max(0,p.life/p.max);
 
-  ctx.fillRect(
-    0,
-    0,
-    W,
-    H
-  );
-
-  ctx.strokeStyle=
-    "rgba(255,255,255,.025)";
-
-  const grid=35;
-
-  for(
-    let x=0;
-    x<W;
-    x+=grid
-  ){
+    ctx.fillStyle=p.color;
 
     ctx.beginPath();
-    ctx.moveTo(x,0);
-    ctx.lineTo(x,H);
-    ctx.stroke();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fill();
   }
 
-  for(
-    let y=0;
-    y<H;
-    y+=grid
-  ){
-
-    ctx.beginPath();
-    ctx.moveTo(0,y);
-    ctx.lineTo(W,y);
-    ctx.stroke();
-  }
+  ctx.globalAlpha=1;
 }
 
-/* =========================================================
+/* =========================
    DRAW BLOCK
-========================================================= */
+========================= */
 
-function drawBlock(
-  block
-){
+function drawBlock(b){
 
-  if(block.dead){
-    return;
-  }
+  if(!b.alive)return;
 
-  const hpRatio=
-    block.hp/
-    block.maxHp;
+  const ratio=b.hp/b.maxHp;
 
-  ctx.save();
+  const g=ctx.createLinearGradient(
+    b.x,
+    b.y,
+    b.x,
+    b.y+b.h
+  );
+
+  g.addColorStop(0,"#405a91");
+  g.addColorStop(.5,"#263b6c");
+  g.addColorStop(1,"#182747");
+
+  ctx.fillStyle=g;
+
+  ctx.shadowColor="rgba(40,110,255,.25)";
+  ctx.shadowBlur=8;
+
+  ctx.beginPath();
+
+  ctx.roundRect(
+    b.x,
+    b.y,
+    b.w,
+    b.h,
+    6
+  );
+
+  ctx.fill();
+
+  ctx.shadowBlur=0;
 
   /*
-    Realistic depth
-  */
-
-  ctx.fillStyle=
-    "rgba(0,0,0,.35)";
-
-  ctx.fillRect(
-    block.x+2,
-    block.y+3,
-    block.width,
-    block.height
-  );
-
-  const gradient=
-    ctx.createLinearGradient(
-      block.x,
-      block.y,
-      block.x,
-      block.y+
-      block.height
-    );
-
-  gradient.addColorStop(
-    0,
-    "hsl("+
-    (205-hpRatio*120)+
-    ",75%,58%)"
-  );
-
-  gradient.addColorStop(
-    1,
-    "hsl("+
-    (205-hpRatio*120)+
-    ",75%,32%)"
-  );
-
-  ctx.fillStyle=
-    gradient;
-
-  ctx.fillRect(
-    block.x,
-    block.y,
-    block.width,
-    block.height
-  );
-
-  ctx.strokeStyle=
-    "rgba(255,255,255,.25)";
-
-  ctx.strokeRect(
-    block.x,
-    block.y,
-    block.width,
-    block.height
-  );
-
-  /*
-    Damage highlight.
+    Damage overlay.
     No HP numbers.
   */
 
-  if(block.hitFlash>0){
+  if(ratio<.75){
 
     ctx.fillStyle=
-      "rgba(255,255,255,"+
-      block.hitFlash*4+
-      ")";
+      "rgba(255,180,40,"+
+      ((1-ratio)*.3)+")";
 
     ctx.fillRect(
-      block.x,
-      block.y,
-      block.width,
-      block.height
+      b.x,
+      b.y,
+      b.w,
+      b.h
     );
-
-    block.hitFlash-=.016;
   }
 
-  ctx.restore();
+  ctx.strokeStyle="rgba(255,255,255,.12)";
+  ctx.stroke();
 }
 
-/* =========================================================
+/* =========================
    DRAW BALL
-========================================================= */
+========================= */
 
-function drawBall(
-  ball
-){
+function drawBall(ball){
 
-  if(!ball.alive){
-    return;
-  }
+  const t=BALL_TYPES[ball.type];
 
   /*
     Trail
   */
 
-  for(
-    let i=0;
-    i<ball.trail.length;
-    i++
-  ){
+  for(let i=0;i<ball.trail.length;i++){
 
-    const p=
-      ball.trail[i];
+    const p=ball.trail[i];
 
     ctx.globalAlpha=
-      (i/
-      ball.trail.length)*
-      .22;
+      (1-i/ball.trail.length)*.18;
 
-    ctx.fillStyle=
-      ball.color;
+    ctx.fillStyle=t.color;
 
     ctx.beginPath();
 
     ctx.arc(
       p.x,
       p.y,
-      ball.radius*
-      (i/
-      ball.trail.length),
+      ball.r*(1-i/ball.trail.length)*.8,
       0,
       Math.PI*2
     );
@@ -1792,50 +655,27 @@ function drawBall(
   ctx.globalAlpha=1;
 
   /*
-    Flame effect around
-    the actual ball.
+    Flame effect
   */
 
-  if(
-    ball.type==="flame"
-  ){
+  if(ball.type==="flame"){
 
-    for(
-      let i=0;
-      i<5;
-      i++
-    ){
+    for(let i=0;i<6;i++){
 
-      const angle=
-        performance.now()/180+
-        i*1.25;
+      const a=Math.random()*Math.PI*2;
+      const rr=ball.r+3+Math.random()*7;
 
-      const fx=
-        ball.x+
-        Math.cos(angle)*
-        (ball.radius+3);
-
-      const fy=
-        ball.y+
-        Math.sin(angle)*
-        (ball.radius+3);
-
-      ctx.globalAlpha=.45;
+      ctx.globalAlpha=.3;
 
       ctx.fillStyle=
-        i%2?
-        "#ff5a16":
-        "#ffd23c";
+        i%2===0 ? "#ffcf33" : "#ff5a16";
 
       ctx.beginPath();
 
       ctx.arc(
-        fx,
-        fy,
-        3+
-        Math.sin(
-          performance.now()/100+i
-        )*1.5,
+        ball.x+Math.cos(a)*rr,
+        ball.y+Math.sin(a)*rr,
+        2+Math.random()*3,
         0,
         Math.PI*2
       );
@@ -1847,277 +687,503 @@ function drawBall(
   }
 
   /*
-    Glow
+    Ball gradient
   */
 
-  ctx.save();
-
-  ctx.shadowColor=
-    ball.color;
-
-  ctx.shadowBlur=
-    ball.type==="flame"
-      ? 24
-      : 14;
-
-  ctx.fillStyle=
-    ball.color;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    ball.x,
-    ball.y,
-    ball.radius,
-    0,
-    Math.PI*2
-  );
-
-  ctx.fill();
-
-  ctx.restore();
-
-  /*
-    Realistic highlight
-  */
-
-  const highlight=
-    ctx.createRadialGradient(
-      ball.x-ball.radius*.35,
-      ball.y-ball.radius*.4,
-      1,
-      ball.x,
-      ball.y,
-      ball.radius
-    );
-
-  highlight.addColorStop(
-    0,
-    "rgba(255,255,255,.95)"
-  );
-
-  highlight.addColorStop(
-    .25,
-    "rgba(255,255,255,.35)"
-  );
-
-  highlight.addColorStop(
+  const g=ctx.createRadialGradient(
+    ball.x-ball.r*.35,
+    ball.y-ball.r*.4,
     1,
-    "rgba(255,255,255,0)"
+    ball.x,
+    ball.y,
+    ball.r*1.3
   );
 
-  ctx.fillStyle=
-    highlight;
+  g.addColorStop(0,"#ffffff");
+  g.addColorStop(.25,t.color);
+  g.addColorStop(1,
+    ball.type==="flame"
+      ? "#c92800"
+      : t.color
+  );
+
+  ctx.fillStyle=g;
+
+  ctx.shadowColor=t.color;
+  ctx.shadowBlur=14;
 
   ctx.beginPath();
 
   ctx.arc(
     ball.x,
     ball.y,
-    ball.radius,
+    ball.r,
     0,
     Math.PI*2
   );
 
   ctx.fill();
+
+  ctx.shadowBlur=0;
 }
 
-/* =========================================================
-   DRAW PARTICLES
-========================================================= */
+/* =========================
+   AUTO TARGET
+========================= */
 
-function drawParticles(){
-
-  for(
-    const p of particles
-  ){
-
-    ctx.globalAlpha=
-      Math.max(
-        0,
-        p.life
-      );
-
-    ctx.fillStyle=
-      p.color;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      p.x,
-      p.y,
-      p.size,
-      0,
-      Math.PI*2
-    );
-
-    ctx.fill();
-  }
-
-  ctx.globalAlpha=1;
-}
-
-/* =========================================================
-   DRAW
-========================================================= */
-
-function draw(){
-
-  drawBackground();
-
-  for(
-    const block of blocks
-  ){
-    drawBlock(block);
-  }
-
-  for(
-    const ball of balls
-  ){
-    drawBall(ball);
-  }
-
-  drawParticles();
+function autoTarget(ball,dt){
 
   /*
-    Merge center glow
+    Only activates after 10 seconds
+    without a block hit.
   */
 
-  if(mergeState){
+  if(noHitTimer<NO_HIT_LIMIT)return;
 
-    const p=
-      Math.min(
-        1,
-        mergeState.timer/
-        mergeState.duration
-      );
+  let target=null;
+  let best=Infinity;
 
-    const radius=
-      15+
-      p*55;
+  for(const b of blocks){
 
-    const glow=
-      ctx.createRadialGradient(
-        mergeState.centerX,
-        mergeState.centerY,
-        0,
-        mergeState.centerX,
-        mergeState.centerY,
-        radius
-      );
+    if(!b.alive)continue;
 
-    glow.addColorStop(
-      0,
-      "rgba(255,255,255,.35)"
+    const cx=b.x+b.w/2;
+    const cy=b.y+b.h/2;
+
+    const dx=cx-ball.x;
+    const dy=cy-ball.y;
+
+    const dist=dx*dx+dy*dy;
+
+    if(dist<best){
+
+      best=dist;
+      target=b;
+    }
+  }
+
+  if(!target)return;
+
+  const tx=target.x+target.w/2;
+  const ty=target.y+target.h/2;
+
+  const dx=tx-ball.x;
+  const dy=ty-ball.y;
+
+  const len=Math.hypot(dx,dy)||1;
+
+  const speed=Math.hypot(ball.vx,ball.vy)||baseSpeed();
+
+  /*
+    Gentle steering.
+    It doesn't teleport the ball.
+  */
+
+  const steer=1.8*dt;
+
+  const wantedX=(dx/len)*speed;
+  const wantedY=(dy/len)*speed;
+
+  ball.vx +=
+    (wantedX-ball.vx)*steer;
+
+  ball.vy +=
+    (wantedY-ball.vy)*steer;
+
+  /*
+    Keep speed consistent.
+  */
+
+  const current=Math.hypot(
+    ball.vx,
+    ball.vy
+  )||1;
+
+  ball.vx=
+    ball.vx/current*
+    speed;
+
+  ball.vy=
+    ball.vy/current*
+    speed;
+}
+
+/* =========================
+   COLLISION
+========================= */
+
+function collideBallBlock(ball,b){
+
+  if(!b.alive)return false;
+
+  const closestX=Math.max(
+    b.x,
+    Math.min(ball.x,b.x+b.w)
+  );
+
+  const closestY=Math.max(
+    b.y,
+    Math.min(ball.y,b.y+b.h)
+  );
+
+  const dx=ball.x-closestX;
+  const dy=ball.y-closestY;
+
+  if(dx*dx+dy*dy>ball.r*ball.r){
+    return false;
+  }
+
+  /*
+    Hit detected.
+  */
+
+  noHitTimer=0;
+
+  /*
+    Credits for every block hit.
+  */
+
+  data.credits+=3;
+
+  const damage=
+    BALL_TYPES[ball.type].damage *
+    data.damageLevel *
+    (data.doubleDamage?2:1);
+
+  b.hp-=damage;
+
+  particle(
+    closestX,
+    closestY,
+    BALL_TYPES[ball.type].color,
+    7
+  );
+
+  /*
+    Bounce based on collision side.
+  */
+
+  const overlapX=
+    ball.r-Math.abs(dx);
+
+  const overlapY=
+    ball.r-Math.abs(dy);
+
+  if(overlapX<overlapY){
+
+    ball.vx*=-1;
+
+    if(ball.x<b.x){
+      ball.x=b.x-ball.r-1;
+    }else{
+      ball.x=b.x+b.w+ball.r+1;
+    }
+
+  }else{
+
+    ball.vy*=-1;
+
+    if(ball.y<b.y){
+      ball.y=b.y-ball.r-1;
+    }else{
+      ball.y=b.y+b.h+ball.r+1;
+    }
+  }
+
+  /*
+    Keep normal speed after bounce.
+  */
+
+  const wantedSpeed=
+    baseSpeed()*
+    currentSpeedMultiplier();
+
+  const currentSpeed=
+    Math.hypot(ball.vx,ball.vy)||1;
+
+  ball.vx=
+    ball.vx/currentSpeed*
+    wantedSpeed;
+
+  ball.vy=
+    ball.vy/currentSpeed*
+    wantedSpeed;
+
+  if(b.hp<=0){
+
+    b.alive=false;
+
+    data.credits+=10;
+
+    data.runShards+=1;
+
+    particle(
+      b.x+b.w/2,
+      b.y+b.h/2,
+      "#72a7ff",
+      18
     );
+  }
 
-    glow.addColorStop(
-      1,
-      "rgba(255,255,255,0)"
-    );
+  return true;
+}
 
-    ctx.fillStyle=
-      glow;
+/* =========================
+   BALL UPDATE
+========================= */
 
-    ctx.beginPath();
+function updateBall(ball,dt){
 
-    ctx.arc(
-      mergeState.centerX,
-      mergeState.centerY,
-      radius,
-      0,
-      Math.PI*2
-    );
+  /*
+    IMPORTANT:
+    Speed boost is applied only while
+    the button is held.
 
-    ctx.fill();
+    We don't permanently modify velocity.
+  */
+
+  const multiplier=
+    currentSpeedMultiplier();
+
+  ball.trail.unshift({
+    x:ball.x,
+    y:ball.y
+  });
+
+  if(ball.trail.length>7){
+    ball.trail.pop();
+  }
+
+  /*
+    Auto targeting after 10 sec.
+  */
+
+  autoTarget(ball,dt);
+
+  ball.x+=ball.vx*dt*multiplier;
+  ball.y+=ball.vy*dt*multiplier;
+
+  /*
+    Wall bounce
+  */
+
+  if(ball.x-ball.r<=0){
+
+    ball.x=ball.r;
+    ball.vx=Math.abs(ball.vx);
+
+  }else if(ball.x+ball.r>=W){
+
+    ball.x=W-ball.r;
+    ball.vx=-Math.abs(ball.vx);
+  }
+
+  if(ball.y-ball.r<=75){
+
+    ball.y=75+ball.r;
+    ball.vy=Math.abs(ball.vy);
+
+  }else if(ball.y+ball.r>=H-5){
+
+    ball.y=H-5-ball.r;
+    ball.vy=-Math.abs(ball.vy);
+  }
+
+  /*
+    Block collisions
+  */
+
+  for(const b of blocks){
+
+    if(!b.alive)continue;
+
+    if(collideBallBlock(ball,b)){
+      break;
+    }
   }
 }
 
-/* =========================================================
+/* =========================
+   MERGE
+========================= */
+
+const mergeOrder=[
+  ["basic","green"],
+  ["green","pink"],
+  ["pink","flame"]
+];
+
+function checkAutoMerge(){
+
+  if(mergeState)return;
+
+  for(const [from,to] of mergeOrder){
+
+    if(data.balls[from]>=10){
+
+      startMerge(from,to);
+      return;
+    }
+  }
+}
+
+function startMerge(from,to){
+
+  const selected=[];
+
+  for(const ball of balls){
+
+    if(ball.type===from){
+
+      selected.push(ball);
+
+      if(selected.length>=10)break;
+    }
+  }
+
+  if(selected.length<10)return;
+
+  mergeState={
+    from,
+    to,
+    balls:selected,
+    time:0,
+    duration:1.7
+  };
+
+  for(const ball of selected){
+
+    ball.vx=0;
+    ball.vy=0;
+  }
+
+  const text=document.getElementById("mergeText");
+
+  text.textContent=
+    "✨ "+from.toUpperCase()+
+    " → "+to.toUpperCase();
+
+  text.style.opacity=1;
+
+  setTimeout(()=>{
+    text.style.opacity=0;
+  },900);
+}
+
+function updateMerge(dt){
+
+  if(!mergeState)return;
+
+  mergeState.time+=dt;
+
+  const progress=
+    Math.min(
+      1,
+      mergeState.time/
+      mergeState.duration
+    );
+
+  const cx=W/2;
+  const cy=H/2;
+
+  const radius=
+    100*(1-progress);
+
+  for(let i=0;i<mergeState.balls.length;i++){
+
+    const ball=mergeState.balls[i];
+
+    const angle=
+      i/mergeState.balls.length*
+      Math.PI*2;
+
+    const targetX=
+      cx+
+      Math.cos(angle)*radius;
+
+    const targetY=
+      cy+
+      Math.sin(angle)*radius;
+
+    ball.x+=(targetX-ball.x)*Math.min(1,dt*7);
+    ball.y+=(targetY-ball.y)*Math.min(1,dt*7);
+
+    ball.r=
+      BALL_TYPES[mergeState.from].radius*
+      (1-progress*.35);
+  }
+
+  if(progress>=1){
+
+    const from=mergeState.from;
+    const to=mergeState.to;
+
+    data.balls[from]-=10;
+    data.balls[to]+=1;
+
+    particle(
+      cx,
+      cy,
+      BALL_TYPES[to].color,
+      40
+    );
+
+    mergeState=null;
+
+    rebuildBalls();
+
+    save();
+
+    checkAutoMerge();
+  }
+}
+
+/* =========================
+   LEVEL CHECK
+========================= */
+
+function checkLevel(){
+
+  if(blocks.some(b=>b.alive)){
+    return;
+  }
+
+  if(data.level>=200){
+
+    data.level=200;
+
+    save();
+
+    return;
+  }
+
+  data.level++;
+
+  data.runShards+=5;
+
+  buildLevel();
+
+  /*
+    Keep balls.
+    New level starts from current
+    ball positions.
+  */
+
+  noHitTimer=0;
+
+  particle(
+    W/2,
+    H/2,
+    "#ffffff",
+    35
+  );
+
+  save();
+}
+
+/* =========================
    SHOP
-========================================================= */
-
-function openShop(){
-
-  shop.classList.add(
-    "show"
-  );
-
-  updateHUD();
-}
-
-function closeShopMenu(){
-
-  shop.classList.remove(
-    "show"
-  );
-}
-
-document
-  .getElementById("shopBtn")
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      if(
-        shop.classList.contains(
-          "show"
-        )
-      ){
-        closeShopMenu();
-      }else{
-        openShop();
-      }
-    }
-  );
-
-document
-  .getElementById("closeShop")
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      closeShopMenu();
-    }
-  );
-
-/* =========================================================
-   SPEED BOOST
-========================================================= */
-
-document
-  .getElementById(
-    "speedBoostBtn"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      speedBoost*=1.5;
-
-      for(
-        const ball of balls
-      ){
-
-        ball.vx*=1.5;
-        ball.vy*=1.5;
-      }
-
-      showToast(
-        "⚡ Speed +50%!"
-      );
-    }
-  );
-
-/* =========================================================
-   BALL PRICE
-========================================================= */
+========================= */
 
 function ballPrice(){
 
@@ -2136,184 +1202,9 @@ function ballPrice(){
 
   return Math.max(
     10,
-    Math.floor(
-      normal*discount
-    )
+    Math.floor(normal*discount)
   );
 }
-
-/* =========================================================
-   BUY BALL
-========================================================= */
-
-document
-  .getElementById("buyBall")
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      if(
-        totalBallCount()>=
-        MAX_ACTIVE_BALLS
-      ){
-
-        showToast(
-          "Maximum balls!"
-        );
-
-        return;
-      }
-
-      const cost=
-        ballPrice();
-
-      if(
-        data.credits<cost
-      ){
-
-        showToast(
-          "Not enough credits!"
-        );
-
-        return;
-      }
-
-      data.credits-=cost;
-
-      data.balls.basic++;
-
-      data.ballBuyCount++;
-
-      rebuildBalls();
-
-      save();
-
-      updateHUD();
-
-      showToast(
-        "⚪ New ball!"
-      );
-
-      checkAutoMerge();
-    }
-  );
-
-/* =========================================================
-   DAMAGE
-========================================================= */
-
-function damageCost(){
-
-  return Math.floor(
-    100*
-    Math.pow(
-      1.08,
-      data.damageLevel-1
-    )
-  );
-}
-
-document
-  .getElementById(
-    "upgradeDamage"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      const cost=
-        damageCost();
-
-      if(
-        data.credits<cost
-      ){
-
-        showToast(
-          "Not enough credits!"
-        );
-
-        return;
-      }
-
-      data.credits-=cost;
-
-      data.damageLevel++;
-
-      rebuildBalls();
-
-      save();
-
-      updateHUD();
-
-      showToast(
-        "⚔️ Damage upgraded!"
-      );
-    }
-  );
-
-/* =========================================================
-   SPEED UPGRADE
-========================================================= */
-
-document
-  .getElementById(
-    "upgradeSpeed"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      if(
-        data.speedLevel>=8
-      ){
-
-        showToast(
-          "Maximum speed!"
-        );
-
-        return;
-      }
-
-      const cost=
-        250*
-        data.speedLevel;
-
-      if(
-        data.credits<cost
-      ){
-
-        showToast(
-          "Not enough credits!"
-        );
-
-        return;
-      }
-
-      data.credits-=cost;
-
-      data.speedLevel++;
-
-      rebuildBalls();
-
-      save();
-
-      updateHUD();
-
-      showToast(
-        "💨 Speed upgraded!"
-      );
-    }
-  );
-
-/* =========================================================
-   LOW BALL PRICE
-========================================================= */
 
 function lowPriceCost(){
 
@@ -2326,538 +1217,427 @@ function lowPriceCost(){
   );
 }
 
-document
-  .getElementById(
-    "lowPriceBtn"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
+function updateShopUI(){
 
-      e.preventDefault();
+  document.getElementById("credits")
+    .textContent=Math.floor(data.credits);
 
-      const cost=
-        lowPriceCost();
+  document.getElementById("level")
+    .textContent=data.level;
 
-      if(
-        data.credits<cost
-      ){
+  document.getElementById("shards")
+    .textContent=data.totalShards+data.runShards;
 
-        showToast(
-          "Not enough credits!"
-        );
-
-        return;
-      }
-
-      data.credits-=cost;
-
-      data.lowPriceLevel++;
-
-      save();
-
-      updateHUD();
-
-      showToast(
-        "💰 Ball price reduced!"
-      );
-    }
-  );
-
-/* =========================================================
-   DOUBLE DAMAGE
-========================================================= */
-
-document
-  .getElementById(
-    "doubleDamageBtn"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      if(data.doubleDamage){
-
-        return;
-      }
-
-      if(
-        data.credits<5000
-      ){
-
-        showToast(
-          "Need 5,000 credits!"
-        );
-
-        return;
-      }
-
-      data.credits-=5000;
-
-      data.doubleDamage=true;
-
-      rebuildBalls();
-
-      save();
-
-      updateHUD();
-
-      showToast(
-        "🔥 Double Damage!"
-      );
-    }
-  );
-
-/* =========================================================
-   REBIRTH
-========================================================= */
-
-document
-  .getElementById(
-    "rebirthBtn"
-  )
-  .addEventListener(
-    "pointerup",
-    e=>{
-
-      e.preventDefault();
-
-      if(data.level<100){
-
-        showToast(
-          "Reach Level 100!"
-        );
-
-        return;
-      }
-
-      if(data.runShards<=0){
-
-        showToast(
-          "No run shards!"
-        );
-
-        return;
-      }
-
-      data.totalShards+=
-        data.runShards;
-
-      data.runShards=0;
-
-      data.credits=500;
-
-      data.level=1;
-
-      data.damageLevel=1;
-
-      data.speedLevel=1;
-
-      data.doubleDamage=false;
-
-      data.ballBuyCount=0;
-
-      data.lowPriceLevel=0;
-
-      data.balls={
-        basic:1,
-        green:0,
-        pink:0,
-        flame:0
-      };
-
-      speedBoost=1;
-
-      buildLevel();
-
-      rebuildBalls();
-
-      save();
-
-      updateHUD();
-
-      closeShopMenu();
-
-      showToast(
-        "💎 Rebirth complete!"
-      );
-    }
-  );
-
-/* =========================================================
-   HUD
-========================================================= */
-
-function fmt(n){
-
-  if(n<1000){
-    return Math.floor(n);
-  }
-
-  if(n<1000000){
-
-    return (
-      n/1000
-    ).toFixed(
-      n<10000?1:0
-    )+"K";
-  }
-
-  return (
-    n/1000000
-  ).toFixed(1)+"M";
-}
-
-function updateHUD(){
-
-  document
-    .getElementById("credits")
+  document.getElementById("ballCount")
     .textContent=
-      fmt(data.credits);
-
-  document
-    .getElementById("level")
-    .textContent=
-      data.level;
-
-  document
-    .getElementById("shards")
-    .textContent=
-      data.totalShards;
-
-  document
-    .getElementById("basicCount")
-    .textContent=
-      data.balls.basic;
-
-  document
-    .getElementById("greenCount")
-    .textContent=
-      data.balls.green;
-
-  document
-    .getElementById("pinkCount")
-    .textContent=
-      data.balls.pink;
-
-  document
-    .getElementById("flameCount")
-    .textContent=
+      data.balls.basic+
+      data.balls.green+
+      data.balls.pink+
       data.balls.flame;
 
-  const bp=
-    ballPrice();
+  document.getElementById("ballPriceText")
+    .textContent=ballPrice();
+
+  document.getElementById("damageUpgrade")
+    .textContent=
+      "UPGRADE ("+
+      (100*Math.pow(1.7,data.damageLevel-1))+
+      ")";
+
+  document.getElementById("speedUpgrade")
+    .textContent=
+      "UPGRADE ("+
+      (150*Math.pow(1.7,data.speedLevel-1))+
+      ")";
+
+  document.getElementById("lowPriceUpgrade")
+    .textContent=
+      "UPGRADE ("+
+      lowPriceCost()+
+      ")";
+
+  document.getElementById("doubleDamage")
+    .textContent=
+      data.doubleDamage
+        ?"OWNED"
+        :"BUY (1000)";
+}
+
+document.getElementById("shopBtn")
+.addEventListener("click",()=>{
 
   document
-    .getElementById(
-      "ballPriceInfo"
-    )
-    .textContent=
-      "Current price: "+
-      fmt(bp)+
-      " credits";
+    .getElementById("shop")
+    .classList.add("open");
 
-  const buy=
-    document
-      .getElementById(
-        "buyBall"
+  updateShopUI();
+});
+
+document.getElementById("closeShop")
+.addEventListener("click",()=>{
+
+  document
+    .getElementById("shop")
+    .classList.remove("open");
+});
+
+document.getElementById("buyBall")
+.addEventListener("click",()=>{
+
+  const price=ballPrice();
+
+  if(data.credits<price)return;
+
+  data.credits-=price;
+
+  data.ballBuyCount++;
+
+  data.balls.basic++;
+
+  rebuildBalls();
+
+  checkAutoMerge();
+
+  save();
+
+  updateShopUI();
+});
+
+document.getElementById("damageUpgrade")
+.addEventListener("click",()=>{
+
+  const cost=
+    Math.floor(
+      100*
+      Math.pow(
+        1.7,
+        data.damageLevel-1
+      )
+    );
+
+  if(data.credits<cost)return;
+
+  data.credits-=cost;
+  data.damageLevel++;
+
+  save();
+  updateShopUI();
+});
+
+document.getElementById("speedUpgrade")
+.addEventListener("click",()=>{
+
+  const cost=
+    Math.floor(
+      150*
+      Math.pow(
+        1.7,
+        data.speedLevel-1
+      )
+    );
+
+  if(data.credits<cost)return;
+
+  data.credits-=cost;
+  data.speedLevel++;
+
+  /*
+    Re-normalize all current balls.
+  */
+
+  const speed=
+    baseSpeed()*
+    currentSpeedMultiplier();
+
+  for(const ball of balls){
+
+    const current=
+      Math.hypot(ball.vx,ball.vy)||1;
+
+    ball.vx=
+      ball.vx/current*speed;
+
+    ball.vy=
+      ball.vy/current*speed;
+  }
+
+  save();
+  updateShopUI();
+});
+
+document.getElementById("doubleDamage")
+.addEventListener("click",()=>{
+
+  if(data.doubleDamage)return;
+
+  if(data.credits<1000)return;
+
+  data.credits-=1000;
+  data.doubleDamage=true;
+
+  save();
+  updateShopUI();
+});
+
+document.getElementById("lowPriceUpgrade")
+.addEventListener("click",()=>{
+
+  const cost=lowPriceCost();
+
+  if(data.credits<cost)return;
+
+  data.credits-=cost;
+  data.lowPriceLevel++;
+
+  save();
+  updateShopUI();
+});
+
+document.getElementById("rebirth")
+.addEventListener("click",()=>{
+
+  if(data.level<200)return;
+
+  data.totalShards+=data.runShards;
+
+  data.runShards=0;
+
+  data.level=1;
+
+  buildLevel();
+
+  noHitTimer=0;
+
+  save();
+
+  updateShopUI();
+});
+
+/* =========================
+   HOLD SPEED BOOST
+========================= */
+
+const speedBoostBtn=
+  document.getElementById(
+    "speedBoostBtn"
+  );
+
+function activateSpeedBoost(){
+
+  if(speedBoostActive)return;
+
+  speedBoostActive=true;
+
+  speedBoostBtn.classList.add("active");
+
+  /*
+    Immediately make current balls 50% faster.
+  */
+
+  for(const ball of balls){
+
+    ball.vx*=1.5;
+    ball.vy*=1.5;
+  }
+}
+
+function deactivateSpeedBoost(){
+
+  if(!speedBoostActive)return;
+
+  speedBoostActive=false;
+
+  speedBoostBtn.classList.remove("active");
+
+  /*
+    Return current balls to normal speed.
+  */
+
+  for(const ball of balls){
+
+    ball.vx/=1.5;
+    ball.vy/=1.5;
+  }
+}
+
+speedBoostBtn.addEventListener(
+  "pointerdown",
+  e=>{
+    e.preventDefault();
+
+    try{
+      speedBoostBtn.setPointerCapture(
+        e.pointerId
       );
+    }catch{}
 
-  buy.textContent=
-    "Buy — "+
-    fmt(bp)+
-    " 💰";
+    activateSpeedBoost();
+  }
+);
 
-  buy.disabled=
-    data.credits<bp ||
-    totalBallCount()>=
-    MAX_ACTIVE_BALLS;
+speedBoostBtn.addEventListener(
+  "pointerup",
+  e=>{
+    e.preventDefault();
+    deactivateSpeedBoost();
+  }
+);
 
-  const dc=
-    damageCost();
+speedBoostBtn.addEventListener(
+  "pointercancel",
+  deactivateSpeedBoost
+);
 
-  document
-    .getElementById(
-      "damageInfo"
-    )
-    .textContent=
-      "Level "+
-      data.damageLevel+
-      " • "+
-      fmt(dc)+
-      " 💰";
+speedBoostBtn.addEventListener(
+  "lostpointercapture",
+  deactivateSpeedBoost
+);
 
-  document
-    .getElementById(
-      "upgradeDamage"
-    )
-    .textContent=
-      "Upgrade — "+
-      fmt(dc);
+/* =========================
+   GAME LOOP
+========================= */
 
-  document
-    .getElementById(
-      "upgradeDamage"
-    )
-    .disabled=
-      data.credits<dc;
-
-  const sc=
-    250*
-    data.speedLevel;
+function update(dt){
 
   if(
-    data.speedLevel>=8
+    !document
+      .getElementById("shop")
+      .classList.contains("open")
   ){
 
-    document
-      .getElementById(
-        "speedInfo"
-      )
-      .textContent=
-        "MAX SPEED";
+    /*
+      Increase no-hit timer.
+    */
 
-    document
-      .getElementById(
-        "upgradeSpeed"
-      )
-      .textContent=
-        "MAX";
+    noHitTimer+=dt;
 
-    document
-      .getElementById(
-        "upgradeSpeed"
-      )
-      .disabled=true;
+    /*
+      Normal balls.
+    */
 
-  }else{
+    if(!mergeState){
 
-    document
-      .getElementById(
-        "speedInfo"
-      )
-      .textContent=
-        "Level "+
-        data.speedLevel+
-        " • "+
-        fmt(sc)+
-        " 💰";
+      for(const ball of balls){
 
-    document
-      .getElementById(
-        "upgradeSpeed"
-      )
-      .textContent=
-        "Upgrade — "+
-        fmt(sc);
+        updateBall(ball,dt);
+      }
+    }
 
-    document
-      .getElementById(
-        "upgradeSpeed"
-      )
-      .disabled=
-        data.credits<sc;
+    updateMerge(dt);
+
+    updateParticles(dt);
+
+    checkLevel();
+
+    checkAutoMerge();
   }
 
-  const lc=
-    lowPriceCost();
-
-  document
-    .getElementById(
-      "lowPriceInfo"
-    )
-    .textContent=
-      "Level "+
-      data.lowPriceLevel+
-      " • Cost "+
-      fmt(lc);
-
-  document
-    .getElementById(
-      "lowPriceBtn"
-    )
-    .textContent=
-      "Lower Price — "+
-      fmt(lc);
-
-  document
-    .getElementById(
-      "lowPriceBtn"
-    )
-    .disabled=
-      data.credits<lc;
-
-  const db=
-    document
-      .getElementById(
-        "doubleDamageBtn"
-      );
-
-  if(data.doubleDamage){
-
-    db.textContent=
-      "ACTIVE ✓";
-
-    db.disabled=true;
-
-  }else{
-
-    db.textContent=
-      "Buy — 5,000 💰";
-
-    db.disabled=
-      data.credits<5000;
-  }
-
-  const rb=
-    document
-      .getElementById(
-        "rebirthBtn"
-      );
-
-  if(data.level<100){
-
-    rb.textContent=
-      "Level 100 Required";
-
-    rb.disabled=true;
-
-  }else if(
-    data.runShards<=0
-  ){
-
-    rb.textContent=
-      "No Run Shards";
-
-    rb.disabled=true;
-
-  }else{
-
-    rb.textContent=
-      "REBIRTH +"+
-      data.runShards+
-      " 💎";
-
-    rb.disabled=false;
-  }
-
-  document
-    .getElementById(
-      "rebirthInfo"
-    )
-    .textContent=
-      data.level>=100
-        ? "Convert run shards into permanent shards."
-        : "Reach Level 100.";
+  updateShopUI();
 }
 
-/* =========================================================
-   TOAST
-========================================================= */
+function draw(){
 
-function showToast(
-  message
-){
+  ctx.clearRect(0,0,W,H);
 
-  toastEl.textContent=
-    message;
+  /*
+    Background stars.
+  */
 
-  toastEl.classList.add(
-    "show"
-  );
+  for(let i=0;i<35;i++){
 
-  clearTimeout(
-    toastTimer
-  );
+    const x=(i*97)%W;
+    const y=(i*53)%H;
 
-  toastTimer=
-    setTimeout(
-      ()=>{
-        toastEl.classList.remove(
-          "show"
-        );
-      },
-      1500
+    ctx.globalAlpha=.18;
+
+    ctx.fillStyle="#ffffff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+      x,
+      y,
+      1,
+      0,
+      Math.PI*2
     );
-}
 
-/* =========================================================
-   GAME LOOP
-========================================================= */
+    ctx.fill();
+  }
+
+  ctx.globalAlpha=1;
+
+  /*
+    Blocks
+  */
+
+  for(const b of blocks){
+    drawBlock(b);
+  }
+
+  /*
+    Balls
+  */
+
+  for(const ball of balls){
+    drawBall(ball);
+  }
+
+  /*
+    Particles
+  */
+
+  drawParticles();
+
+  /*
+    10-second assist indicator.
+  */
+
+  if(noHitTimer>=NO_HIT_LIMIT){
+
+    ctx.globalAlpha=.55;
+
+    ctx.fillStyle="#ffd21c";
+
+    ctx.font="bold 12px Arial";
+
+    ctx.textAlign="center";
+
+    ctx.fillText(
+      "🎯 AUTO TARGET",
+      W/2,
+      H-65
+    );
+
+    ctx.globalAlpha=1;
+  }
+}
 
 function loop(now){
 
   let dt=
-    (now-lastTime)/1000;
+    Math.min(
+      .033,
+      (now-lastTime)/1000
+    );
 
   lastTime=now;
 
-  dt=
-    Math.min(
-      .033,
-      dt
-    );
-
-  if(
-    !shop.classList.contains(
-      "show"
-    )
-  ){
-
-    if(!levelChanging){
-
-      updateMerge(dt);
-
-      if(!mergeState){
-
-        for(
-          const ball of balls
-        ){
-
-          updateBall(
-            ball,
-            dt
-          );
-        }
-
-        checkLevelComplete();
-
-        checkAutoMerge();
-      }
-    }
-
-    updateParticles(dt);
-  }
-
+  update(dt);
   draw();
 
-  requestAnimationFrame(
-    loop
-  );
+  requestAnimationFrame(loop);
 }
 
-/* =========================================================
+/* =========================
    START
-========================================================= */
-
-resize();
+========================= */
 
 buildLevel();
-
 rebuildBalls();
+updateShopUI();
 
-updateHUD();
-
-requestAnimationFrame(
-  loop
-);
-
-setInterval(
-  save,
-  2000
-);
+requestAnimationFrame(loop);
 
 </script>
 
