@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Orb Breaker</title>
 
 <style>
@@ -16,10 +16,10 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#050711;
+  background:#05070d;
   font-family:Arial,sans-serif;
-  touch-action:none;
   color:white;
+  touch-action:none;
 }
 
 #game{
@@ -29,7 +29,7 @@ html,body{
   max-width:430px;
   margin:auto;
   overflow:hidden;
-  background:#050711;
+  background:#05070d;
 }
 
 canvas{
@@ -37,7 +37,6 @@ canvas{
   inset:0;
   width:100%;
   height:100%;
-  display:block;
 }
 
 #hud{
@@ -45,168 +44,167 @@ canvas{
   top:0;
   left:0;
   right:0;
-  z-index:5;
-  padding:10px;
+  z-index:10;
+  padding:9px;
   pointer-events:none;
 }
 
 .topbar{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:6px;
+  gap:5px;
   flex-wrap:wrap;
 }
 
 .stat{
-  background:rgba(10,15,30,.88);
+  background:rgba(10,15,28,.9);
   border:1px solid rgba(255,255,255,.12);
   border-radius:10px;
-  padding:6px 9px;
-  font-size:12px;
-  box-shadow:0 4px 15px rgba(0,0,0,.25);
+  padding:7px 9px;
+  font-size:11px;
 }
 
-#shopBtn{
-  pointer-events:auto;
+button{
   border:0;
   border-radius:10px;
-  padding:8px 12px;
-  background:#fff;
-  color:#111;
+  padding:8px 10px;
   font-weight:bold;
   cursor:pointer;
   touch-action:manipulation;
 }
 
+#shopBtn{
+  margin-left:auto;
+  pointer-events:auto;
+  background:white;
+  color:#111;
+}
+
+#speedBoostBtn{
+  pointer-events:auto;
+  background:#ffc400;
+  color:#111;
+}
+
 #shop{
   position:absolute;
-  z-index:20;
-  left:10px;
-  right:10px;
-  top:65px;
-  max-height:calc(100% - 75px);
+  z-index:30;
+  left:9px;
+  right:9px;
+  top:64px;
+  max-height:calc(100% - 74px);
   overflow-y:auto;
   display:none;
-  background:rgba(7,10,22,.98);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:16px;
   padding:14px;
-  box-shadow:0 15px 50px rgba(0,0,0,.6);
+  border-radius:16px;
+  background:rgba(7,10,20,.98);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 15px 50px rgba(0,0,0,.7);
 }
 
 #shop.show{
   display:block;
 }
 
-.shopTitle{
+.shopHead{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  margin-bottom:12px;
+  align-items:center;
+  margin-bottom:10px;
 }
 
-.shopTitle h2{
+.shopHead h2{
   margin:0;
-  font-size:20px;
 }
 
 .closeBtn{
-  border:0;
-  background:#22283b;
+  background:#252b3d;
   color:white;
-  width:35px;
-  height:35px;
-  border-radius:10px;
-  font-size:18px;
 }
 
-.shopGrid{
+.grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:9px;
+  gap:8px;
 }
 
-.shopItem{
-  background:#11172a;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:12px;
+.item{
   padding:10px;
+  border-radius:12px;
+  background:#11172a;
+  border:1px solid rgba(255,255,255,.08);
 }
 
-.shopItem h3{
+.item.full{
+  grid-column:1/-1;
+}
+
+.item h3{
   margin:0 0 5px;
   font-size:14px;
 }
 
-.shopItem p{
-  margin:3px 0 8px;
+.item p{
+  min-height:27px;
+  margin:0 0 8px;
+  color:#aeb6cb;
   font-size:11px;
-  color:#aeb7cf;
-  min-height:28px;
 }
 
-.shopItem button{
+.item button{
   width:100%;
-  border:0;
-  border-radius:9px;
-  padding:9px 6px;
-  background:#fff;
+  background:white;
   color:#111;
-  font-weight:bold;
-  touch-action:manipulation;
 }
 
-.shopItem button:disabled{
-  opacity:.4;
+.item button:disabled{
+  opacity:.35;
 }
 
-.full{
-  grid-column:1/-1;
-}
-
-.info{
+.ballInfo{
   margin-top:10px;
-  font-size:11px;
-  line-height:1.5;
-  color:#9fa9c1;
   text-align:center;
+  color:#aeb6cb;
+  font-size:11px;
 }
 
 #toast{
   position:absolute;
-  z-index:50;
+  z-index:100;
   left:50%;
   bottom:25px;
-  transform:translateX(-50%) translateY(20px);
-  background:rgba(0,0,0,.9);
-  color:white;
-  padding:10px 15px;
-  border-radius:10px;
-  font-size:13px;
+  transform:translate(-50%,20px);
   opacity:0;
-  pointer-events:none;
+  padding:9px 14px;
+  border-radius:10px;
+  background:rgba(0,0,0,.9);
   transition:.2s;
-  white-space:nowrap;
+  pointer-events:none;
+  font-size:12px;
 }
 
 #toast.show{
   opacity:1;
-  transform:translateX(-50%) translateY(0);
+  transform:translate(-50%,0);
 }
 
 @media(max-width:360px){
-  .shopGrid{
+  .grid{
     grid-template-columns:1fr;
   }
 
-  .full{
+  .item.full{
     grid-column:auto;
   }
 
   .stat{
+    padding:6px;
     font-size:10px;
-    padding:5px 7px;
+  }
+
+  #speedBoostBtn{
+    font-size:10px;
+    padding:7px;
   }
 }
 </style>
@@ -216,119 +214,135 @@ canvas{
 
 <div id="game">
 
-  <canvas id="canvas"></canvas>
+<canvas id="canvas"></canvas>
 
-  <div id="hud">
-    <div class="topbar">
-      <div class="stat">💰 <span id="credits">0</span></div>
-      <div class="stat">⭐ Lv <span id="level">1</span></div>
-      <div class="stat">💎 <span id="shards">0</span></div>
-      <button id="shopBtn">SHOP</button>
-    </div>
-  </div>
+<div id="hud">
+  <div class="topbar">
 
-  <div id="shop">
-
-    <div class="shopTitle">
-      <h2>🛒 Shop</h2>
-      <button class="closeBtn" id="closeShop">×</button>
+    <div class="stat">
+      💰 <span id="credits">0</span>
     </div>
 
-    <div class="shopGrid">
-
-      <div class="shopItem">
-        <h3>⚪ Buy Ball</h3>
-        <p>Add another basic ball.</p>
-        <button id="buyBall">Buy — 100 💰</button>
-      </div>
-
-      <div class="shopItem">
-        <h3>⚔️ Damage</h3>
-        <p id="damageInfo">Damage Level 1</p>
-        <button id="upgradeDamage">Upgrade</button>
-      </div>
-
-      <div class="shopItem">
-        <h3>💨 Speed</h3>
-        <p id="speedInfo">Speed Level 1</p>
-        <button id="upgradeSpeed">Upgrade</button>
-      </div>
-
-      <div class="shopItem">
-        <h3>🔥 Double Damage</h3>
-        <p>Multiply all ball damage ×2.</p>
-        <button id="doubleDamageBtn">Buy — 5,000 💰</button>
-      </div>
-
-      <div class="shopItem">
-        <h3>🔮 Ball Merge</h3>
-        <p id="mergeInfo">10 balls → 1 stronger ball</p>
-        <button id="mergeBtn">Merge</button>
-      </div>
-
-      <div class="shopItem full">
-        <h3>💎 Permanent Shards / Rebirth</h3>
-        <p id="rebirthInfo">
-          Reach Level 100 to convert run shards into permanent shards.
-        </p>
-        <button id="rebirthBtn">Level 100 Required</button>
-      </div>
-
+    <div class="stat">
+      ⭐ Lv <span id="level">1</span>
     </div>
 
-    <div class="info">
-      Balls: ⚪ <span id="basicCount">1</span>
-      &nbsp; 🟢 <span id="greenCount">0</span>
-      &nbsp; 🩷 <span id="pinkCount">0</span>
-      &nbsp; 🔥 <span id="flameCount">0</span>
+    <div class="stat">
+      💎 <span id="shards">0</span>
     </div>
+
+    <button id="speedBoostBtn">
+      ⚡ +50% SPEED
+    </button>
+
+    <button id="shopBtn">
+      SHOP
+    </button>
 
   </div>
+</div>
 
-  <div id="toast"></div>
+<div id="shop">
+
+  <div class="shopHead">
+    <h2>🛒 Store</h2>
+    <button class="closeBtn" id="closeShop">×</button>
+  </div>
+
+  <div class="grid">
+
+    <div class="item">
+      <h3>⚪ Buy Ball</h3>
+      <p id="ballPriceInfo">
+        Add a basic ball.
+      </p>
+      <button id="buyBall">
+        Buy
+      </button>
+    </div>
+
+    <div class="item">
+      <h3>⚔️ Damage</h3>
+      <p id="damageInfo"></p>
+      <button id="upgradeDamage">
+        Upgrade
+      </button>
+    </div>
+
+    <div class="item">
+      <h3>💨 Speed</h3>
+      <p id="speedInfo"></p>
+      <button id="upgradeSpeed">
+        Upgrade
+      </button>
+    </div>
+
+    <div class="item">
+      <h3>💰 Low Ball Price</h3>
+      <p id="lowPriceInfo">
+        Lower the price of new balls.
+      </p>
+      <button id="lowPriceBtn">
+        Upgrade
+      </button>
+    </div>
+
+    <div class="item">
+      <h3>🔥 Double Damage</h3>
+      <p>Double all ball damage.</p>
+      <button id="doubleDamageBtn">
+        Buy
+      </button>
+    </div>
+
+    <div class="item">
+      <h3>💎 Rebirth</h3>
+      <p id="rebirthInfo">
+        Reach Level 100.
+      </p>
+      <button id="rebirthBtn">
+        Level 100 Required
+      </button>
+    </div>
+
+  </div>
+
+  <div class="ballInfo">
+    ⚪ <span id="basicCount">1</span>
+    &nbsp; 🟢 <span id="greenCount">0</span>
+    &nbsp; 🩷 <span id="pinkCount">0</span>
+    &nbsp; 🔥 <span id="flameCount">0</span>
+  </div>
 
 </div>
+
+<div id="toast"></div>
 
 <script>
 "use strict";
 
 /* =========================================================
-   ORB BREAKER
-   FULL FIXED VERSION
+   SETUP
 ========================================================= */
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+  document.getElementById("canvas");
 
-const game = document.getElementById("game");
-const shop = document.getElementById("shop");
-const shopBtn = document.getElementById("shopBtn");
-const closeShop = document.getElementById("closeShop");
+const ctx =
+  canvas.getContext("2d");
 
-const creditsEl = document.getElementById("credits");
-const levelEl = document.getElementById("level");
-const shardsEl = document.getElementById("shards");
+const game =
+  document.getElementById("game");
 
-const basicCountEl = document.getElementById("basicCount");
-const greenCountEl = document.getElementById("greenCount");
-const pinkCountEl = document.getElementById("pinkCount");
-const flameCountEl = document.getElementById("flameCount");
+const shop =
+  document.getElementById("shop");
 
-const damageInfo = document.getElementById("damageInfo");
-const speedInfo = document.getElementById("speedInfo");
-const mergeInfo = document.getElementById("mergeInfo");
-const rebirthInfo = document.getElementById("rebirthInfo");
+const toastEl =
+  document.getElementById("toast");
 
-const buyBall = document.getElementById("buyBall");
-const upgradeDamage = document.getElementById("upgradeDamage");
-const upgradeSpeed = document.getElementById("upgradeSpeed");
-const doubleDamageBtn = document.getElementById("doubleDamageBtn");
-const mergeBtn = document.getElementById("mergeBtn");
-const rebirthBtn = document.getElementById("rebirthBtn");
+const SAVE_KEY =
+  "orbBreakerSave_v2";
 
-const toastEl = document.getElementById("toast");
-
-const SAVE_KEY = "orbBreakerSave";
 const MAX_LEVEL = 200;
 const MAX_ACTIVE_BALLS = 80;
 
@@ -341,9 +355,15 @@ const defaultData = {
   level:1,
   totalShards:0,
   runShards:0,
+
   damageLevel:1,
   speedLevel:1,
+
   doubleDamage:false,
+
+  ballBuyCount:0,
+  lowPriceLevel:0,
+
   balls:{
     basic:1,
     green:0,
@@ -352,159 +372,177 @@ const defaultData = {
   }
 };
 
-let data = loadSave();
+let data =
+  loadSave();
 
-let W = 0;
-let H = 0;
-let dpr = 1;
+let W=0;
+let H=0;
+let dpr=1;
 
-let blocks = [];
-let balls = [];
-let particles = [];
+let balls=[];
+let blocks=[];
+let particles=[];
 
-let lastTime = performance.now();
+let lastTime =
+  performance.now();
 
-let levelChanging = false;
-let toastTimer = null;
-let flash = 0;
-let shake = 0;
+let levelChanging=false;
+
+let speedBoost =
+  1;
+
+let mergeState=null;
+
+let toastTimer=null;
 
 /* =========================================================
-   SAVE / LOAD
+   LOAD
 ========================================================= */
-
-function cleanNumber(value, fallback){
-  const n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
-}
-
-function sanitizeSave(raw){
-
-  if(!raw || typeof raw !== "object"){
-    return structuredClone(defaultData);
-  }
-
-  const result = structuredClone(defaultData);
-
-  result.credits = Math.max(
-    0,
-    Math.floor(cleanNumber(raw.credits, 500))
-  );
-
-  result.level = Math.max(
-    1,
-    Math.min(
-      MAX_LEVEL,
-      Math.floor(cleanNumber(raw.level, 1))
-    )
-  );
-
-  result.totalShards = Math.max(
-    0,
-    Math.floor(cleanNumber(raw.totalShards, 0))
-  );
-
-  result.runShards = Math.max(
-    0,
-    Math.floor(cleanNumber(raw.runShards, 0))
-  );
-
-  result.damageLevel = Math.max(
-    1,
-    Math.floor(cleanNumber(raw.damageLevel, 1))
-  );
-
-  result.speedLevel = Math.max(
-    1,
-    Math.min(
-      8,
-      Math.floor(cleanNumber(raw.speedLevel, 1))
-    )
-  );
-
-  result.doubleDamage = Boolean(raw.doubleDamage);
-
-  if(raw.balls && typeof raw.balls === "object"){
-
-    result.balls.basic = Math.max(
-      0,
-      Math.floor(cleanNumber(raw.balls.basic, 1))
-    );
-
-    result.balls.green = Math.max(
-      0,
-      Math.floor(cleanNumber(raw.balls.green, 0))
-    );
-
-    result.balls.pink = Math.max(
-      0,
-      Math.floor(cleanNumber(raw.balls.pink, 0))
-    );
-
-    result.balls.flame = Math.max(
-      0,
-      Math.floor(cleanNumber(raw.balls.flame, 0))
-    );
-  }
-
-  const total =
-    result.balls.basic +
-    result.balls.green +
-    result.balls.pink +
-    result.balls.flame;
-
-  if(total <= 0){
-    result.balls.basic = 1;
-  }
-
-  return result;
-}
 
 function loadSave(){
 
   try{
-    const saved = localStorage.getItem(SAVE_KEY);
+
+    const saved =
+      localStorage.getItem(
+        SAVE_KEY
+      );
 
     if(!saved){
-      return structuredClone(defaultData);
+      return structuredClone(
+        defaultData
+      );
     }
 
-    return sanitizeSave(JSON.parse(saved));
+    const raw =
+      JSON.parse(saved);
 
-  }catch(error){
+    const d =
+      structuredClone(
+        defaultData
+      );
 
-    console.warn("Save load failed:",error);
+    d.credits =
+      Math.max(
+        0,
+        Math.floor(
+          Number(raw.credits)||500
+        )
+      );
 
-    return structuredClone(defaultData);
+    d.level =
+      Math.max(
+        1,
+        Math.min(
+          MAX_LEVEL,
+          Math.floor(
+            Number(raw.level)||1
+          )
+        )
+      );
+
+    d.totalShards =
+      Math.max(
+        0,
+        Math.floor(
+          Number(raw.totalShards)||0
+        )
+      );
+
+    d.runShards =
+      Math.max(
+        0,
+        Math.floor(
+          Number(raw.runShards)||0
+        )
+      );
+
+    d.damageLevel =
+      Math.max(
+        1,
+        Math.floor(
+          Number(raw.damageLevel)||1
+        )
+      );
+
+    d.speedLevel =
+      Math.max(
+        1,
+        Math.min(
+          8,
+          Math.floor(
+            Number(raw.speedLevel)||1
+          )
+        )
+      );
+
+    d.doubleDamage =
+      !!raw.doubleDamage;
+
+    d.ballBuyCount =
+      Math.max(
+        0,
+        Math.floor(
+          Number(raw.ballBuyCount)||0
+        )
+      );
+
+    d.lowPriceLevel =
+      Math.max(
+        0,
+        Math.floor(
+          Number(raw.lowPriceLevel)||0
+        )
+      );
+
+    if(raw.balls){
+
+      for(
+        const type of
+        ["basic","green","pink","flame"]
+      ){
+
+        d.balls[type] =
+          Math.max(
+            0,
+            Math.floor(
+              Number(
+                raw.balls[type]
+              )||0
+            )
+          );
+      }
+    }
+
+    if(
+      d.balls.basic +
+      d.balls.green +
+      d.balls.pink +
+      d.balls.flame <= 0
+    ){
+      d.balls.basic=1;
+    }
+
+    return d;
+
+  }catch{
+
+    return structuredClone(
+      defaultData
+    );
   }
 }
 
 function save(){
 
   try{
+
     localStorage.setItem(
       SAVE_KEY,
       JSON.stringify(data)
     );
-  }catch(error){
-    console.warn("Save failed:",error);
-  }
-}
 
-/* =========================================================
-   TOAST
-========================================================= */
-
-function toast(message){
-
-  toastEl.textContent = message;
-  toastEl.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(()=>{
-    toastEl.classList.remove("show");
-  },1800);
+  }catch{}
 }
 
 /* =========================================================
@@ -513,29 +551,45 @@ function toast(message){
 
 function resize(){
 
-  const rect = game.getBoundingClientRect();
+  const rect =
+    game.getBoundingClientRect();
 
-  W = Math.max(300, rect.width);
-  H = Math.max(500, rect.height);
+  W=rect.width;
+  H=rect.height;
 
-  dpr = Math.min(window.devicePixelRatio || 1,2);
+  dpr =
+    Math.min(
+      window.devicePixelRatio||1,
+      2
+    );
 
-  canvas.width = Math.floor(W*dpr);
-  canvas.height = Math.floor(H*dpr);
+  canvas.width =
+    W*dpr;
 
-  canvas.style.width = W+"px";
-  canvas.style.height = H+"px";
+  canvas.height =
+    H*dpr;
 
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+  canvas.style.width =
+    W+"px";
+
+  canvas.style.height =
+    H+"px";
+
+  ctx.setTransform(
+    dpr,0,0,dpr,0,0
+  );
 }
 
-window.addEventListener("resize",resize);
+window.addEventListener(
+  "resize",
+  resize
+);
 
 /* =========================================================
    BALL TYPES
 ========================================================= */
 
-const BALL_TYPES = {
+const BALL_TYPES={
 
   basic:{
     damage:1,
@@ -546,61 +600,63 @@ const BALL_TYPES = {
   green:{
     damage:10,
     radius:8,
-    color:"#43ff88"
+    color:"#43ff86"
   },
 
   pink:{
     damage:100,
     radius:9,
-    color:"#ff65d8"
+    color:"#ff62d6"
   },
 
   flame:{
     damage:1000,
     radius:10,
-    color:"#ff7b32"
+    color:"#ff7b25"
   }
-
 };
+
+/* =========================================================
+   BALL DAMAGE
+========================================================= */
 
 function ballDamage(type){
 
-  const base = BALL_TYPES[type].damage;
+  let value =
+    BALL_TYPES[type].damage;
 
-  const damageMultiplier =
+  value *=
     Math.pow(
       1.25,
-      data.damageLevel - 1
+      data.damageLevel-1
     );
 
-  const shardMultiplier =
-    1 + data.totalShards / 100;
+  value *=
+    1 + data.totalShards/100;
 
-  const doubleMultiplier =
-    data.doubleDamage ? 2 : 1;
+  if(data.doubleDamage){
+    value*=2;
+  }
 
   return Math.max(
     1,
-    Math.floor(
-      base *
-      damageMultiplier *
-      shardMultiplier *
-      doubleMultiplier
-    )
+    Math.floor(value)
   );
 }
 
 /* =========================================================
-   BALL COUNT
+   SPEED
 ========================================================= */
 
-function totalBallCount(){
+function baseSpeed(){
 
   return (
-    data.balls.basic +
-    data.balls.green +
-    data.balls.pink +
-    data.balls.flame
+    145 +
+    data.speedLevel*10
+  ) *
+  (
+    1 +
+    (data.speedLevel-1)*.12
   );
 }
 
@@ -608,9 +664,11 @@ function totalBallCount(){
    CREATE BALL
 ========================================================= */
 
-function createBall(type){
-
-  const info = BALL_TYPES[type];
+function createBall(
+  type,
+  x=W/2,
+  y=H/2
+){
 
   let angle;
 
@@ -618,67 +676,87 @@ function createBall(type){
 
     angle =
       Math.random() *
-      Math.PI * 2;
+      Math.PI*2;
 
   }while(
-    Math.abs(Math.sin(angle)) < 0.25 ||
-    Math.abs(Math.cos(angle)) < 0.25
+    Math.abs(
+      Math.sin(angle)
+    ) < .28
   );
 
   const speed =
-    (145 + data.speedLevel * 10) *
-    speedMultiplier();
+    baseSpeed() *
+    speedBoost;
 
-  return {
+  return{
 
-    x:W / 2 + (Math.random()-0.5)*40,
+    x,
+    y,
 
-    y:H * 0.72,
+    vx:
+      Math.cos(angle)*speed,
 
-    vx:Math.cos(angle) * speed,
+    vy:
+      Math.sin(angle)*speed,
 
-    vy:Math.sin(angle) * speed,
-
-    radius:info.radius,
+    radius:
+      BALL_TYPES[type].radius,
 
     type,
 
-    color:info.color,
+    color:
+      BALL_TYPES[type].color,
 
     trail:[],
 
     hitCooldown:new Map(),
+
+    mergeLocked:false,
 
     alive:true
   };
 }
 
 /* =========================================================
-   REBUILD BALLS
+   TOTAL BALLS
+========================================================= */
+
+function totalBallCount(){
+
+  return (
+    data.balls.basic+
+    data.balls.green+
+    data.balls.pink+
+    data.balls.flame
+  );
+}
+
+/* =========================================================
+   REBUILD
 ========================================================= */
 
 function rebuildBalls(){
 
-  balls = [];
+  balls=[];
 
-  const types = [
+  const types=[
     "basic",
     "green",
     "pink",
     "flame"
   ];
 
-  for(const type of types){
+  for(
+    const type of types
+  ){
 
     let count =
-      Math.max(
-        0,
-        Math.floor(data.balls[type] || 0)
-      );
+      data.balls[type];
 
     while(
-      count > 0 &&
-      balls.length < MAX_ACTIVE_BALLS
+      count>0 &&
+      balls.length<
+      MAX_ACTIVE_BALLS
     ){
 
       balls.push(
@@ -689,72 +767,85 @@ function rebuildBalls(){
     }
   }
 
-  if(balls.length === 0){
+  if(!balls.length){
 
-    data.balls.basic = 1;
+    data.balls.basic=1;
 
     balls.push(
-      createBall("basic")
+      createBall(
+        "basic",
+        W/2,
+        H/2
+      )
     );
   }
 }
 
 /* =========================================================
-   LEVEL
+   BUILD LEVEL
 ========================================================= */
 
 function buildLevel(){
 
-  blocks = [];
+  blocks=[];
 
-  const cols = 5;
+  const cols=5;
+  const gap=5;
+  const margin=12;
 
-  const gap = 5;
+  const blockWidth=
+    (
+      W-
+      margin*2-
+      gap*(cols-1)
+    )/cols;
 
-  const margin = 12;
+  const blockHeight=45;
 
-  const availableWidth =
-    W - margin * 2;
-
-  const blockWidth =
-    (availableWidth - gap * (cols-1)) / cols;
-
-  const blockHeight = 45;
-
-  const rows =
+  const rows=
     Math.min(
       11,
-      4 + Math.floor(
-        (data.level - 1) / 12
+      4+
+      Math.floor(
+        (data.level-1)/12
       )
     );
 
-  for(let row=0;row<rows;row++){
+  for(
+    let row=0;
+    row<rows;
+    row++
+  ){
 
-    for(let col=0;col<cols;col++){
+    for(
+      let col=0;
+      col<cols;
+      col++
+    ){
 
-      const x =
-        margin +
-        col * (blockWidth + gap);
+      /*
+        Lower HP than before.
+      */
 
-      const y =
-        125 +
-        row * (blockHeight + gap);
-
-      let hp =
+      const hp=
         Math.max(
           1,
           Math.floor(
-            5 +
-            data.level * 1.5 +
-            row * 2
+            3+
+            data.level*.9+
+            row*1.2
           )
         );
 
       blocks.push({
 
-        x,
-        y,
+        x:
+          margin+
+          col*(blockWidth+gap),
+
+        y:
+          125+
+          row*(blockHeight+gap),
 
         width:blockWidth,
         height:blockHeight,
@@ -769,190 +860,153 @@ function buildLevel(){
     }
   }
 
-  /* Important:
-     clear old block references */
-  for(const ball of balls){
-
+  for(
+    const ball of balls
+  ){
     ball.hitCooldown.clear();
-    ball.trail.length = 0;
   }
 }
 
 /* =========================================================
-   COLLISION
+   BLOCK COLLISION
 ========================================================= */
 
-function collideBallBlock(ball,block){
+function collideBallBlock(
+  ball,
+  block
+){
 
-  if(block.dead){
+  if(
+    block.dead ||
+    ball.mergeLocked
+  ){
     return false;
   }
 
-  const cooldown =
-    ball.hitCooldown.get(block) || 0;
-
-  if(cooldown > 0){
+  if(
+    (ball.hitCooldown.get(block)||0)>0
+  ){
     return false;
   }
 
-  const closestX =
+  const cx=
     Math.max(
       block.x,
       Math.min(
         ball.x,
-        block.x + block.width
+        block.x+block.width
       )
     );
 
-  const closestY =
+  const cy=
     Math.max(
       block.y,
       Math.min(
         ball.y,
-        block.y + block.height
+        block.y+block.height
       )
     );
 
-  const dx =
-    ball.x - closestX;
+  const dx=
+    ball.x-cx;
 
-  const dy =
-    ball.y - closestY;
+  const dy=
+    ball.y-cy;
 
   if(
-    dx*dx + dy*dy >
-    ball.radius * ball.radius
+    dx*dx+
+    dy*dy >
+    ball.radius*
+    ball.radius
   ){
-
     return false;
   }
 
-  /* =======================================================
-     PUSH BALL OUT
-  ======================================================= */
+  /* Bounce */
 
-  const overlapLeft =
-    Math.abs(
-      ball.x -
-      block.x
-    );
+  if(
+    Math.abs(dx) >
+    Math.abs(dy)
+  ){
 
-  const overlapRight =
-    Math.abs(
-      ball.x -
-      (block.x + block.width)
-    );
-
-  const overlapTop =
-    Math.abs(
-      ball.y -
-      block.y
-    );
-
-  const overlapBottom =
-    Math.abs(
-      ball.y -
-      (block.y + block.height)
-    );
-
-  const minHorizontal =
-    Math.min(
-      overlapLeft,
-      overlapRight
-    );
-
-  const minVertical =
-    Math.min(
-      overlapTop,
-      overlapBottom
-    );
-
-  if(minHorizontal < minVertical){
-
-    ball.vx *= -1;
-
-    if(ball.x < block.x){
-      ball.x =
-        block.x -
-        ball.radius -
-        0.5;
-    }else{
-      ball.x =
-        block.x +
-        block.width +
-        ball.radius +
-        0.5;
-    }
+    ball.vx*=-1;
 
   }else{
 
-    ball.vy *= -1;
-
-    if(ball.y < block.y){
-      ball.y =
-        block.y -
-        ball.radius -
-        0.5;
-    }else{
-      ball.y =
-        block.y +
-        block.height +
-        ball.radius +
-        0.5;
-    }
+    ball.vy*=-1;
   }
 
-  /* =======================================================
-     DAMAGE
-  ======================================================= */
+  /* Prevent sticking */
 
-  const damage =
-    ballDamage(ball.type);
+  const len=
+    Math.hypot(
+      ball.vx,
+      ball.vy
+    );
 
-  block.hp -= damage;
+  const wanted=
+    baseSpeed()*
+    speedBoost;
 
-  block.hitFlash = 0.1;
+  if(len>0){
+
+    ball.vx=
+      ball.vx/len*wanted;
+
+    ball.vy=
+      ball.vy/len*wanted;
+  }
+
+  /* +3 credits per bounce */
+
+  data.credits+=3;
 
   ball.hitCooldown.set(
     block,
-    0.07
+    .08
   );
 
-  particles.push(
-    ...makeHitParticles(
-      ball.x,
-      ball.y,
-      ball.color
-    )
+  block.hp -=
+    ballDamage(
+      ball.type
+    );
+
+  block.hitFlash=.12;
+
+  createImpact(
+    ball.x,
+    ball.y,
+    ball.color
   );
 
-  if(block.hp <= 0){
+  if(block.hp<=0){
 
-    block.hp = 0;
-    block.dead = true;
+    block.hp=0;
+    block.dead=true;
 
-    const reward =
+    data.credits+=
       Math.max(
         1,
         Math.floor(
-          block.maxHp * 0.5
+          block.maxHp*.5
         )
       );
 
-    data.credits += reward;
-
-    flash = 0.08;
-    shake = Math.min(
-      10,
-      shake + 1.5
+    createBreakEffect(
+      block.x+
+      block.width/2,
+      block.y+
+      block.height/2
     );
   }
+
+  updateHUD();
 
   return true;
 }
 
 /* =========================================================
-   CHECK LEVEL
+   LEVEL CHECK
 ========================================================= */
 
 function checkLevelComplete(){
@@ -961,147 +1015,387 @@ function checkLevelComplete(){
     return;
   }
 
-  if(blocks.length === 0){
-    return;
-  }
-
-  const finished =
+  if(
+    blocks.length &&
     blocks.every(
-      block => block.dead
-    );
+      b=>b.dead
+    )
+  ){
 
-  if(!finished){
-    return;
-  }
+    levelChanging=true;
 
-  levelChanging = true;
+    setTimeout(()=>{
 
-  /* Prevent multiple level changes */
-  setTimeout(()=>{
+      if(
+        data.level<
+        MAX_LEVEL
+      ){
 
-    if(data.level < MAX_LEVEL){
+        data.level++;
 
-      data.level++;
+        if(
+          data.level%10===0
+        ){
+          data.runShards++;
+        }
 
-      if(data.level % 10 === 0){
-        data.runShards++;
+        buildLevel();
+
+        save();
+
+        updateHUD();
+
+        showToast(
+          "⭐ Level "+
+          data.level
+        );
       }
 
-      buildLevel();
+      levelChanging=false;
 
-      save();
-
-      updateHUD();
-
-      toast(
-        "Level " + data.level + "!"
-      );
-
-      levelChanging = false;
-
-    }else{
-
-      toast(
-        "🏆 MAX LEVEL!"
-      );
-
-      levelChanging = false;
-    }
-
-  },80);
+    },120);
+  }
 }
 
 /* =========================================================
-   BALL UPDATE
+   AUTOMATIC MERGE
 ========================================================= */
 
-function updateBall(ball,dt){
+function checkAutoMerge(){
 
-  if(!ball.alive){
+  if(mergeState){
     return;
   }
 
-  /* cooldown */
+  const order=[
+    ["basic","green"],
+    ["green","pink"],
+    ["pink","flame"]
+  ];
+
+  for(
+    const [from,to] of order
+  ){
+
+    if(
+      data.balls[from]>=10
+    ){
+
+      startMerge(
+        from,
+        to
+      );
+
+      return;
+    }
+  }
+}
+
+/* =========================================================
+   START MERGE
+========================================================= */
+
+function startMerge(
+  from,
+  to
+){
+
+  if(mergeState){
+    return;
+  }
+
+  const selected=
+    balls
+      .filter(
+        b=>
+          b.type===from &&
+          b.alive
+      )
+      .slice(0,10);
+
+  if(
+    selected.length<10
+  ){
+    return;
+  }
+
+  data.balls[from]-=10;
+
+  for(
+    const ball of selected
+  ){
+
+    ball.mergeLocked=true;
+  }
+
+  const centerX=W/2;
+  const centerY=H/2;
+
+  mergeState={
+
+    from,
+    to,
+
+    balls:selected,
+
+    centerX,
+    centerY,
+
+    timer:0,
+
+    duration:1.7
+  };
+
+  showToast(
+    "✨ 10 "+
+    from+
+    " balls merging..."
+  );
+}
+
+/* =========================================================
+   UPDATE MERGE
+========================================================= */
+
+function updateMerge(dt){
+
+  if(!mergeState){
+    return;
+  }
+
+  const m=
+    mergeState;
+
+  m.timer+=dt;
+
+  const progress=
+    Math.min(
+      1,
+      m.timer/
+      m.duration
+    );
+
+  /*
+    Smooth movement toward center.
+  */
+
+  const ease=
+    1-
+    Math.pow(
+      1-progress,
+      3
+    );
+
+  for(
+    let i=0;
+    i<m.balls.length;
+    i++
+  ){
+
+    const ball=
+      m.balls[i];
+
+    const angle=
+      i/
+      m.balls.length*
+      Math.PI*2;
+
+    const startRadius=
+      75;
+
+    const radius=
+      startRadius*
+      (1-ease);
+
+    const targetX=
+      m.centerX+
+      Math.cos(angle)*
+      radius;
+
+    const targetY=
+      m.centerY+
+      Math.sin(angle)*
+      radius;
+
+    ball.x +=
+      (
+        targetX-
+        ball.x
+      )*
+      Math.min(
+        1,
+        dt*8
+      );
+
+    ball.y +=
+      (
+        targetY-
+        ball.y
+      )*
+      Math.min(
+        1,
+        dt*8
+      );
+
+    ball.vx=0;
+    ball.vy=0;
+
+    ball.trail=[];
+  }
+
+  if(
+    progress>=1
+  ){
+
+    for(
+      const ball of
+      m.balls
+    ){
+
+      ball.alive=false;
+    }
+
+    data.balls[m.to]++;
+
+    createMergeEffect(
+      m.centerX,
+      m.centerY
+    );
+
+    mergeState=null;
+
+    rebuildBalls();
+
+    save();
+
+    updateHUD();
+
+    /*
+      Check if another
+      automatic merge is ready.
+    */
+
+    setTimeout(
+      checkAutoMerge,
+      80
+    );
+  }
+}
+
+/* =========================================================
+   UPDATE BALL
+========================================================= */
+
+function updateBall(
+  ball,
+  dt
+){
+
+  if(
+    !ball.alive ||
+    ball.mergeLocked
+  ){
+    return;
+  }
+
   for(
     const [block,time]
     of ball.hitCooldown
   ){
 
-    const newTime =
-      time - dt;
+    const next=
+      time-dt;
 
-    if(newTime <= 0){
-      ball.hitCooldown.delete(block);
+    if(next<=0){
+      ball.hitCooldown.delete(
+        block
+      );
     }else{
       ball.hitCooldown.set(
         block,
-        newTime
+        next
       );
     }
   }
 
-  /* trail */
   ball.trail.push({
     x:ball.x,
     y:ball.y
   });
 
-  if(ball.trail.length > 8){
+  if(
+    ball.trail.length>8
+  ){
     ball.trail.shift();
   }
 
-  ball.x += ball.vx * dt;
-  ball.y += ball.vy * dt;
+  ball.x+=
+    ball.vx*dt;
 
-  /* walls */
+  ball.y+=
+    ball.vy*dt;
+
+  /* Walls */
 
   if(
-    ball.x - ball.radius <= 0
+    ball.x-
+    ball.radius<=0
   ){
 
-    ball.x =
+    ball.x=
       ball.radius;
 
-    ball.vx =
-      Math.abs(ball.vx);
+    ball.vx=
+      Math.abs(
+        ball.vx
+      );
   }
 
   if(
-    ball.x + ball.radius >= W
+    ball.x+
+    ball.radius>=W
   ){
 
-    ball.x =
-      W - ball.radius;
+    ball.x=
+      W-ball.radius;
 
-    ball.vx =
-      -Math.abs(ball.vx);
+    ball.vx=
+      -Math.abs(
+        ball.vx
+      );
   }
 
   if(
-    ball.y - ball.radius <= 0
+    ball.y-
+    ball.radius<=0
   ){
 
-    ball.y =
+    ball.y=
       ball.radius;
 
-    ball.vy =
-      Math.abs(ball.vy);
+    ball.vy=
+      Math.abs(
+        ball.vy
+      );
   }
 
   if(
-    ball.y + ball.radius >= H
+    ball.y+
+    ball.radius>=H
   ){
 
-    ball.y =
-      H - ball.radius;
+    ball.y=
+      H-ball.radius;
 
-    ball.vy =
-      -Math.abs(ball.vy);
+    ball.vy=
+      -Math.abs(
+        ball.vy
+      );
   }
 
-  /* block collision */
-
-  for(const block of blocks){
+  for(
+    const block of blocks
+  ){
 
     if(
       collideBallBlock(
@@ -1109,7 +1403,6 @@ function updateBall(ball,dt){
         block
       )
     ){
-
       break;
     }
   }
@@ -1119,63 +1412,185 @@ function updateBall(ball,dt){
    PARTICLES
 ========================================================= */
 
-function makeHitParticles(x,y,color){
+function createImpact(
+  x,
+  y,
+  color
+){
 
-  const result = [];
+  for(
+    let i=0;
+    i<5;
+    i++
+  ){
 
-  for(let i=0;i<4;i++){
+    const angle=
+      Math.random()*
+      Math.PI*2;
 
-    const angle =
-      Math.random() *
-      Math.PI * 2;
-
-    const speed =
-      30 +
+    const speed=
+      35+
       Math.random()*70;
 
-    result.push({
+    particles.push({
 
       x,
       y,
 
       vx:
-        Math.cos(angle)*speed,
+        Math.cos(angle)*
+        speed,
 
       vy:
-        Math.sin(angle)*speed,
+        Math.sin(angle)*
+        speed,
 
-      life:.35 +
+      life:
+        .25+
         Math.random()*.25,
 
-      maxLife:.6,
-
       size:
-        1.5 +
+        1.5+
         Math.random()*2,
 
       color
     });
   }
+}
 
-  return result;
+function createBreakEffect(
+  x,
+  y
+){
+
+  for(
+    let i=0;
+    i<12;
+    i++
+  ){
+
+    const angle=
+      Math.random()*
+      Math.PI*2;
+
+    const speed=
+      40+
+      Math.random()*100;
+
+    particles.push({
+
+      x,
+      y,
+
+      vx:
+        Math.cos(angle)*
+        speed,
+
+      vy:
+        Math.sin(angle)*
+        speed,
+
+      life:
+        .4+
+        Math.random()*.3,
+
+      size:
+        2+
+        Math.random()*2,
+
+      color:
+        "#ffffff"
+    });
+  }
+}
+
+function createMergeEffect(
+  x,
+  y
+){
+
+  for(
+    let i=0;
+    i<35;
+    i++
+  ){
+
+    const angle=
+      Math.random()*
+      Math.PI*2;
+
+    const speed=
+      40+
+      Math.random()*150;
+
+    particles.push({
+
+      x,
+      y,
+
+      vx:
+        Math.cos(angle)*
+        speed,
+
+      vy:
+        Math.sin(angle)*
+        speed,
+
+      life:
+        .5+
+        Math.random()*.5,
+
+      size:
+        2+
+        Math.random()*3,
+
+      color:
+        i%2?
+        "#ffffff":
+        "#7dffcf"
+    });
+  }
 }
 
 function updateParticles(dt){
 
-  for(let i=particles.length-1;i>=0;i--){
+  for(
+    let i=
+      particles.length-1;
+    i>=0;
+    i--
+  ){
 
-    const p = particles[i];
+    const p=
+      particles[i];
 
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
+    p.x+=
+      p.vx*dt;
 
-    p.vx *= Math.pow(.1,dt);
-    p.vy *= Math.pow(.1,dt);
+    p.y+=
+      p.vy*dt;
 
-    p.life -= dt;
+    p.vx*=
+      Math.pow(
+        .08,
+        dt
+      );
 
-    if(p.life <= 0){
-      particles.splice(i,1);
+    p.vy*=
+      Math.pow(
+        .08,
+        dt
+      );
+
+    p.life-=dt;
+
+    if(
+      p.life<=0
+    ){
+      particles.splice(
+        i,
+        1
+      );
     }
   }
 }
@@ -1186,8 +1601,8 @@ function updateParticles(dt){
 
 function drawBackground(){
 
-  ctx.fillStyle =
-    "#050711";
+  ctx.fillStyle=
+    "#05070d";
 
   ctx.fillRect(
     0,
@@ -1196,14 +1611,10 @@ function drawBackground(){
     H
   );
 
-  /* subtle grid */
-
-  ctx.strokeStyle =
+  ctx.strokeStyle=
     "rgba(255,255,255,.025)";
 
-  ctx.lineWidth = 1;
-
-  const grid = 35;
+  const grid=35;
 
   for(
     let x=0;
@@ -1234,37 +1645,59 @@ function drawBackground(){
    DRAW BLOCK
 ========================================================= */
 
-function drawBlock(block){
+function drawBlock(
+  block
+){
 
   if(block.dead){
     return;
   }
 
-  const ratio =
-    Math.max(
-      0,
-      Math.min(
-        1,
-        block.hp / block.maxHp
-      )
-    );
-
-  let alpha = .7;
-
-  if(block.hitFlash > 0){
-    alpha = 1;
-  }
+  const hpRatio=
+    block.hp/
+    block.maxHp;
 
   ctx.save();
 
-  ctx.globalAlpha = alpha;
+  /*
+    Realistic depth
+  */
 
-  ctx.fillStyle =
-    "hsl(" +
-    (200 - ratio*150) +
-    ",80%," +
-    (40 + ratio*20) +
-    "%)";
+  ctx.fillStyle=
+    "rgba(0,0,0,.35)";
+
+  ctx.fillRect(
+    block.x+2,
+    block.y+3,
+    block.width,
+    block.height
+  );
+
+  const gradient=
+    ctx.createLinearGradient(
+      block.x,
+      block.y,
+      block.x,
+      block.y+
+      block.height
+    );
+
+  gradient.addColorStop(
+    0,
+    "hsl("+
+    (205-hpRatio*120)+
+    ",75%,58%)"
+  );
+
+  gradient.addColorStop(
+    1,
+    "hsl("+
+    (205-hpRatio*120)+
+    ",75%,32%)"
+  );
+
+  ctx.fillStyle=
+    gradient;
 
   ctx.fillRect(
     block.x,
@@ -1273,8 +1706,8 @@ function drawBlock(block){
     block.height
   );
 
-  ctx.strokeStyle =
-    "rgba(255,255,255,.18)";
+  ctx.strokeStyle=
+    "rgba(255,255,255,.25)";
 
   ctx.strokeRect(
     block.x,
@@ -1283,42 +1716,46 @@ function drawBlock(block){
     block.height
   );
 
-  ctx.globalAlpha = 1;
+  /*
+    Damage highlight.
+    No HP numbers.
+  */
 
-  /* HP text */
+  if(block.hitFlash>0){
 
-  ctx.fillStyle =
-    "rgba(255,255,255,.9)";
+    ctx.fillStyle=
+      "rgba(255,255,255,"+
+      block.hitFlash*4+
+      ")";
 
-  ctx.font =
-    "bold 12px Arial";
+    ctx.fillRect(
+      block.x,
+      block.y,
+      block.width,
+      block.height
+    );
 
-  ctx.textAlign =
-    "center";
-
-  ctx.textBaseline =
-    "middle";
-
-  ctx.fillText(
-    formatNumber(block.hp),
-    block.x + block.width/2,
-    block.y + block.height/2
-  );
+    block.hitFlash-=.016;
+  }
 
   ctx.restore();
-
-  if(block.hitFlash > 0){
-    block.hitFlash -= 0.016;
-  }
 }
 
 /* =========================================================
    DRAW BALL
 ========================================================= */
 
-function drawBall(ball){
+function drawBall(
+  ball
+){
 
-  /* trail */
+  if(!ball.alive){
+    return;
+  }
+
+  /*
+    Trail
+  */
 
   for(
     let i=0;
@@ -1326,25 +1763,25 @@ function drawBall(ball){
     i++
   ){
 
-    const point =
+    const p=
       ball.trail[i];
 
-    const alpha =
-      i / ball.trail.length * .25;
+    ctx.globalAlpha=
+      (i/
+      ball.trail.length)*
+      .22;
+
+    ctx.fillStyle=
+      ball.color;
 
     ctx.beginPath();
 
-    ctx.fillStyle =
-      ball.color;
-
-    ctx.globalAlpha =
-      alpha;
-
     ctx.arc(
-      point.x,
-      point.y,
-      ball.radius *
-        (i / ball.trail.length),
+      p.x,
+      p.y,
+      ball.radius*
+      (i/
+      ball.trail.length),
       0,
       Math.PI*2
     );
@@ -1352,18 +1789,78 @@ function drawBall(ball){
     ctx.fill();
   }
 
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha=1;
 
-  /* glow */
+  /*
+    Flame effect around
+    the actual ball.
+  */
+
+  if(
+    ball.type==="flame"
+  ){
+
+    for(
+      let i=0;
+      i<5;
+      i++
+    ){
+
+      const angle=
+        performance.now()/180+
+        i*1.25;
+
+      const fx=
+        ball.x+
+        Math.cos(angle)*
+        (ball.radius+3);
+
+      const fy=
+        ball.y+
+        Math.sin(angle)*
+        (ball.radius+3);
+
+      ctx.globalAlpha=.45;
+
+      ctx.fillStyle=
+        i%2?
+        "#ff5a16":
+        "#ffd23c";
+
+      ctx.beginPath();
+
+      ctx.arc(
+        fx,
+        fy,
+        3+
+        Math.sin(
+          performance.now()/100+i
+        )*1.5,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fill();
+    }
+
+    ctx.globalAlpha=1;
+  }
+
+  /*
+    Glow
+  */
 
   ctx.save();
 
-  ctx.shadowColor =
+  ctx.shadowColor=
     ball.color;
 
-  ctx.shadowBlur = 14;
+  ctx.shadowBlur=
+    ball.type==="flame"
+      ? 24
+      : 14;
 
-  ctx.fillStyle =
+  ctx.fillStyle=
     ball.color;
 
   ctx.beginPath();
@@ -1380,26 +1877,49 @@ function drawBall(ball){
 
   ctx.restore();
 
-  /* center */
+  /*
+    Realistic highlight
+  */
 
-  ctx.fillStyle =
-    "#ffffff";
+  const highlight=
+    ctx.createRadialGradient(
+      ball.x-ball.radius*.35,
+      ball.y-ball.radius*.4,
+      1,
+      ball.x,
+      ball.y,
+      ball.radius
+    );
 
-  ctx.globalAlpha = .75;
+  highlight.addColorStop(
+    0,
+    "rgba(255,255,255,.95)"
+  );
+
+  highlight.addColorStop(
+    .25,
+    "rgba(255,255,255,.35)"
+  );
+
+  highlight.addColorStop(
+    1,
+    "rgba(255,255,255,0)"
+  );
+
+  ctx.fillStyle=
+    highlight;
 
   ctx.beginPath();
 
   ctx.arc(
     ball.x,
     ball.y,
-    ball.radius * .35,
+    ball.radius,
     0,
     Math.PI*2
   );
 
   ctx.fill();
-
-  ctx.globalAlpha = 1;
 }
 
 /* =========================================================
@@ -1408,15 +1928,17 @@ function drawBall(ball){
 
 function drawParticles(){
 
-  for(const p of particles){
+  for(
+    const p of particles
+  ){
 
-    ctx.globalAlpha =
+    ctx.globalAlpha=
       Math.max(
         0,
-        p.life / p.maxLife
+        p.life
       );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       p.color;
 
     ctx.beginPath();
@@ -1432,7 +1954,7 @@ function drawParticles(){
     ctx.fill();
   }
 
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha=1;
 }
 
 /* =========================================================
@@ -1443,666 +1965,822 @@ function draw(){
 
   drawBackground();
 
-  ctx.save();
-
-  if(shake > 0){
-
-    const sx =
-      (Math.random()-.5)*shake;
-
-    const sy =
-      (Math.random()-.5)*shake;
-
-    ctx.translate(
-      sx,
-      sy
-    );
-  }
-
-  for(const block of blocks){
+  for(
+    const block of blocks
+  ){
     drawBlock(block);
   }
 
-  for(const ball of balls){
+  for(
+    const ball of balls
+  ){
     drawBall(ball);
   }
 
   drawParticles();
 
-  ctx.restore();
+  /*
+    Merge center glow
+  */
 
-  if(flash > 0){
+  if(mergeState){
 
-    ctx.fillStyle =
-      "rgba(255,255,255," +
-      flash +
-      ")";
+    const p=
+      Math.min(
+        1,
+        mergeState.timer/
+        mergeState.duration
+      );
 
-    ctx.fillRect(
+    const radius=
+      15+
+      p*55;
+
+    const glow=
+      ctx.createRadialGradient(
+        mergeState.centerX,
+        mergeState.centerY,
+        0,
+        mergeState.centerX,
+        mergeState.centerY,
+        radius
+      );
+
+    glow.addColorStop(
       0,
-      0,
-      W,
-      H
+      "rgba(255,255,255,.35)"
     );
+
+    glow.addColorStop(
+      1,
+      "rgba(255,255,255,0)"
+    );
+
+    ctx.fillStyle=
+      glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      mergeState.centerX,
+      mergeState.centerY,
+      radius,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
   }
 }
 
 /* =========================================================
-   SHOP PAUSE
+   SHOP
 ========================================================= */
-
-function isShopOpen(){
-
-  return shop.classList.contains("show");
-}
 
 function openShop(){
 
-  shop.classList.add("show");
+  shop.classList.add(
+    "show"
+  );
+
   updateHUD();
 }
 
 function closeShopMenu(){
 
-  shop.classList.remove("show");
+  shop.classList.remove(
+    "show"
+  );
 }
 
+document
+  .getElementById("shopBtn")
+  .addEventListener(
+    "pointerup",
+    e=>{
+
+      e.preventDefault();
+
+      if(
+        shop.classList.contains(
+          "show"
+        )
+      ){
+        closeShopMenu();
+      }else{
+        openShop();
+      }
+    }
+  );
+
+document
+  .getElementById("closeShop")
+  .addEventListener(
+    "pointerup",
+    e=>{
+
+      e.preventDefault();
+
+      closeShopMenu();
+    }
+  );
+
 /* =========================================================
-   SHOP EVENTS
+   SPEED BOOST
 ========================================================= */
 
-shopBtn.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById(
+    "speedBoostBtn"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    if(isShopOpen()){
-      closeShopMenu();
-    }else{
-      openShop();
+      speedBoost*=1.5;
+
+      for(
+        const ball of balls
+      ){
+
+        ball.vx*=1.5;
+        ball.vy*=1.5;
+      }
+
+      showToast(
+        "⚡ Speed +50%!"
+      );
     }
-  }
-);
+  );
 
-closeShop.addEventListener(
-  "pointerup",
-  function(e){
+/* =========================================================
+   BALL PRICE
+========================================================= */
 
-    e.preventDefault();
-    e.stopPropagation();
+function ballPrice(){
 
-    closeShopMenu();
-  }
-);
+  const normal=
+    100*
+    Math.pow(
+      1.05,
+      data.ballBuyCount
+    );
+
+  const discount=
+    Math.pow(
+      .90,
+      data.lowPriceLevel
+    );
+
+  return Math.max(
+    10,
+    Math.floor(
+      normal*discount
+    )
+  );
+}
 
 /* =========================================================
    BUY BALL
 ========================================================= */
 
-buyBall.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById("buyBall")
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    const cost = 100;
+      if(
+        totalBallCount()>=
+        MAX_ACTIVE_BALLS
+      ){
 
-    if(
-      data.credits < cost
-    ){
+        showToast(
+          "Maximum balls!"
+        );
 
-      toast(
-        "Not enough credits!"
+        return;
+      }
+
+      const cost=
+        ballPrice();
+
+      if(
+        data.credits<cost
+      ){
+
+        showToast(
+          "Not enough credits!"
+        );
+
+        return;
+      }
+
+      data.credits-=cost;
+
+      data.balls.basic++;
+
+      data.ballBuyCount++;
+
+      rebuildBalls();
+
+      save();
+
+      updateHUD();
+
+      showToast(
+        "⚪ New ball!"
       );
 
-      return;
+      checkAutoMerge();
     }
-
-    if(
-      totalBallCount() >=
-      MAX_ACTIVE_BALLS
-    ){
-
-      toast(
-        "Maximum 80 active balls!"
-      );
-
-      return;
-    }
-
-    data.credits -= cost;
-
-    data.balls.basic++;
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "⚪ Ball purchased!"
-    );
-  }
-);
+  );
 
 /* =========================================================
-   DAMAGE UPGRADE
+   DAMAGE
 ========================================================= */
 
-function upgradeCost(){
+function damageCost(){
 
   return Math.floor(
-    100 *
+    100*
     Math.pow(
       1.08,
-      data.damageLevel - 1
+      data.damageLevel-1
     )
   );
 }
 
-upgradeDamage.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById(
+    "upgradeDamage"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    const cost =
-      upgradeCost();
+      const cost=
+        damageCost();
 
-    if(
-      data.credits < cost
-    ){
+      if(
+        data.credits<cost
+      ){
 
-      toast(
-        "Not enough credits!"
+        showToast(
+          "Not enough credits!"
+        );
+
+        return;
+      }
+
+      data.credits-=cost;
+
+      data.damageLevel++;
+
+      rebuildBalls();
+
+      save();
+
+      updateHUD();
+
+      showToast(
+        "⚔️ Damage upgraded!"
       );
-
-      return;
     }
-
-    data.credits -= cost;
-
-    data.damageLevel++;
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "⚔️ Damage upgraded!"
-    );
-  }
-);
+  );
 
 /* =========================================================
-   SPEED
+   SPEED UPGRADE
 ========================================================= */
 
-function speedMultiplier(){
+document
+  .getElementById(
+    "upgradeSpeed"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-  return 1 +
-    (data.speedLevel - 1) *
-    0.12;
+      e.preventDefault();
+
+      if(
+        data.speedLevel>=8
+      ){
+
+        showToast(
+          "Maximum speed!"
+        );
+
+        return;
+      }
+
+      const cost=
+        250*
+        data.speedLevel;
+
+      if(
+        data.credits<cost
+      ){
+
+        showToast(
+          "Not enough credits!"
+        );
+
+        return;
+      }
+
+      data.credits-=cost;
+
+      data.speedLevel++;
+
+      rebuildBalls();
+
+      save();
+
+      updateHUD();
+
+      showToast(
+        "💨 Speed upgraded!"
+      );
+    }
+  );
+
+/* =========================================================
+   LOW BALL PRICE
+========================================================= */
+
+function lowPriceCost(){
+
+  return Math.floor(
+    300*
+    Math.pow(
+      1.5,
+      data.lowPriceLevel
+    )
+  );
 }
 
-upgradeSpeed.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById(
+    "lowPriceBtn"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    if(
-      data.speedLevel >= 8
-    ){
+      const cost=
+        lowPriceCost();
 
-      toast(
-        "Maximum speed!"
+      if(
+        data.credits<cost
+      ){
+
+        showToast(
+          "Not enough credits!"
+        );
+
+        return;
+      }
+
+      data.credits-=cost;
+
+      data.lowPriceLevel++;
+
+      save();
+
+      updateHUD();
+
+      showToast(
+        "💰 Ball price reduced!"
       );
-
-      return;
     }
-
-    const cost =
-      250 * data.speedLevel;
-
-    if(
-      data.credits < cost
-    ){
-
-      toast(
-        "Not enough credits!"
-      );
-
-      return;
-    }
-
-    data.credits -= cost;
-
-    data.speedLevel++;
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "💨 Speed upgraded!"
-    );
-  }
-);
+  );
 
 /* =========================================================
    DOUBLE DAMAGE
 ========================================================= */
 
-doubleDamageBtn.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById(
+    "doubleDamageBtn"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    if(data.doubleDamage){
+      if(data.doubleDamage){
 
-      toast(
-        "Double damage already active!"
+        return;
+      }
+
+      if(
+        data.credits<5000
+      ){
+
+        showToast(
+          "Need 5,000 credits!"
+        );
+
+        return;
+      }
+
+      data.credits-=5000;
+
+      data.doubleDamage=true;
+
+      rebuildBalls();
+
+      save();
+
+      updateHUD();
+
+      showToast(
+        "🔥 Double Damage!"
       );
-
-      return;
     }
-
-    const cost = 5000;
-
-    if(
-      data.credits < cost
-    ){
-
-      toast(
-        "Need 5,000 credits!"
-      );
-
-      return;
-    }
-
-    data.credits -= cost;
-
-    data.doubleDamage = true;
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "🔥 Double Damage ACTIVE!"
-    );
-  }
-);
-
-/* =========================================================
-   MERGE
-========================================================= */
-
-function mergeBalls(){
-
-  /* basic -> green */
-
-  if(data.balls.basic >= 10){
-
-    data.balls.basic -= 10;
-    data.balls.green++;
-
-    return "⚪ 10 → 🟢 1";
-  }
-
-  if(data.balls.green >= 10){
-
-    data.balls.green -= 10;
-    data.balls.pink++;
-
-    return "🟢 10 → 🩷 1";
-  }
-
-  if(data.balls.pink >= 10){
-
-    data.balls.pink -= 10;
-    data.balls.flame++;
-
-    return "🩷 10 → 🔥 1";
-  }
-
-  return null;
-}
-
-mergeBtn.addEventListener(
-  "pointerup",
-  function(e){
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const result =
-      mergeBalls();
-
-    if(!result){
-
-      toast(
-        "Need 10 matching balls!"
-      );
-
-      return;
-    }
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "🔮 Merged: " + result
-    );
-  }
-);
+  );
 
 /* =========================================================
    REBIRTH
 ========================================================= */
 
-rebirthBtn.addEventListener(
-  "pointerup",
-  function(e){
+document
+  .getElementById(
+    "rebirthBtn"
+  )
+  .addEventListener(
+    "pointerup",
+    e=>{
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
 
-    if(data.level < 100){
+      if(data.level<100){
 
-      toast(
-        "Reach Level 100 first!"
+        showToast(
+          "Reach Level 100!"
+        );
+
+        return;
+      }
+
+      if(data.runShards<=0){
+
+        showToast(
+          "No run shards!"
+        );
+
+        return;
+      }
+
+      data.totalShards+=
+        data.runShards;
+
+      data.runShards=0;
+
+      data.credits=500;
+
+      data.level=1;
+
+      data.damageLevel=1;
+
+      data.speedLevel=1;
+
+      data.doubleDamage=false;
+
+      data.ballBuyCount=0;
+
+      data.lowPriceLevel=0;
+
+      data.balls={
+        basic:1,
+        green:0,
+        pink:0,
+        flame:0
+      };
+
+      speedBoost=1;
+
+      buildLevel();
+
+      rebuildBalls();
+
+      save();
+
+      updateHUD();
+
+      closeShopMenu();
+
+      showToast(
+        "💎 Rebirth complete!"
       );
-
-      return;
     }
-
-    if(data.runShards <= 0){
-
-      toast(
-        "No run shards yet!"
-      );
-
-      return;
-    }
-
-    const earned =
-      data.runShards;
-
-    data.totalShards +=
-      earned;
-
-    data.runShards = 0;
-
-    data.credits = 500;
-
-    data.level = 1;
-
-    data.damageLevel = 1;
-
-    data.speedLevel = 1;
-
-    data.doubleDamage = false;
-
-    data.balls = {
-      basic:1,
-      green:0,
-      pink:0,
-      flame:0
-    };
-
-    buildLevel();
-
-    rebuildBalls();
-
-    save();
-
-    updateHUD();
-
-    toast(
-      "💎 Rebirth! +" +
-      earned +
-      " permanent shards!"
-    );
-
-    closeShopMenu();
-  }
-);
+  );
 
 /* =========================================================
    HUD
 ========================================================= */
 
-function formatNumber(value){
+function fmt(n){
 
-  if(value < 1000){
-    return Math.floor(value).toString();
+  if(n<1000){
+    return Math.floor(n);
   }
 
-  if(value < 1000000){
-    return (
-      (value/1000)
-      .toFixed(
-        value < 10000 ? 1 : 0
-      ) +
-      "K"
-    );
-  }
+  if(n<1000000){
 
-  if(value < 1000000000){
     return (
-      (value/1000000)
-      .toFixed(1) +
-      "M"
-    );
+      n/1000
+    ).toFixed(
+      n<10000?1:0
+    )+"K";
   }
 
   return (
-    (value/1000000000)
-    .toFixed(1) +
-    "B"
-  );
+    n/1000000
+  ).toFixed(1)+"M";
 }
 
 function updateHUD(){
 
-  creditsEl.textContent =
-    formatNumber(
-      data.credits
-    );
+  document
+    .getElementById("credits")
+    .textContent=
+      fmt(data.credits);
 
-  levelEl.textContent =
-    data.level;
+  document
+    .getElementById("level")
+    .textContent=
+      data.level;
 
-  shardsEl.textContent =
-    formatNumber(
-      data.totalShards
-    );
+  document
+    .getElementById("shards")
+    .textContent=
+      data.totalShards;
 
-  basicCountEl.textContent =
-    data.balls.basic;
+  document
+    .getElementById("basicCount")
+    .textContent=
+      data.balls.basic;
 
-  greenCountEl.textContent =
-    data.balls.green;
+  document
+    .getElementById("greenCount")
+    .textContent=
+      data.balls.green;
 
-  pinkCountEl.textContent =
-    data.balls.pink;
+  document
+    .getElementById("pinkCount")
+    .textContent=
+      data.balls.pink;
 
-  flameCountEl.textContent =
-    data.balls.flame;
+  document
+    .getElementById("flameCount")
+    .textContent=
+      data.balls.flame;
 
-  /* damage */
+  const bp=
+    ballPrice();
 
-  const damageCost =
-    upgradeCost();
+  document
+    .getElementById(
+      "ballPriceInfo"
+    )
+    .textContent=
+      "Current price: "+
+      fmt(bp)+
+      " credits";
 
-  damageInfo.textContent =
-    "Level " +
-    data.damageLevel +
-    " • Cost " +
-    formatNumber(damageCost) +
+  const buy=
+    document
+      .getElementById(
+        "buyBall"
+      );
+
+  buy.textContent=
+    "Buy — "+
+    fmt(bp)+
     " 💰";
 
-  upgradeDamage.textContent =
-    "Upgrade — " +
-    formatNumber(damageCost) +
-    " 💰";
+  buy.disabled=
+    data.credits<bp ||
+    totalBallCount()>=
+    MAX_ACTIVE_BALLS;
 
-  upgradeDamage.disabled =
-    data.credits < damageCost;
+  const dc=
+    damageCost();
 
-  /* speed */
+  document
+    .getElementById(
+      "damageInfo"
+    )
+    .textContent=
+      "Level "+
+      data.damageLevel+
+      " • "+
+      fmt(dc)+
+      " 💰";
 
-  if(data.speedLevel >= 8){
+  document
+    .getElementById(
+      "upgradeDamage"
+    )
+    .textContent=
+      "Upgrade — "+
+      fmt(dc);
 
-    speedInfo.textContent =
-      "Level 8 • MAX";
+  document
+    .getElementById(
+      "upgradeDamage"
+    )
+    .disabled=
+      data.credits<dc;
 
-    upgradeSpeed.textContent =
-      "MAX SPEED";
+  const sc=
+    250*
+    data.speedLevel;
 
-    upgradeSpeed.disabled =
-      true;
+  if(
+    data.speedLevel>=8
+  ){
+
+    document
+      .getElementById(
+        "speedInfo"
+      )
+      .textContent=
+        "MAX SPEED";
+
+    document
+      .getElementById(
+        "upgradeSpeed"
+      )
+      .textContent=
+        "MAX";
+
+    document
+      .getElementById(
+        "upgradeSpeed"
+      )
+      .disabled=true;
 
   }else{
 
-    const speedCost =
-      250 * data.speedLevel;
+    document
+      .getElementById(
+        "speedInfo"
+      )
+      .textContent=
+        "Level "+
+        data.speedLevel+
+        " • "+
+        fmt(sc)+
+        " 💰";
 
-    speedInfo.textContent =
-      "Level " +
-      data.speedLevel +
-      " • Cost " +
-      formatNumber(speedCost) +
-      " 💰";
+    document
+      .getElementById(
+        "upgradeSpeed"
+      )
+      .textContent=
+        "Upgrade — "+
+        fmt(sc);
 
-    upgradeSpeed.textContent =
-      "Upgrade — " +
-      formatNumber(speedCost) +
-      " 💰";
-
-    upgradeSpeed.disabled =
-      data.credits < speedCost;
+    document
+      .getElementById(
+        "upgradeSpeed"
+      )
+      .disabled=
+        data.credits<sc;
   }
 
-  /* buy ball */
+  const lc=
+    lowPriceCost();
 
-  buyBall.disabled =
-    data.credits < 100 ||
-    totalBallCount() >= MAX_ACTIVE_BALLS;
+  document
+    .getElementById(
+      "lowPriceInfo"
+    )
+    .textContent=
+      "Level "+
+      data.lowPriceLevel+
+      " • Cost "+
+      fmt(lc);
 
-  buyBall.textContent =
-    totalBallCount() >= MAX_ACTIVE_BALLS
-      ? "MAX BALLS"
-      : "Buy — 100 💰";
+  document
+    .getElementById(
+      "lowPriceBtn"
+    )
+    .textContent=
+      "Lower Price — "+
+      fmt(lc);
 
-  /* double damage */
+  document
+    .getElementById(
+      "lowPriceBtn"
+    )
+    .disabled=
+      data.credits<lc;
+
+  const db=
+    document
+      .getElementById(
+        "doubleDamageBtn"
+      );
 
   if(data.doubleDamage){
 
-    doubleDamageBtn.textContent =
+    db.textContent=
       "ACTIVE ✓";
 
-    doubleDamageBtn.disabled =
-      true;
+    db.disabled=true;
 
   }else{
 
-    doubleDamageBtn.textContent =
+    db.textContent=
       "Buy — 5,000 💰";
 
-    doubleDamageBtn.disabled =
-      data.credits < 5000;
+    db.disabled=
+      data.credits<5000;
   }
 
-  /* merge */
+  const rb=
+    document
+      .getElementById(
+        "rebirthBtn"
+      );
 
-  if(data.balls.basic >= 10){
+  if(data.level<100){
 
-    mergeInfo.textContent =
-      "10 ⚪ → 1 🟢";
-
-    mergeBtn.disabled = false;
-
-  }else if(data.balls.green >= 10){
-
-    mergeInfo.textContent =
-      "10 🟢 → 1 🩷";
-
-    mergeBtn.disabled = false;
-
-  }else if(data.balls.pink >= 10){
-
-    mergeInfo.textContent =
-      "10 🩷 → 1 🔥";
-
-    mergeBtn.disabled = false;
-
-  }else{
-
-    mergeInfo.textContent =
-      "Need 10 matching balls";
-
-    mergeBtn.disabled = true;
-  }
-
-  /* rebirth */
-
-  if(data.level < 100){
-
-    rebirthInfo.textContent =
-      "Reach Level 100 to rebirth.";
-
-    rebirthBtn.textContent =
+    rb.textContent=
       "Level 100 Required";
 
-    rebirthBtn.disabled =
-      true;
+    rb.disabled=true;
 
-  }else if(data.runShards <= 0){
+  }else if(
+    data.runShards<=0
+  ){
 
-    rebirthInfo.textContent =
-      "You have no run shards.";
+    rb.textContent=
+      "No Run Shards";
 
-    rebirthBtn.textContent =
-      "No Shards";
-
-    rebirthBtn.disabled =
-      true;
+    rb.disabled=true;
 
   }else{
 
-    rebirthInfo.textContent =
-      "Convert " +
-      data.runShards +
-      " run shards into permanent shards.";
-
-    rebirthBtn.textContent =
-      "REBIRTH +" +
-      data.runShards +
+    rb.textContent=
+      "REBIRTH +"+
+      data.runShards+
       " 💎";
 
-    rebirthBtn.disabled =
-      false;
+    rb.disabled=false;
   }
+
+  document
+    .getElementById(
+      "rebirthInfo"
+    )
+    .textContent=
+      data.level>=100
+        ? "Convert run shards into permanent shards."
+        : "Reach Level 100.";
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(
+  message
+){
+
+  toastEl.textContent=
+    message;
+
+  toastEl.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    toastTimer
+  );
+
+  toastTimer=
+    setTimeout(
+      ()=>{
+        toastEl.classList.remove(
+          "show"
+        );
+      },
+      1500
+    );
 }
 
 /* =========================================================
@@ -2111,68 +2789,57 @@ function updateHUD(){
 
 function loop(now){
 
-  let dt =
-    (now - lastTime) / 1000;
+  let dt=
+    (now-lastTime)/1000;
 
-  lastTime = now;
+  lastTime=now;
 
-  dt =
+  dt=
     Math.min(
-      dt,
-      0.033
+      .033,
+      dt
     );
 
-  /* Pause physics while shop is open */
-
-  if(!isShopOpen()){
+  if(
+    !shop.classList.contains(
+      "show"
+    )
+  ){
 
     if(!levelChanging){
 
-      for(const ball of balls){
+      updateMerge(dt);
 
-        updateBall(
-          ball,
-          dt
-        );
+      if(!mergeState){
+
+        for(
+          const ball of balls
+        ){
+
+          updateBall(
+            ball,
+            dt
+          );
+        }
+
+        checkLevelComplete();
+
+        checkAutoMerge();
       }
-
-      /* Important:
-         Check only AFTER all balls finish updating */
-
-      checkLevelComplete();
     }
 
     updateParticles(dt);
-
-    flash =
-      Math.max(
-        0,
-        flash - dt
-      );
-
-    shake *=
-      Math.pow(
-        .001,
-        dt
-      );
   }
 
   draw();
 
-  requestAnimationFrame(loop);
+  requestAnimationFrame(
+    loop
+  );
 }
 
 /* =========================================================
-   PERIODIC SAVE
-========================================================= */
-
-setInterval(
-  save,
-  2000
-);
-
-/* =========================================================
-   START GAME
+   START
 ========================================================= */
 
 resize();
@@ -2183,7 +2850,14 @@ rebuildBalls();
 
 updateHUD();
 
-requestAnimationFrame(loop);
+requestAnimationFrame(
+  loop
+);
+
+setInterval(
+  save,
+  2000
+);
 
 </script>
 
