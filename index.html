@@ -2,271 +2,187 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Orb Breaker</title>
-
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#050711;
-  font-family:Arial,sans-serif;
-  color:white;
+  margin:0;width:100%;height:100%;overflow:hidden;
+  background:#050814;color:#fff;font-family:Arial,sans-serif;
+  touch-action:none;
 }
-
 #game{
-  position:relative;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
-
-canvas{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
+  position:fixed;inset:0;width:100%;height:100%;
   display:block;
-  background:
-    radial-gradient(circle at 50% 45%,#121a35 0%,#070a16 55%,#03040a 100%);
 }
-
 #hud{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  padding:10px;
-  display:flex;
-  justify-content:center;
-  pointer-events:none;
-  z-index:10;
+  position:absolute;top:8px;left:8px;right:8px;
+  display:flex;justify-content:space-between;gap:6px;
+  z-index:20;pointer-events:none;
 }
-
-.stats{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-
 .stat{
-  background:rgba(10,15,30,.82);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:10px;
-  padding:7px 10px;
-  font-size:12px;
-  box-shadow:0 5px 20px rgba(0,0,0,.3);
+  background:rgba(10,16,32,.85);
+  border:1px solid #27365d;
+  border-radius:10px;padding:7px 10px;
+  font-size:13px;box-shadow:0 0 12px rgba(0,150,255,.12);
 }
-
 #shopBtn{
-  position:absolute;
-  top:65px;
-  right:10px;
-  z-index:20;
-  border:0;
-  border-radius:12px;
-  padding:10px 14px;
-  background:#ffd21c;
-  color:#111;
-  font-weight:bold;
+  position:absolute;right:10px;top:55px;
+  z-index:30;border:1px solid #49659f;
+  background:#111b35;color:white;
+  border-radius:12px;padding:11px 17px;
+  font-weight:bold;font-size:15px;
 }
-
+#shop{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.72);
+  display:none;align-items:center;justify-content:center;
+  z-index:50;padding:18px;
+}
+#shop.open{display:flex}
+.panel{
+  width:min(430px,94vw);max-height:88vh;overflow:auto;
+  background:linear-gradient(180deg,#101a35,#091024);
+  border:1px solid #40588f;border-radius:18px;
+  padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.65);
+}
+.panel h2{text-align:center;margin:0 0 12px}
+.shopItem{
+  background:#101a31;border:1px solid #2c416e;
+  border-radius:12px;padding:12px;margin:8px 0;
+}
+.shopItem button{
+  width:100%;margin-top:8px;padding:11px;
+  border:0;border-radius:9px;
+  background:#246cff;color:#fff;font-weight:bold;
+}
+.shopItem button:disabled{
+  background:#333c52;color:#8e96a8;
+}
+#closeShop{
+  width:100%;padding:12px;margin-top:8px;
+  border:1px solid #43577e;background:#151f38;
+  color:white;border-radius:10px;font-weight:bold;
+}
+.small{font-size:12px;color:#9da9c7}
 #speedBoostBtn{
-  position:absolute;
-  left:50%;
-  bottom:18px;
+  position:absolute;left:50%;bottom:10px;
   transform:translateX(-50%);
-  z-index:15;
-  padding:14px 25px;
-  border:2px solid rgba(255,255,255,.35);
-  border-radius:15px;
-  background:#ffc400;
-  color:#111;
-  font-size:14px;
-  font-weight:bold;
+  width:220px;height:52px;z-index:40;
+  border-radius:15px;border:2px solid #4d75ff;
+  background:#121d3a;color:#fff;
+  font-size:16px;font-weight:bold;
+  box-shadow:0 5px 20px rgba(0,0,0,.4);
   touch-action:none;
   user-select:none;
-  box-shadow:0 5px 20px rgba(0,0,0,.4);
 }
-
 #speedBoostBtn.active{
-  transform:translateX(-50%) scale(1.06);
-  background:#fff36b;
-  box-shadow:0 0 28px rgba(255,210,0,.9);
+  background:#246cff;
+  box-shadow:0 0 25px rgba(60,130,255,.75);
 }
-
-#shop{
-  position:absolute;
-  top:0;
-  right:0;
-  width:min(340px,92%);
-  height:100%;
-  background:rgba(7,10,22,.97);
-  border-left:1px solid rgba(255,255,255,.15);
-  padding:70px 15px 20px;
-  z-index:30;
-  transform:translateX(100%);
-  transition:.25s;
-  overflow-y:auto;
-}
-
-#shop.open{
-  transform:translateX(0);
-}
-
-.shopTitle{
-  font-size:24px;
-  font-weight:bold;
-  margin-bottom:15px;
-}
-
-.shopItem{
-  background:#11182c;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;
-  padding:13px;
-  margin-bottom:10px;
-}
-
-.shopItem h3{
-  margin:0 0 5px;
-  font-size:15px;
-}
-
-.shopItem p{
-  margin:4px 0 10px;
-  color:#aeb7d1;
-  font-size:12px;
-}
-
-.shopItem button,
-#closeShop{
-  border:0;
-  border-radius:10px;
-  padding:10px 13px;
-  font-weight:bold;
-  background:#36e0a1;
-  color:#07100c;
-}
-
-#closeShop{
-  background:#ff6262;
-  color:white;
-  margin-bottom:15px;
-}
-
-#mergeText{
-  position:absolute;
-  left:50%;
-  top:50%;
+#message{
+  position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
-  z-index:8;
-  font-size:20px;
-  font-weight:bold;
-  text-shadow:0 0 15px white;
-  pointer-events:none;
-  opacity:0;
+  z-index:45;pointer-events:none;
+  font-size:25px;font-weight:bold;
+  opacity:0;text-align:center;
+  text-shadow:0 0 15px #4aa3ff;
 }
 </style>
 </head>
-
 <body>
 
-<div id="game">
-
-<canvas id="canvas"></canvas>
+<canvas id="game"></canvas>
 
 <div id="hud">
-  <div class="stats">
-    <div class="stat">💰 <span id="credits">0</span></div>
-    <div class="stat">⭐ Level <span id="level">1</span>/200</div>
-    <div class="stat">💎 <span id="shards">0</span></div>
-    <div class="stat">⚪ <span id="ballCount">1</span></div>
-  </div>
+  <div class="stat">💰 <span id="credits">0</span></div>
+  <div class="stat">LEVEL <span id="level">1</span>/200</div>
+  <div class="stat">💎 <span id="shards">0</span></div>
 </div>
 
 <button id="shopBtn">🛒 SHOP</button>
 
-<button id="speedBoostBtn">
-  ⚡ HOLD +50% SPEED
-</button>
+<button id="speedBoostBtn">⚡ HOLD FOR 1.5× SPEED</button>
 
-<div id="mergeText"></div>
+<div id="message"></div>
 
 <div id="shop">
-  <button id="closeShop">CLOSE</button>
-  <div class="shopTitle">🛒 Shop</div>
+  <div class="panel">
+    <h2>🛒 Orb Shop</h2>
 
-  <div class="shopItem">
-    <h3>⚪ Buy Basic Ball</h3>
-    <p>Current price: <b id="ballPriceText">100</b> credits</p>
-    <button id="buyBall">BUY BALL</button>
+    <div class="shopItem">
+      <b>🔵 Buy Basic Ball</b>
+      <div class="small">Price increases every purchase.</div>
+      <button id="buyBall">BUY</button>
+    </div>
+
+    <div class="shopItem">
+      <b>💥 Damage Upgrade</b>
+      <div class="small">Increase basic damage.</div>
+      <button id="damageUp">UPGRADE</button>
+    </div>
+
+    <div class="shopItem">
+      <b>🏎️ Ball Speed Upgrade</b>
+      <div class="small">Permanent normal ball speed increase.</div>
+      <button id="speedUp">UPGRADE</button>
+    </div>
+
+    <div class="shopItem">
+      <b>🏷️ Low Ball Price</b>
+      <div class="small">Reduces the price of buying balls.</div>
+      <button id="lowPriceUp">UPGRADE</button>
+    </div>
+
+    <div class="shopItem">
+      <b>✖️ Double Damage</b>
+      <div class="small">Permanently doubles damage.</div>
+      <button id="doubleDamage">BUY</button>
+    </div>
+
+    <div class="shopItem">
+      <b>🔥 Permanent Rebirth</b>
+      <div class="small">Available after reaching Level 200.</div>
+      <button id="rebirth">REBIRTH</button>
+    </div>
+
+    <div class="shopItem">
+      <b>⚪ Basic: <span id="basicCount">0</span></b><br>
+      <b>🟢 Green: <span id="greenCount">0</span></b><br>
+      <b>🩷 Pink: <span id="pinkCount">0</span></b><br>
+      <b>🔥 Flame: <span id="flameCount">0</span></b>
+    </div>
+
+    <button id="closeShop">CLOSE</button>
   </div>
-
-  <div class="shopItem">
-    <h3>💥 Damage Upgrade</h3>
-    <p>Increase basic ball damage.</p>
-    <button id="damageUpgrade">UPGRADE</button>
-  </div>
-
-  <div class="shopItem">
-    <h3>🏃 Ball Speed</h3>
-    <p>Increase normal ball speed.</p>
-    <button id="speedUpgrade">UPGRADE</button>
-  </div>
-
-  <div class="shopItem">
-    <h3>⚡ Double Damage</h3>
-    <p>Double all ball damage.</p>
-    <button id="doubleDamage">BUY</button>
-  </div>
-
-  <div class="shopItem">
-    <h3>💸 Low Ball Price</h3>
-    <p>Reduce the price of future balls by 10% per level.</p>
-    <button id="lowPriceUpgrade">UPGRADE</button>
-  </div>
-
-  <div class="shopItem">
-    <h3>🔥 Rebirth</h3>
-    <p>Reset the level for permanent shards.</p>
-    <button id="rebirth">REBIRTH</button>
-  </div>
-</div>
-
 </div>
 
 <script>
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+"use strict";
 
-let W=innerWidth;
-let H=innerHeight;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W = innerWidth;
+let H = innerHeight;
+let dpr = Math.min(devicePixelRatio || 1,2);
 
 function resize(){
-  W=innerWidth;
-  H=innerHeight;
-  canvas.width=W*devicePixelRatio;
-  canvas.height=H*devicePixelRatio;
-  canvas.style.width=W+"px";
-  canvas.style.height=H+"px";
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  W = innerWidth;
+  H = innerHeight;
+  dpr = Math.min(devicePixelRatio || 1,2);
+  canvas.width = W*dpr;
+  canvas.height = H*dpr;
+  canvas.style.width = W+"px";
+  canvas.style.height = H+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  buildLevel();
 }
-
 addEventListener("resize",resize);
-resize();
 
-const SAVE_KEY="orbBreakerSave_v3";
+const SAVE_KEY = "orbBreaker_final_v1";
 
-const defaultData={
+const defaults = {
   credits:500,
   level:1,
   totalShards:0,
@@ -284,266 +200,657 @@ const defaultData={
   }
 };
 
-let data;
+let data = loadData();
 
-try{
-  data=JSON.parse(localStorage.getItem(SAVE_KEY))||structuredClone(defaultData);
-}catch{
-  data=structuredClone(defaultData);
-}
+function loadData(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaults);
 
-function fixSave(){
-  if(!data || typeof data!=="object") data=structuredClone(defaultData);
+    const d = JSON.parse(raw);
 
-  for(const k of Object.keys(defaultData)){
-    if(!(k in data)) data[k]=defaultData[k];
+    d.credits = Number.isFinite(d.credits) ? Math.max(0,d.credits) : 500;
+    d.level = Number.isFinite(d.level) ? Math.max(1,Math.min(200,Math.floor(d.level))) : 1;
+    d.totalShards = Number.isFinite(d.totalShards) ? Math.max(0,d.totalShards) : 0;
+    d.runShards = Number.isFinite(d.runShards) ? Math.max(0,d.runShards) : 0;
+    d.damageLevel = Number.isFinite(d.damageLevel) ? Math.max(1,Math.floor(d.damageLevel)) : 1;
+    d.speedLevel = Number.isFinite(d.speedLevel) ? Math.max(1,Math.floor(d.speedLevel)) : 1;
+    d.ballBuyCount = Number.isFinite(d.ballBuyCount) ? Math.max(0,Math.floor(d.ballBuyCount)) : 0;
+    d.lowPriceLevel = Number.isFinite(d.lowPriceLevel) ? Math.max(0,Math.floor(d.lowPriceLevel)) : 0;
+    d.doubleDamage = !!d.doubleDamage;
+
+    d.balls = d.balls || {};
+    for(const t of ["basic","green","pink","flame"]){
+      d.balls[t] = Number.isFinite(d.balls[t])
+        ? Math.max(0,Math.floor(d.balls[t]))
+        : 0;
+    }
+
+    return d;
+  }catch(e){
+    return structuredClone(defaults);
   }
-
-  if(!data.balls)data.balls={...defaultData.balls};
-
-  for(const t of Object.keys(defaultData.balls)){
-    if(typeof data.balls[t]!=="number")data.balls[t]=0;
-  }
-
-  data.level=Math.max(1,Math.min(200,Math.floor(data.level)));
-  data.credits=Math.max(0,Math.floor(data.credits));
 }
-
-fixSave();
 
 function save(){
-  try{
-    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
-  }catch{}
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
 }
 
-/* =========================
-   BALL TYPES
-========================= */
-
-const BALL_TYPES={
+const ballInfo = {
   basic:{
     damage:1,
-    radius:7,
+    radius:8,
     color:"#f7fbff"
   },
-
   green:{
     damage:10,
-    radius:8,
+    radius:9,
     color:"#35ff89"
   },
-
   pink:{
     damage:100,
-    radius:9,
+    radius:10,
     color:"#ff65bd"
   },
-
   flame:{
     damage:1000,
-    radius:10,
+    radius:11,
     color:"#ff8a19"
   }
 };
 
-let balls=[];
-let blocks=[];
-let particles=[];
+const mergeOrder = [
+  ["basic","green"],
+  ["green","pink"],
+  ["pink","flame"]
+];
 
-let lastTime=performance.now();
+let balls = [];
+let blocks = [];
+let particles = [];
 
-let noHitTimer=0;
-const NO_HIT_LIMIT=10;
+let lastTime = performance.now();
+let noHitTimer = 0;
+const NO_HIT_LIMIT = 10;
 
-let speedBoostActive=false;
+let levelTransitionLock = false;
+let merging = false;
+let mergeTimer = 0;
+let mergeType = null;
 
-let mergeState=null;
+let speedBoostActive = false;
+let shopOpen = false;
 
-/* =========================
-   LEVEL
-========================= */
+function clamp(v,a,b){
+  return Math.max(a,Math.min(b,v));
+}
+
+function rand(a,b){
+  return a + Math.random()*(b-a);
+}
+
+function ballSpeed(){
+  return 115 * Math.pow(1.045,data.speedLevel-1);
+}
+
+function getDamage(type){
+  let dmg = ballInfo[type].damage;
+
+  if(type==="basic"){
+    dmg *= Math.pow(1.08,data.damageLevel-1);
+  }
+
+  if(data.doubleDamage) dmg *= 2;
+
+  return dmg;
+}
+
+function ballPrice(){
+  const p =
+    100 *
+    Math.pow(1.05,data.ballBuyCount) *
+    Math.pow(.90,data.lowPriceLevel);
+
+  return Math.max(10,Math.floor(p));
+}
+
+function damageCost(){
+  return Math.floor(150*Math.pow(1.7,data.damageLevel-1));
+}
+
+function speedCost(){
+  return Math.floor(200*Math.pow(1.7,data.speedLevel-1));
+}
+
+function lowPriceCost(){
+  return Math.floor(300*Math.pow(1.5,data.lowPriceLevel));
+}
+
+function createBall(type,x=W/2,y=H/2){
+  const a = rand(0,Math.PI*2);
+  const s = ballSpeed();
+
+  return {
+    type,
+    x,
+    y,
+    vx:Math.cos(a)*s,
+    vy:Math.sin(a)*s,
+    r:ballInfo[type].radius,
+    noHit:0,
+    trail:[]
+  };
+}
+
+function rebuildBalls(){
+  balls=[];
+
+  const maxBalls=80;
+
+  for(const type of ["basic","green","pink","flame"]){
+    for(let i=0;i<data.balls[type] && balls.length<maxBalls;i++){
+      balls.push(createBall(type,W/2,H/2));
+    }
+  }
+
+  if(balls.length===0){
+    data.balls.basic=1;
+    balls.push(createBall("basic",W/2,H/2));
+  }
+}
 
 function buildLevel(){
-
   blocks=[];
 
-  const maxLevel=200;
-  const level=Math.min(data.level,maxLevel);
+  const level = clamp(data.level,1,200);
 
-  const cols=Math.min(7,4+Math.floor(level/45));
-  const rows=Math.min(8,3+Math.floor(level/30));
+  const cols=7;
+  const rows=10;
 
-  const gap=6;
-  const side=14;
+  const side=7;
+  const gap=4;
+  const top=88;
+  const bottom=86;
 
   const bw=(W-side*2-gap*(cols-1))/cols;
-  const bh=Math.max(23,Math.min(39,31+Math.floor(level/40)));
+  const bh=(H-top-bottom-gap*(rows-1))/rows;
 
-  /*
-    Difficulty increases gradually.
-    Level 1 is easy.
-    Level 200 is much harder.
-  */
+  const baseHP =
+    3 +
+    Math.floor(level*.75) +
+    Math.floor(Math.pow(level,1.08)*.35);
 
-  const baseHP=
-    3+
-    Math.floor(level*0.75)+
-    Math.floor(Math.pow(level,1.08)*0.35);
+  for(let row=0;row<rows;row++){
+    for(let col=0;col<cols;col++){
 
-  for(let r=0;r<rows;r++){
-
-    for(let c=0;c<cols;c++){
-
-      const variation=(r*1.15)+(c%3)*0.7;
-
-      const hp=Math.max(
-        1,
-        Math.floor(baseHP+variation)
+      let hp=Math.floor(
+        baseHP +
+        row*.7 +
+        (col%3)*.5
       );
 
       blocks.push({
-        x:side+c*(bw+gap),
-        y:95+r*(bh+gap),
+        x:side+col*(bw+gap),
+        y:top+row*(bh+gap),
         w:bw,
         h:bh,
         hp,
         maxHp:hp,
-        alive:true
+        alive:true,
+        hitFlash:0
       });
     }
   }
 }
 
-/* =========================
-   BALL SPEED
-========================= */
-
-function baseSpeed(){
-  return 125 + (data.speedLevel-1)*12;
-}
-
-function currentSpeedMultiplier(){
-  return speedBoostActive ? 1.5 : 1;
-}
-
-/* =========================
-   CREATE BALL
-========================= */
-
-function createBall(type,x=W/2,y=H/2){
-
-  const angle=Math.random()*Math.PI*2;
-  const speed=baseSpeed();
-
-  return{
-    type,
-    x,
-    y,
-    vx:Math.cos(angle)*speed,
-    vy:Math.sin(angle)*speed,
-    r:BALL_TYPES[type].radius,
-    trail:[]
-  };
-}
-
-/* =========================
-   REBUILD BALLS
-========================= */
-
-function rebuildBalls(){
-
-  balls=[];
-
-  const types=["basic","green","pink","flame"];
-
-  for(const type of types){
-
-    const amount=Math.max(
-      0,
-      Math.floor(data.balls[type])
-    );
-
-    /*
-      Prevent huge rendering load.
-    */
-    const count=Math.min(amount,80-balls.length);
-
-    for(let i=0;i<count;i++){
-
-      balls.push(
-        createBall(
-          type,
-          W/2,
-          H/2
-        )
-      );
-    }
-  }
-
-  if(balls.length===0){
-
-    data.balls.basic=1;
-
-    balls.push(
-      createBall(
-        "basic",
-        W/2,
-        H/2
-      )
-    );
-  }
-}
-
-/* =========================
-   PARTICLES
-========================= */
-
-function particle(x,y,color,count=8){
+function spawnParticles(x,y,type,count=6){
+  const color=ballInfo[type]?.color || "#fff";
 
   for(let i=0;i<count;i++){
-
-    const a=Math.random()*Math.PI*2;
-    const s=30+Math.random()*120;
-
     particles.push({
-      x,
-      y,
-      vx:Math.cos(a)*s,
-      vy:Math.sin(a)*s,
-      life:.4+.5*Math.random(),
-      max:.9,
-      color,
-      size:1+Math.random()*3
+      x,y,
+      vx:rand(-90,90),
+      vy:rand(-90,90),
+      life:rand(.25,.6),
+      maxLife:.6,
+      size:rand(1,3),
+      color
     });
   }
 }
 
+function showMessage(text){
+  const el=document.getElementById("message");
+
+  el.textContent=text;
+  el.style.opacity="1";
+
+  clearTimeout(showMessage.timer);
+
+  showMessage.timer=setTimeout(()=>{
+    el.style.opacity="0";
+  },900);
+}
+
+function circleRectCollision(ball,b){
+  const cx=clamp(ball.x,b.x,b.x+b.w);
+  const cy=clamp(ball.y,b.y,b.y+b.h);
+
+  const dx=ball.x-cx;
+  const dy=ball.y-cy;
+
+  return dx*dx+dy*dy <= ball.r*ball.r;
+}
+
+function collideBallBlock(ball,b){
+  if(!b.alive) return false;
+  if(!circleRectCollision(ball,b)) return false;
+
+  noHitTimer=0;
+  ball.noHit=0;
+
+  const left=Math.abs(ball.x-b.x);
+  const right=Math.abs(ball.x-(b.x+b.w));
+  const top=Math.abs(ball.y-b.y);
+  const bottom=Math.abs(ball.y-(b.y+b.h));
+
+  const minX=Math.min(left,right);
+  const minY=Math.min(top,bottom);
+
+  if(minX<minY){
+    ball.vx*=-1;
+
+    if(ball.x<b.x) ball.x=b.x-ball.r;
+    else ball.x=b.x+b.w+ball.r;
+  }else{
+    ball.vy*=-1;
+
+    if(ball.y<b.y) ball.y=b.y-ball.r;
+    else ball.y=b.y+b.h+ball.r;
+  }
+
+  const damage=getDamage(ball.type);
+
+  b.hp-=damage;
+  b.hitFlash=.08;
+
+  // +3 credits for every block hit
+  data.credits+=3;
+
+  spawnParticles(ball.x,ball.y,ball.type,3);
+
+  if(b.hp<=0){
+    b.alive=false;
+
+    // extra reward when block breaks
+    data.credits+=10;
+    data.runShards+=1;
+
+    spawnParticles(
+      b.x+b.w/2,
+      b.y+b.h/2,
+      ball.type,
+      12
+    );
+  }
+
+  return true;
+}
+
+function autoTarget(ball,dt){
+  let target=null;
+  let best=Infinity;
+
+  for(const b of blocks){
+    if(!b.alive) continue;
+
+    const dx=b.x+b.w/2-ball.x;
+    const dy=b.y+b.h/2-ball.y;
+    const dist=dx*dx+dy*dy;
+
+    if(dist<best){
+      best=dist;
+      target=b;
+    }
+  }
+
+  if(!target) return;
+
+  const tx=target.x+target.w/2;
+  const ty=target.y+target.h/2;
+
+  const dx=tx-ball.x;
+  const dy=ty-ball.y;
+
+  const len=Math.hypot(dx,dy)||1;
+
+  const speed=Math.hypot(ball.vx,ball.vy);
+
+  const desiredX=dx/len*speed;
+  const desiredY=dy/len*speed;
+
+  const steer=clamp(dt*1.7,0,1);
+
+  ball.vx += (desiredX-ball.vx)*steer;
+  ball.vy += (desiredY-ball.vy)*steer;
+
+  const current=Math.hypot(ball.vx,ball.vy)||1;
+
+  ball.vx=ball.vx/current*speed;
+  ball.vy=ball.vy/current*speed;
+}
+
+function updateBall(ball,dt){
+  ball.noHit+=dt;
+
+  if(ball.noHit>=NO_HIT_LIMIT){
+    autoTarget(ball,dt);
+  }
+
+  const movementMultiplier =
+    speedBoostActive ? 1.5 : 1;
+
+  ball.x += ball.vx*dt*movementMultiplier;
+  ball.y += ball.vy*dt*movementMultiplier;
+
+  if(ball.x-ball.r<0){
+    ball.x=ball.r;
+    ball.vx=Math.abs(ball.vx);
+  }
+
+  if(ball.x+ball.r>W){
+    ball.x=W-ball.r;
+    ball.vx=-Math.abs(ball.vx);
+  }
+
+  if(ball.y-ball.r<65){
+    ball.y=65+ball.r;
+    ball.vy=Math.abs(ball.vy);
+  }
+
+  if(ball.y+ball.r>H-65){
+    ball.y=H-65-ball.r;
+    ball.vy=-Math.abs(ball.vy);
+  }
+
+  for(const b of blocks){
+    if(collideBallBlock(ball,b)) break;
+  }
+}
+
 function updateParticles(dt){
-
   for(let i=particles.length-1;i>=0;i--){
-
     const p=particles[i];
 
     p.life-=dt;
 
+    if(p.life<=0){
+      particles.splice(i,1);
+      continue;
+    }
+
     p.x+=p.vx*dt;
     p.y+=p.vy*dt;
 
-    p.vx*=.97;
-    p.vy*=.97;
+    p.vx*=.98;
+    p.vy*=.98;
+  }
+}
 
-    if(p.life<=0){
-      particles.splice(i,1);
+function tryMerge(){
+  if(merging) return;
+
+  for(const [from,to] of mergeOrder){
+
+    if(data.balls[from]>=10){
+
+      merging=true;
+      mergeType=from;
+      mergeTimer=0;
+
+      showMessage("10 "+from.toUpperCase()+" → 1 "+to.toUpperCase());
+
+      return;
     }
   }
 }
 
+function updateMerge(dt){
+  if(!merging){
+    tryMerge();
+    return;
+  }
+
+  mergeTimer+=dt;
+
+  const selected=balls.filter(
+    b=>b.type===mergeType
+  ).slice(0,10);
+
+  const centerX=W/2;
+  const centerY=H/2;
+
+  for(const b of selected){
+    const dx=centerX-b.x;
+    const dy=centerY-b.y;
+
+    b.x+=dx*dt*3;
+    b.y+=dy*dt*3;
+  }
+
+  if(mergeTimer>=1.7){
+
+    const next=mergeOrder.find(
+      x=>x[0]===mergeType
+    );
+
+    if(next){
+      data.balls[mergeType]-=10;
+      data.balls[next[1]]+=1;
+    }
+
+    merging=false;
+    mergeType=null;
+    mergeTimer=0;
+
+    rebuildBalls();
+    save();
+    updateShopUI();
+
+    spawnParticles(W/2,H/2,"flame",30);
+  }
+}
+
+function checkLevel(){
+  if(levelTransitionLock) return;
+
+  const alive=blocks.some(b=>b.alive);
+
+  if(alive) return;
+
+  levelTransitionLock=true;
+
+  if(data.level<200){
+    data.level++;
+    data.runShards+=5;
+
+    showMessage("LEVEL "+data.level);
+
+    setTimeout(()=>{
+      buildLevel();
+      noHitTimer=0;
+      levelTransitionLock=false;
+      save();
+    },450);
+
+  }else{
+    showMessage("🏆 LEVEL 200 COMPLETE!");
+    levelTransitionLock=true;
+  }
+}
+
+function drawBackground(){
+  ctx.fillStyle="#050814";
+  ctx.fillRect(0,0,W,H);
+
+  const grd=ctx.createRadialGradient(
+    W/2,H/2,20,
+    W/2,H/2,Math.max(W,H)*.75
+  );
+
+  grd.addColorStop(0,"rgba(25,55,110,.18)");
+  grd.addColorStop(1,"rgba(0,0,0,0)");
+
+  ctx.fillStyle=grd;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.strokeStyle="rgba(100,150,255,.035)";
+  ctx.lineWidth=1;
+
+  const size=30;
+
+  for(let x=0;x<W;x+=size){
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,H);
+    ctx.stroke();
+  }
+
+  for(let y=0;y<H;y+=size){
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(W,y);
+    ctx.stroke();
+  }
+}
+
+function drawBlocks(){
+  for(const b of blocks){
+    if(!b.alive) continue;
+
+    const ratio=clamp(b.hp/b.maxHp,0,1);
+
+    let hue=210-ratio*150;
+
+    ctx.fillStyle=`hsl(${hue},80%,42%)`;
+
+    if(b.hitFlash>0){
+      ctx.fillStyle="#fff";
+      b.hitFlash-=1/60;
+    }
+
+    ctx.beginPath();
+    ctx.roundRect(
+      b.x,b.y,b.w,b.h,
+      Math.min(8,b.w*.15)
+    );
+    ctx.fill();
+
+    ctx.strokeStyle="rgba(255,255,255,.12)";
+    ctx.stroke();
+
+    // no HP numbers
+  }
+}
+
+function drawBall(ball){
+  const info=ballInfo[ball.type];
+
+  // trail
+  ball.trail.push({
+    x:ball.x,
+    y:ball.y
+  });
+
+  if(ball.trail.length>7)
+    ball.trail.shift();
+
+  for(let i=0;i<ball.trail.length;i++){
+    const t=ball.trail[i];
+    const alpha=i/ball.trail.length*.18;
+
+    ctx.beginPath();
+    ctx.fillStyle=info.color;
+    ctx.globalAlpha=alpha;
+
+    ctx.arc(
+      t.x,t.y,
+      ball.r*(i/ball.trail.length),
+      0,Math.PI*2
+    );
+
+    ctx.fill();
+  }
+
+  ctx.globalAlpha=1;
+
+  if(ball.type==="flame"){
+    for(let i=3;i>=1;i--){
+      ctx.beginPath();
+      ctx.fillStyle=i%2
+        ? "rgba(255,120,0,.13)"
+        : "rgba(255,210,50,.10)";
+
+      ctx.arc(
+        ball.x+rand(-2,2),
+        ball.y+rand(-2,2),
+        ball.r+i*5,
+        0,Math.PI*2
+      );
+
+      ctx.fill();
+    }
+  }
+
+  const glow=ctx.createRadialGradient(
+    ball.x,ball.y,1,
+    ball.x,ball.y,ball.r*2.4
+  );
+
+  glow.addColorStop(0,"rgba(255,255,255,.9)");
+  glow.addColorStop(.35,info.color);
+  glow.addColorStop(1,"rgba(0,0,0,0)");
+
+  ctx.fillStyle=glow;
+
+  ctx.beginPath();
+  ctx.arc(
+    ball.x,
+    ball.y,
+    ball.r*2.4,
+    0,
+    Math.PI*2
+  );
+  ctx.fill();
+
+  ctx.fillStyle=info.color;
+
+  ctx.beginPath();
+  ctx.arc(
+    ball.x,
+    ball.y,
+    ball.r,
+    0,
+    Math.PI*2
+  );
+  ctx.fill();
+
+  ctx.fillStyle="rgba(255,255,255,.8)";
+
+  ctx.beginPath();
+  ctx.arc(
+    ball.x-ball.r*.3,
+    ball.y-ball.r*.3,
+    ball.r*.25,
+    0,
+    Math.PI*2
+  );
+  ctx.fill();
+}
+
 function drawParticles(){
-
   for(const p of particles){
-
-    ctx.globalAlpha=Math.max(0,p.life/p.max);
+    ctx.globalAlpha=clamp(p.life/p.maxLife,0,1);
 
     ctx.fillStyle=p.color;
 
@@ -555,1073 +862,277 @@ function drawParticles(){
   ctx.globalAlpha=1;
 }
 
-/* =========================
-   DRAW BLOCK
-========================= */
+function draw(){
+  drawBackground();
+  drawBlocks();
 
-function drawBlock(b){
+  for(const ball of balls)
+    drawBall(ball);
 
-  if(!b.alive)return;
-
-  const ratio=b.hp/b.maxHp;
-
-  const g=ctx.createLinearGradient(
-    b.x,
-    b.y,
-    b.x,
-    b.y+b.h
-  );
-
-  g.addColorStop(0,"#405a91");
-  g.addColorStop(.5,"#263b6c");
-  g.addColorStop(1,"#182747");
-
-  ctx.fillStyle=g;
-
-  ctx.shadowColor="rgba(40,110,255,.25)";
-  ctx.shadowBlur=8;
-
-  ctx.beginPath();
-
-  ctx.roundRect(
-    b.x,
-    b.y,
-    b.w,
-    b.h,
-    6
-  );
-
-  ctx.fill();
-
-  ctx.shadowBlur=0;
-
-  /*
-    Damage overlay.
-    No HP numbers.
-  */
-
-  if(ratio<.75){
-
-    ctx.fillStyle=
-      "rgba(255,180,40,"+
-      ((1-ratio)*.3)+")";
-
-    ctx.fillRect(
-      b.x,
-      b.y,
-      b.w,
-      b.h
-    );
-  }
-
-  ctx.strokeStyle="rgba(255,255,255,.12)";
-  ctx.stroke();
+  drawParticles();
 }
 
-/* =========================
-   DRAW BALL
-========================= */
-
-function drawBall(ball){
-
-  const t=BALL_TYPES[ball.type];
-
-  /*
-    Trail
-  */
-
-  for(let i=0;i<ball.trail.length;i++){
-
-    const p=ball.trail[i];
-
-    ctx.globalAlpha=
-      (1-i/ball.trail.length)*.18;
-
-    ctx.fillStyle=t.color;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      p.x,
-      p.y,
-      ball.r*(1-i/ball.trail.length)*.8,
-      0,
-      Math.PI*2
-    );
-
-    ctx.fill();
-  }
-
-  ctx.globalAlpha=1;
-
-  /*
-    Flame effect
-  */
-
-  if(ball.type==="flame"){
-
-    for(let i=0;i<6;i++){
-
-      const a=Math.random()*Math.PI*2;
-      const rr=ball.r+3+Math.random()*7;
-
-      ctx.globalAlpha=.3;
-
-      ctx.fillStyle=
-        i%2===0 ? "#ffcf33" : "#ff5a16";
-
-      ctx.beginPath();
-
-      ctx.arc(
-        ball.x+Math.cos(a)*rr,
-        ball.y+Math.sin(a)*rr,
-        2+Math.random()*3,
-        0,
-        Math.PI*2
-      );
-
-      ctx.fill();
-    }
-
-    ctx.globalAlpha=1;
-  }
-
-  /*
-    Ball gradient
-  */
-
-  const g=ctx.createRadialGradient(
-    ball.x-ball.r*.35,
-    ball.y-ball.r*.4,
-    1,
-    ball.x,
-    ball.y,
-    ball.r*1.3
-  );
-
-  g.addColorStop(0,"#ffffff");
-  g.addColorStop(.25,t.color);
-  g.addColorStop(1,
-    ball.type==="flame"
-      ? "#c92800"
-      : t.color
-  );
-
-  ctx.fillStyle=g;
-
-  ctx.shadowColor=t.color;
-  ctx.shadowBlur=14;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    ball.x,
-    ball.y,
-    ball.r,
-    0,
-    Math.PI*2
-  );
-
-  ctx.fill();
-
-  ctx.shadowBlur=0;
-}
-
-/* =========================
-   AUTO TARGET
-========================= */
-
-function autoTarget(ball,dt){
-
-  /*
-    Only activates after 10 seconds
-    without a block hit.
-  */
-
-  if(noHitTimer<NO_HIT_LIMIT)return;
-
-  let target=null;
-  let best=Infinity;
-
-  for(const b of blocks){
-
-    if(!b.alive)continue;
-
-    const cx=b.x+b.w/2;
-    const cy=b.y+b.h/2;
-
-    const dx=cx-ball.x;
-    const dy=cy-ball.y;
-
-    const dist=dx*dx+dy*dy;
-
-    if(dist<best){
-
-      best=dist;
-      target=b;
-    }
-  }
-
-  if(!target)return;
-
-  const tx=target.x+target.w/2;
-  const ty=target.y+target.h/2;
-
-  const dx=tx-ball.x;
-  const dy=ty-ball.y;
-
-  const len=Math.hypot(dx,dy)||1;
-
-  const speed=Math.hypot(ball.vx,ball.vy)||baseSpeed();
-
-  /*
-    Gentle steering.
-    It doesn't teleport the ball.
-  */
-
-  const steer=1.8*dt;
-
-  const wantedX=(dx/len)*speed;
-  const wantedY=(dy/len)*speed;
-
-  ball.vx +=
-    (wantedX-ball.vx)*steer;
-
-  ball.vy +=
-    (wantedY-ball.vy)*steer;
-
-  /*
-    Keep speed consistent.
-  */
-
-  const current=Math.hypot(
-    ball.vx,
-    ball.vy
-  )||1;
-
-  ball.vx=
-    ball.vx/current*
-    speed;
-
-  ball.vy=
-    ball.vy/current*
-    speed;
-}
-
-/* =========================
-   COLLISION
-========================= */
-
-function collideBallBlock(ball,b){
-
-  if(!b.alive)return false;
-
-  const closestX=Math.max(
-    b.x,
-    Math.min(ball.x,b.x+b.w)
-  );
-
-  const closestY=Math.max(
-    b.y,
-    Math.min(ball.y,b.y+b.h)
-  );
-
-  const dx=ball.x-closestX;
-  const dy=ball.y-closestY;
-
-  if(dx*dx+dy*dy>ball.r*ball.r){
-    return false;
-  }
-
-  /*
-    Hit detected.
-  */
-
-  noHitTimer=0;
-
-  /*
-    Credits for every block hit.
-  */
-
-  data.credits+=3;
-
-  const damage=
-    BALL_TYPES[ball.type].damage *
-    data.damageLevel *
-    (data.doubleDamage?2:1);
-
-  b.hp-=damage;
-
-  particle(
-    closestX,
-    closestY,
-    BALL_TYPES[ball.type].color,
-    7
-  );
-
-  /*
-    Bounce based on collision side.
-  */
-
-  const overlapX=
-    ball.r-Math.abs(dx);
-
-  const overlapY=
-    ball.r-Math.abs(dy);
-
-  if(overlapX<overlapY){
-
-    ball.vx*=-1;
-
-    if(ball.x<b.x){
-      ball.x=b.x-ball.r-1;
-    }else{
-      ball.x=b.x+b.w+ball.r+1;
-    }
-
-  }else{
-
-    ball.vy*=-1;
-
-    if(ball.y<b.y){
-      ball.y=b.y-ball.r-1;
-    }else{
-      ball.y=b.y+b.h+ball.r+1;
-    }
-  }
-
-  /*
-    Keep normal speed after bounce.
-  */
-
-  const wantedSpeed=
-    baseSpeed()*
-    currentSpeedMultiplier();
-
-  const currentSpeed=
-    Math.hypot(ball.vx,ball.vy)||1;
-
-  ball.vx=
-    ball.vx/currentSpeed*
-    wantedSpeed;
-
-  ball.vy=
-    ball.vy/currentSpeed*
-    wantedSpeed;
-
-  if(b.hp<=0){
-
-    b.alive=false;
-
-    data.credits+=10;
-
-    data.runShards+=1;
-
-    particle(
-      b.x+b.w/2,
-      b.y+b.h/2,
-      "#72a7ff",
-      18
-    );
-  }
-
-  return true;
-}
-
-/* =========================
-   BALL UPDATE
-========================= */
-
-function updateBall(ball,dt){
-
-  /*
-    IMPORTANT:
-    Speed boost is applied only while
-    the button is held.
-
-    We don't permanently modify velocity.
-  */
-
-  const multiplier=
-    currentSpeedMultiplier();
-
-  ball.trail.unshift({
-    x:ball.x,
-    y:ball.y
-  });
-
-  if(ball.trail.length>7){
-    ball.trail.pop();
-  }
-
-  /*
-    Auto targeting after 10 sec.
-  */
-
-  autoTarget(ball,dt);
-
-  ball.x+=ball.vx*dt*multiplier;
-  ball.y+=ball.vy*dt*multiplier;
-
-  /*
-    Wall bounce
-  */
-
-  if(ball.x-ball.r<=0){
-
-    ball.x=ball.r;
-    ball.vx=Math.abs(ball.vx);
-
-  }else if(ball.x+ball.r>=W){
-
-    ball.x=W-ball.r;
-    ball.vx=-Math.abs(ball.vx);
-  }
-
-  if(ball.y-ball.r<=75){
-
-    ball.y=75+ball.r;
-    ball.vy=Math.abs(ball.vy);
-
-  }else if(ball.y+ball.r>=H-5){
-
-    ball.y=H-5-ball.r;
-    ball.vy=-Math.abs(ball.vy);
-  }
-
-  /*
-    Block collisions
-  */
-
-  for(const b of blocks){
-
-    if(!b.alive)continue;
-
-    if(collideBallBlock(ball,b)){
-      break;
-    }
-  }
-}
-
-/* =========================
-   MERGE
-========================= */
-
-const mergeOrder=[
-  ["basic","green"],
-  ["green","pink"],
-  ["pink","flame"]
-];
-
-function checkAutoMerge(){
-
-  if(mergeState)return;
-
-  for(const [from,to] of mergeOrder){
-
-    if(data.balls[from]>=10){
-
-      startMerge(from,to);
-      return;
-    }
-  }
-}
-
-function startMerge(from,to){
-
-  const selected=[];
-
-  for(const ball of balls){
-
-    if(ball.type===from){
-
-      selected.push(ball);
-
-      if(selected.length>=10)break;
-    }
-  }
-
-  if(selected.length<10)return;
-
-  mergeState={
-    from,
-    to,
-    balls:selected,
-    time:0,
-    duration:1.7
-  };
-
-  for(const ball of selected){
-
-    ball.vx=0;
-    ball.vy=0;
-  }
-
-  const text=document.getElementById("mergeText");
-
-  text.textContent=
-    "✨ "+from.toUpperCase()+
-    " → "+to.toUpperCase();
-
-  text.style.opacity=1;
-
-  setTimeout(()=>{
-    text.style.opacity=0;
-  },900);
-}
-
-function updateMerge(dt){
-
-  if(!mergeState)return;
-
-  mergeState.time+=dt;
-
-  const progress=
-    Math.min(
-      1,
-      mergeState.time/
-      mergeState.duration
-    );
-
-  const cx=W/2;
-  const cy=H/2;
-
-  const radius=
-    100*(1-progress);
-
-  for(let i=0;i<mergeState.balls.length;i++){
-
-    const ball=mergeState.balls[i];
-
-    const angle=
-      i/mergeState.balls.length*
-      Math.PI*2;
-
-    const targetX=
-      cx+
-      Math.cos(angle)*radius;
-
-    const targetY=
-      cy+
-      Math.sin(angle)*radius;
-
-    ball.x+=(targetX-ball.x)*Math.min(1,dt*7);
-    ball.y+=(targetY-ball.y)*Math.min(1,dt*7);
-
-    ball.r=
-      BALL_TYPES[mergeState.from].radius*
-      (1-progress*.35);
-  }
-
-  if(progress>=1){
-
-    const from=mergeState.from;
-    const to=mergeState.to;
-
-    data.balls[from]-=10;
-    data.balls[to]+=1;
-
-    particle(
-      cx,
-      cy,
-      BALL_TYPES[to].color,
-      40
-    );
-
-    mergeState=null;
-
-    rebuildBalls();
-
-    save();
-
-    checkAutoMerge();
-  }
-}
-
-/* =========================
-   LEVEL CHECK
-========================= */
-
-function checkLevel(){
-
-  if(blocks.some(b=>b.alive)){
-    return;
-  }
-
-  if(data.level>=200){
-
-    data.level=200;
-
-    save();
-
-    return;
-  }
-
-  data.level++;
-
-  data.runShards+=5;
-
-  buildLevel();
-
-  /*
-    Keep balls.
-    New level starts from current
-    ball positions.
-  */
-
-  noHitTimer=0;
-
-  particle(
-    W/2,
-    H/2,
-    "#ffffff",
-    35
-  );
-
-  save();
-}
-
-/* =========================
-   SHOP
-========================= */
-
-function ballPrice(){
-
-  const normal=
-    100*
-    Math.pow(
-      1.05,
-      data.ballBuyCount
-    );
-
-  const discount=
-    Math.pow(
-      .90,
-      data.lowPriceLevel
-    );
-
-  return Math.max(
-    10,
-    Math.floor(normal*discount)
-  );
-}
-
-function lowPriceCost(){
-
-  return Math.floor(
-    300*
-    Math.pow(
-      1.5,
-      data.lowPriceLevel
-    )
-  );
+function updateHUD(){
+  document.getElementById("credits").textContent=
+    Math.floor(data.credits);
+
+  document.getElementById("level").textContent=
+    data.level;
+
+  document.getElementById("shards").textContent=
+    data.totalShards+data.runShards;
 }
 
 function updateShopUI(){
+  document.getElementById("basicCount").textContent=data.balls.basic;
+  document.getElementById("greenCount").textContent=data.balls.green;
+  document.getElementById("pinkCount").textContent=data.balls.pink;
+  document.getElementById("flameCount").textContent=data.balls.flame;
 
-  document.getElementById("credits")
-    .textContent=Math.floor(data.credits);
+  const buy=document.getElementById("buyBall");
+  buy.textContent="BUY — "+ballPrice()+" 💰";
+  buy.disabled=data.credits<ballPrice();
 
-  document.getElementById("level")
-    .textContent=data.level;
+  const dmg=document.getElementById("damageUp");
+  dmg.textContent=
+    "UPGRADE — "+damageCost()+" 💰";
 
-  document.getElementById("shards")
-    .textContent=data.totalShards+data.runShards;
+  dmg.disabled=data.credits<damageCost();
 
-  document.getElementById("ballCount")
-    .textContent=
-      data.balls.basic+
-      data.balls.green+
-      data.balls.pink+
-      data.balls.flame;
+  const spd=document.getElementById("speedUp");
+  spd.textContent=
+    "UPGRADE — "+speedCost()+" 💰";
 
-  document.getElementById("ballPriceText")
-    .textContent=ballPrice();
+  spd.disabled=data.credits<speedCost();
 
-  document.getElementById("damageUpgrade")
-    .textContent=
-      "UPGRADE ("+
-      (100*Math.pow(1.7,data.damageLevel-1))+
-      ")";
+  const low=document.getElementById("lowPriceUp");
+  low.textContent=
+    "UPGRADE — "+lowPriceCost()+" 💰";
 
-  document.getElementById("speedUpgrade")
-    .textContent=
-      "UPGRADE ("+
-      (150*Math.pow(1.7,data.speedLevel-1))+
-      ")";
+  low.disabled=data.credits<lowPriceCost();
 
-  document.getElementById("lowPriceUpgrade")
-    .textContent=
-      "UPGRADE ("+
-      lowPriceCost()+
-      ")";
+  const dbl=document.getElementById("doubleDamage");
 
-  document.getElementById("doubleDamage")
-    .textContent=
-      data.doubleDamage
-        ?"OWNED"
-        :"BUY (1000)";
+  if(data.doubleDamage){
+    dbl.textContent="OWNED ✓";
+    dbl.disabled=true;
+  }else{
+    dbl.textContent="BUY — 1000 💰";
+    dbl.disabled=data.credits<1000;
+  }
+
+  const rebirth=document.getElementById("rebirth");
+
+  if(data.level<200){
+    rebirth.textContent="REACH LEVEL 200";
+    rebirth.disabled=true;
+  }else{
+    rebirth.textContent="REBIRTH — 100 💎";
+    rebirth.disabled=
+      data.totalShards+data.runShards<100;
+  }
+}
+
+function openShop(){
+  shopOpen=true;
+  document.getElementById("shop").classList.add("open");
+  updateShopUI();
+}
+
+function closeShop(){
+  shopOpen=false;
+  document.getElementById("shop").classList.remove("open");
 }
 
 document.getElementById("shopBtn")
-.addEventListener("click",()=>{
-
-  document
-    .getElementById("shop")
-    .classList.add("open");
-
-  updateShopUI();
-});
+.addEventListener("click",openShop);
 
 document.getElementById("closeShop")
-.addEventListener("click",()=>{
-
-  document
-    .getElementById("shop")
-    .classList.remove("open");
-});
+.addEventListener("click",closeShop);
 
 document.getElementById("buyBall")
 .addEventListener("click",()=>{
 
   const price=ballPrice();
 
-  if(data.credits<price)return;
+  if(data.credits<price) return;
 
   data.credits-=price;
-
   data.ballBuyCount++;
 
   data.balls.basic++;
 
   rebuildBalls();
-
-  checkAutoMerge();
-
-  save();
-
   updateShopUI();
+  save();
 });
 
-document.getElementById("damageUpgrade")
+document.getElementById("damageUp")
 .addEventListener("click",()=>{
 
-  const cost=
-    Math.floor(
-      100*
-      Math.pow(
-        1.7,
-        data.damageLevel-1
-      )
-    );
+  const cost=damageCost();
 
-  if(data.credits<cost)return;
+  if(data.credits<cost) return;
 
   data.credits-=cost;
   data.damageLevel++;
 
-  save();
   updateShopUI();
+  save();
 });
 
-document.getElementById("speedUpgrade")
+document.getElementById("speedUp")
 .addEventListener("click",()=>{
 
-  const cost=
-    Math.floor(
-      150*
-      Math.pow(
-        1.7,
-        data.speedLevel-1
-      )
-    );
+  const cost=speedCost();
 
-  if(data.credits<cost)return;
+  if(data.credits<cost) return;
 
   data.credits-=cost;
   data.speedLevel++;
 
-  /*
-    Re-normalize all current balls.
-  */
+  for(const b of balls){
+    const current=Math.hypot(b.vx,b.vy)||1;
+    const newSpeed=ballSpeed();
 
-  const speed=
-    baseSpeed()*
-    currentSpeedMultiplier();
-
-  for(const ball of balls){
-
-    const current=
-      Math.hypot(ball.vx,ball.vy)||1;
-
-    ball.vx=
-      ball.vx/current*speed;
-
-    ball.vy=
-      ball.vy/current*speed;
+    b.vx=b.vx/current*newSpeed;
+    b.vy=b.vy/current*newSpeed;
   }
 
-  save();
   updateShopUI();
+  save();
+});
+
+document.getElementById("lowPriceUp")
+.addEventListener("click",()=>{
+
+  const cost=lowPriceCost();
+
+  if(data.credits<cost) return;
+
+  data.credits-=cost;
+  data.lowPriceLevel++;
+
+  updateShopUI();
+  save();
 });
 
 document.getElementById("doubleDamage")
 .addEventListener("click",()=>{
 
-  if(data.doubleDamage)return;
-
-  if(data.credits<1000)return;
+  if(data.doubleDamage) return;
+  if(data.credits<1000) return;
 
   data.credits-=1000;
   data.doubleDamage=true;
 
-  save();
   updateShopUI();
-});
-
-document.getElementById("lowPriceUpgrade")
-.addEventListener("click",()=>{
-
-  const cost=lowPriceCost();
-
-  if(data.credits<cost)return;
-
-  data.credits-=cost;
-  data.lowPriceLevel++;
-
   save();
-  updateShopUI();
 });
 
 document.getElementById("rebirth")
 .addEventListener("click",()=>{
 
-  if(data.level<200)return;
+  const shards=data.totalShards+data.runShards;
 
-  data.totalShards+=data.runShards;
+  if(data.level<200) return;
+  if(shards<100) return;
 
+  data.totalShards=shards-100;
   data.runShards=0;
 
   data.level=1;
+  data.credits=500;
+
+  data.balls={
+    basic:1,
+    green:0,
+    pink:0,
+    flame:0
+  };
+
+  data.ballBuyCount=0;
 
   buildLevel();
-
-  noHitTimer=0;
-
-  save();
+  rebuildBalls();
 
   updateShopUI();
+  save();
+
+  closeShop();
 });
 
-/* =========================
-   HOLD SPEED BOOST
-========================= */
-
-const speedBoostBtn=
-  document.getElementById(
-    "speedBoostBtn"
-  );
-
 function activateSpeedBoost(){
-
-  if(speedBoostActive)return;
-
   speedBoostActive=true;
-
-  speedBoostBtn.classList.add("active");
-
-  /*
-    Immediately make current balls 50% faster.
-  */
-
-  for(const ball of balls){
-
-    ball.vx*=1.5;
-    ball.vy*=1.5;
-  }
+  document
+    .getElementById("speedBoostBtn")
+    .classList.add("active");
 }
 
 function deactivateSpeedBoost(){
-
-  if(!speedBoostActive)return;
-
   speedBoostActive=false;
-
-  speedBoostBtn.classList.remove("active");
-
-  /*
-    Return current balls to normal speed.
-  */
-
-  for(const ball of balls){
-
-    ball.vx/=1.5;
-    ball.vy/=1.5;
-  }
+  document
+    .getElementById("speedBoostBtn")
+    .classList.remove("active");
 }
 
-speedBoostBtn.addEventListener(
-  "pointerdown",
-  e=>{
-    e.preventDefault();
+const boostBtn=document.getElementById("speedBoostBtn");
 
-    try{
-      speedBoostBtn.setPointerCapture(
-        e.pointerId
-      );
-    }catch{}
+boostBtn.addEventListener("pointerdown",e=>{
+  e.preventDefault();
 
-    activateSpeedBoost();
-  }
-);
+  activateSpeedBoost();
 
-speedBoostBtn.addEventListener(
-  "pointerup",
-  e=>{
-    e.preventDefault();
-    deactivateSpeedBoost();
-  }
-);
+  try{
+    boostBtn.setPointerCapture(e.pointerId);
+  }catch(err){}
+});
 
-speedBoostBtn.addEventListener(
-  "pointercancel",
-  deactivateSpeedBoost
-);
+boostBtn.addEventListener("pointerup",e=>{
+  e.preventDefault();
+  deactivateSpeedBoost();
+});
 
-speedBoostBtn.addEventListener(
-  "lostpointercapture",
-  deactivateSpeedBoost
-);
+boostBtn.addEventListener("pointercancel",()=>{
+  deactivateSpeedBoost();
+});
 
-/* =========================
-   GAME LOOP
-========================= */
+boostBtn.addEventListener("lostpointercapture",()=>{
+  deactivateSpeedBoost();
+});
+
+addEventListener("pointerup",()=>{
+  deactivateSpeedBoost();
+});
+
+addEventListener("blur",()=>{
+  deactivateSpeedBoost();
+});
 
 function update(dt){
 
-  if(
-    !document
-      .getElementById("shop")
-      .classList.contains("open")
-  ){
+  if(shopOpen) return;
 
-    /*
-      Increase no-hit timer.
-    */
+  if(!levelTransitionLock){
 
-    noHitTimer+=dt;
-
-    /*
-      Normal balls.
-    */
-
-    if(!mergeState){
-
-      for(const ball of balls){
-
-        updateBall(ball,dt);
-      }
-    }
+    for(const ball of balls)
+      updateBall(ball,dt);
 
     updateMerge(dt);
 
-    updateParticles(dt);
-
     checkLevel();
-
-    checkAutoMerge();
   }
 
-  updateShopUI();
-}
-
-function draw(){
-
-  ctx.clearRect(0,0,W,H);
-
-  /*
-    Background stars.
-  */
-
-  for(let i=0;i<35;i++){
-
-    const x=(i*97)%W;
-    const y=(i*53)%H;
-
-    ctx.globalAlpha=.18;
-
-    ctx.fillStyle="#ffffff";
-
-    ctx.beginPath();
-
-    ctx.arc(
-      x,
-      y,
-      1,
-      0,
-      Math.PI*2
-    );
-
-    ctx.fill();
-  }
-
-  ctx.globalAlpha=1;
-
-  /*
-    Blocks
-  */
-
-  for(const b of blocks){
-    drawBlock(b);
-  }
-
-  /*
-    Balls
-  */
-
-  for(const ball of balls){
-    drawBall(ball);
-  }
-
-  /*
-    Particles
-  */
-
-  drawParticles();
-
-  /*
-    10-second assist indicator.
-  */
-
-  if(noHitTimer>=NO_HIT_LIMIT){
-
-    ctx.globalAlpha=.55;
-
-    ctx.fillStyle="#ffd21c";
-
-    ctx.font="bold 12px Arial";
-
-    ctx.textAlign="center";
-
-    ctx.fillText(
-      "🎯 AUTO TARGET",
-      W/2,
-      H-65
-    );
-
-    ctx.globalAlpha=1;
-  }
+  updateParticles(dt);
+  updateHUD();
 }
 
 function loop(now){
 
-  let dt=
-    Math.min(
-      .033,
-      (now-lastTime)/1000
-    );
-
+  let dt=(now-lastTime)/1000;
   lastTime=now;
+
+  dt=clamp(dt,0,.033);
 
   update(dt);
   draw();
@@ -1629,16 +1140,26 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 
-/* =========================
-   START
-========================= */
+resize();
+
+if(!localStorage.getItem(SAVE_KEY)){
+  data.balls={
+    basic:1,
+    green:0,
+    pink:0,
+    flame:0
+  };
+
+  data.level=1;
+}
 
 buildLevel();
 rebuildBalls();
 updateShopUI();
+updateHUD();
+save();
 
 requestAnimationFrame(loop);
-
 </script>
 
 </body>
