@@ -1,611 +1,1492 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Orb Breaker</title>
+
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b18;color:#fff;font-family:Arial,sans-serif;touch-action:none}
-body{background:radial-gradient(circle at 50% 35%,#24345f,#0c1228 55%,#050812)}
-#game{width:100vw;height:100vh;display:flex;flex-direction:column}
-#top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0}
-.logo{font-size:23px;font-weight:900}
-.sub{font-size:11px;color:#94a4c8;margin-top:3px}
-.stats{display:flex;gap:8px}
-.stat{background:#121b35dd;border:1px solid #304268;border-radius:12px;padding:7px 14px;text-align:center;min-width:90px}
-.stat small{display:block;color:#899abd;font-size:9px}
-.stat b{font-size:16px}
-#main{flex:1;display:flex;justify-content:center;align-items:center;gap:14px;padding:5px}
-#arena{
- position:relative;width:min(78vh,700px);height:min(78vh,700px);
- border-radius:22px;border:2px solid #34466d;
- background:radial-gradient(circle,#17254a,#0b132a 70%);
- box-shadow:0 20px 60px #0009;overflow:hidden;
+
+html,body{
+ margin:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ background:#070b14;
+ font-family:Arial,sans-serif;
+ color:white;
 }
-#blocks{position:absolute;inset:14px}
-.block{
- position:absolute;border-radius:10px;
- display:flex;align-items:center;justify-content:center;
- font-size:10px;font-weight:bold;
- border:2px solid #ffffff44;
- box-shadow:inset 0 3px 8px #fff4,0 5px 14px #0006;
- transition:filter .1s;
+
+canvas{
+ display:block;
+ width:100vw;
+ height:100vh;
 }
-.hp{position:absolute;bottom:-12px;left:0;width:100%;height:4px;background:#202941;border-radius:5px;overflow:hidden}
-.hp i{display:block;height:100%;background:#fff;border-radius:5px}
-.ball{
- position:absolute;width:18px;height:18px;border-radius:50%;
- transform:translate(-50%,-50%);
- box-shadow:0 0 12px currentColor, inset 3px 3px 5px #fff8;
- z-index:10;
+
+#hud{
+ position:fixed;
+ top:8px;
+ left:8px;
+ right:8px;
+ z-index:5;
+ display:flex;
+ gap:6px;
+ align-items:center;
+ justify-content:space-between;
+ pointer-events:none;
 }
-.basic{background:#fff;color:#bcd0ff}
-.green{background:#38ef7d;color:#38ef7d}
-.pink{background:#ff65b6;color:#ff65b6}
-.flame{background:#ff6a25;color:#ff9b43;box-shadow:0 0 18px #ff5722,inset 3px 3px 5px #fff8}
-#side{width:225px}
-.panel{background:#111a32e8;border:1px solid #304268;border-radius:16px;padding:13px;margin-bottom:10px}
-.panel h3{margin:0 0 9px;font-size:15px}
-.row{display:flex;justify-content:space-between;margin:7px 0;color:#a9b7d4;font-size:12px}
-.row b{color:#fff}
+
+.badge{
+ background:#111a2bf0;
+ border:1px solid #34476b;
+ border-radius:10px;
+ padding:7px 9px;
+ font-weight:bold;
+ font-size:13px;
+}
+
 button{
- border:0;border-radius:10px;padding:9px 12px;font-weight:bold;cursor:pointer;
- background:#55e58a;color:#06150c;
+ border:0;
+ border-radius:11px;
+ padding:9px 12px;
+ background:#294574;
+ color:white;
+ font-weight:bold;
 }
-button.dark{background:#263654;color:#dce6ff}
-button:disabled{opacity:.4}
-.full{width:100%;margin-top:7px}
-#message{
- position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);
- background:#111b38f5;border:1px solid #7185b5;border-radius:16px;
- padding:14px 22px;font-size:20px;font-weight:bold;opacity:0;
- pointer-events:none;z-index:100;transition:.2s;
+
+#shop{
+ display:none;
+ position:fixed;
+ top:55px;
+ right:10px;
+ width:240px;
+ z-index:10;
+ background:#0d1628f5;
+ border:1px solid #3d537c;
+ border-radius:15px;
+ padding:13px;
 }
-#message.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.float{
- position:absolute;z-index:50;font-weight:900;color:#ffe86a;
- pointer-events:none;animation:float .8s forwards;
+
+#shop button{
+ width:100%;
+ margin-top:7px;
 }
-@keyframes float{0%{opacity:1;transform:translateY(0) scale(1)}
-100%{opacity:0;transform:translateY(-45px) scale(1.3)}}
-.particle{
- position:absolute;width:7px;height:7px;border-radius:50%;
- pointer-events:none;z-index:40;animation:particle .55s forwards;
-}
-@keyframes particle{
- 0%{opacity:1;transform:translate(0,0) scale(1)}
- 100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.2)}
-}
-.shake{animation:shake .16s}
-@keyframes shake{
- 0%,100%{transform:translate(0)}
- 25%{transform:translate(3px,-2px)}
- 50%{transform:translate(-3px,2px)}
- 75%{transform:translate(2px,1px)}
-}
-#portrait{display:none}
-@media(orientation:portrait){
- #portrait{display:flex;position:fixed;inset:0;background:#070b18;z-index:999;
- align-items:center;justify-content:center;text-align:center;padding:30px}
- #portrait div{max-width:300px}
- #portrait h2{font-size:27px}
- #portrait p{color:#9aa8c5}
-}
-@media(max-width:850px){
- #side{display:none}
- #arena{width:min(88vh,94vw);height:min(88vh,94vw)}
- #top{padding:7px 10px}
- .logo{font-size:18px}
- .stat{min-width:68px;padding:6px}
+
+.small{
+ font-size:12px;
+ opacity:.8;
+ margin-top:5px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="portrait">
- <div>
-  <h2>📱 Rotate Your Device</h2>
-  <p>Play Orb Breaker in landscape mode.</p>
- </div>
+<div id="hud">
+ <div class="badge">💰 <span id="credits">0</span></div>
+ <div class="badge">LV <span id="level">1</span></div>
+ <div class="badge">🔷 <span id="shards">0</span></div>
+ <div class="badge">⚪ <span id="ballCount">1</span></div>
+ <button id="shopBtn">🛒 SHOP</button>
 </div>
 
-<div id="game">
+<div id="shop">
+ <b>ORB SHOP</b>
 
-<header id="top">
- <div>
-  <div class="logo">🔮 Orb Breaker</div>
-  <div class="sub">Break blocks • Collect Credits • Grow stronger</div>
- </div>
- <div class="stats">
-  <div class="stat"><small>CREDITS</small><b id="credits">0</b></div>
-  <div class="stat"><small>LEVEL</small><b id="level">1</b></div>
-  <div class="stat"><small>SHARDS</small><b id="shards">0</b></div>
- </div>
-</header>
-
-<div id="main">
-
- <div id="arena">
-  <div id="blocks"></div>
+ <div class="small">
+  10 same-tier balls automatically merge.
  </div>
 
- <aside id="side">
+ <button id="buyBtn">
+  Buy Basic Ball — 100
+ </button>
 
-  <div class="panel">
-   <h3>⚪ Current Ball</h3>
-   <div class="row"><span>Type</span><b id="ballType">Basic</b></div>
-   <div class="row"><span>Damage</span><b id="damage">1</b></div>
-   <div class="row"><span>Speed</span><b id="speed">1.2</b></div>
-   <div class="row"><span>Balls</span><b id="ballCount">1</b></div>
-  </div>
+ <button id="damageBtn">
+  Damage Upgrade
+ </button>
 
-  <div class="panel">
-   <h3>⬆️ Damage Upgrade</h3>
-   <div class="row"><span>Upgrade</span><b id="upgradeLevel">Lv.1</b></div>
-   <div class="row"><span>Cost</span><b id="upgradeCost">100</b></div>
-   <button class="full" onclick="upgradeDamage()">Upgrade +25%</button>
-  </div>
+ <button id="speedBtn">
+  Speed
+ </button>
 
-  <div class="panel">
-   <h3>🛒 Buy Ball</h3>
-   <div class="row"><span>Next Ball</span><b id="nextBall">100</b></div>
-   <button class="full" onclick="buyBall()">Buy Ball</button>
-   <button class="full dark" onclick="speedUpgrade()">Speed Upgrade</button>
-   <button class="full dark" onclick="doubleDamage()">Double Damage</button>
-  </div>
+ <button id="doubleBtn">
+  Double Damage — 10,000
+ </button>
 
-  <div class="panel">
-   <h3>💎 Rebirth</h3>
-   <div class="row"><span>Requirement</span><b>Lv.100+</b></div>
-   <div class="row"><span>Permanent</span><b id="permBonus">+0%</b></div>
-   <button class="full dark" onclick="rebirth()">Rebirth</button>
-  </div>
-
- </aside>
-
-</div>
+ <div id="info" class="small"></div>
 </div>
 
-<div id="message"></div>
+<canvas id="game"></canvas>
 
 <script>
-const arena=document.getElementById("arena");
-const blockLayer=document.getElementById("blocks");
 
-let credits=1000;
-let level=1;
-let shards=0;
-let permanentBonus=0;
-let damage=1;
-let damageLevel=1;
-let ballSpeed=1.2;
-let double=false;
-let balls=[];
-let blocks=[];
-let nextBallCost=100;
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
-const ballTypes=[
- {name:"Basic",class:"basic",damage:1},
- {name:"Green",class:"green",damage:10},
- {name:"Pink",class:"pink",damage:100},
- {name:"Flame",class:"flame",damage:1000}
+let W=innerWidth;
+let H=innerHeight;
+let DPR=Math.min(devicePixelRatio||1,2);
+
+function resize(){
+
+ W=innerWidth;
+ H=innerHeight;
+
+ canvas.width=W*DPR;
+ canvas.height=H*DPR;
+
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+
+ buildLevel();
+}
+
+addEventListener("resize",resize);
+
+
+/* =========================
+   BALL TYPES
+========================= */
+
+const TYPES=[
+ {
+  name:"basic",
+  color:"#eaf2ff",
+  baseDamage:10
+ },
+ {
+  name:"green",
+  color:"#55f28b",
+  baseDamage:25
+ },
+ {
+  name:"pink",
+  color:"#ff72bd",
+  baseDamage:60
+ },
+ {
+  name:"flame",
+  color:"#ff9d35",
+  baseDamage:150
+ }
 ];
 
-let currentType=0;
 
-function format(n){
- return Math.floor(n).toLocaleString();
+/* =========================
+   SAVE DATA
+========================= */
+
+let data={
+ credits:0,
+ level:1,
+ shards:0,
+
+ inventory:{
+  basic:1,
+  green:0,
+  pink:0,
+  flame:0
+ },
+
+ damageLevel:{
+  basic:1,
+  green:1,
+  pink:1,
+  flame:1
+ },
+
+ speed:1.2,
+ doubleDamage:false
+};
+
+try{
+
+ const saved=
+ JSON.parse(localStorage.getItem("orbBreakerSave")||"null");
+
+ if(saved){
+  data={...data,...saved};
+
+  data.inventory={
+   ...data.inventory,
+   ...(saved.inventory||{})
+  };
+
+  data.damageLevel={
+   ...data.damageLevel,
+   ...(saved.damageLevel||{})
+  };
+ }
+
+}catch(e){}
+
+
+function save(){
+
+ localStorage.setItem(
+  "orbBreakerSave",
+  JSON.stringify(data)
+ );
+
+ updateHUD();
 }
 
-function upgradeCost(){
- return Math.floor(100*Math.pow(1.08,damageLevel-1));
+
+/* =========================
+   GAME VARIABLES
+========================= */
+
+let balls=[];
+let blocks=[];
+let particles=[];
+let texts=[];
+
+let lastTime=performance.now();
+
+let levelBanner=0;
+let screenShake=0;
+let maxLevel=false;
+
+
+/* =========================
+   HUD
+========================= */
+
+function updateHUD(){
+
+ document.getElementById("credits").textContent=
+  Math.floor(data.credits);
+
+ document.getElementById("level").textContent=
+  data.level;
+
+ document.getElementById("shards").textContent=
+  data.shards;
+
+ document.getElementById("ballCount").textContent=
+  balls.length;
+
+ document.getElementById("info").textContent=
+ `Basic ${data.inventory.basic} • `+
+ `Green ${data.inventory.green} • `+
+ `Pink ${data.inventory.pink} • `+
+ `Flame ${data.inventory.flame} • `+${data.shards}% permanent damage`;
 }
 
-function renderUI(){
- document.getElementById("credits").textContent=format(credits);
- document.getElementById("level").textContent=level;
- document.getElementById("shards").textContent=shards;
- document.getElementById("damage").textContent=format(damage);
- document.getElementById("upgradeLevel").textContent="Lv."+damageLevel;
- document.getElementById("upgradeCost").textContent=format(upgradeCost());
- document.getElementById("speed").textContent=ballSpeed.toFixed(1);
- document.getElementById("ballCount").textContent=balls.length;
- document.getElementById("ballType").textContent=ballTypes[currentType].name;
- document.getElementById("nextBall").textContent=format(nextBallCost);
- document.getElementById("permBonus").textContent="+"+permanentBonus+"%";
+
+/* =========================
+   DAMAGE
+========================= */
+
+function getDamage(type){
+
+ const info=TYPES.find(x=>x.name===type);
+
+ const lv=data.damageLevel[type]||1;
+
+ let damage=
+ info.baseDamage*
+ Math.pow(1.25,lv-1);
+
+ damage*=1+data.shards/100;
+
+ if(data.doubleDamage)
+  damage*=2;
+
+ return damage;
 }
 
-function makeBlocks(){
+
+/* =========================
+   BALL CREATION
+========================= */
+
+function createBall(type){
+
+ balls.push({
+
+  type,
+
+  x:W/2,
+  y:H*.72,
+
+  r:6,
+
+  vx:(Math.random()<.5?-1:1)*
+     (120+Math.random()*60),
+
+  vy:-(150+Math.random()*70),
+
+  trail:[],
+
+  lastHits:new Map()
+ });
+}
+
+
+/* =========================
+   SYNC BALLS
+========================= */
+
+function syncBalls(){
+
+ balls=[];
+
+ for(const type of TYPES){
+
+  const count=data.inventory[type.name]||0;
+
+  for(let i=0;i<count;i++)
+   createBall(type);
+ }
+
+ if(balls.length===0){
+
+  data.inventory.basic=1;
+
+  createBall("basic");
+ }
+
+ updateHUD();
+}
+
+
+/* =========================
+   MERGE
+========================= */
+
+function mergeBalls(type){
+
+ const index=
+  TYPES.findIndex(x=>x.name===type);
+
+ if(index<0 || index>=TYPES.length-1)
+  return;
+
+ const next=
+  TYPES[index+1].name;
+
+ while(data.inventory[type]>=10){
+
+  data.inventory[type]-=10;
+
+  data.inventory[next]++;
+
+ }
+}
+
+
+/* =========================
+   BUILD LEVEL
+========================= */
+
+function buildLevel(){
+
  blocks=[];
- blockLayer.innerHTML="";
 
- const cols=7;
- const rows=Math.min(4+Math.floor(level/10),8);
+ const rows=
+  Math.min(
+   4+Math.floor(data.level/25),
+   8
+  );
+
+ const cols=
+  Math.min(
+   7+Math.floor(data.level/30),
+   11
+  );
+
  const gap=5;
- const W=arena.clientWidth-28;
- const H=arena.clientHeight*.48;
- const bw=(W-(cols-1)*gap)/cols;
- const bh=(H-(rows-1)*gap)/rows;
+ const left=12;
+ const top=92;
+
+ const bw=
+  (W-left*2-gap*(cols-1))/cols;
+
+ const bh=
+  Math.max(
+   28,
+   Math.min(
+    42,
+    (H*.48-top)/rows-gap
+   )
+  );
+
+ const baseHP=
+  35+data.level*14;
 
  for(let r=0;r<rows;r++){
+
   for(let c=0;c<cols;c++){
-   const hp=Math.max(5,Math.floor(level*(1+r*.45)));
-   const el=document.createElement("div");
 
-   el.className="block";
-   el.style.width=bw+"px";
-   el.style.height=bh+"px";
-   el.style.left=(c*(bw+gap))+"px";
-   el.style.top=(r*(bh+gap))+"px";
-
-   const hue=(r*35+c*9)%360;
-   el.style.background=
-    `linear-gradient(135deg,hsl(${hue},85%,75%),hsl(${hue},75%,38%))`;
-
-   el.dataset.hp=hp;
-   el.dataset.max=hp;
-
-   el.innerHTML=`<span>${hp}</span><div class="hp"><i></i></div>`;
-
-   blockLayer.appendChild(el);
+   const hp=
+    baseHP*
+    (1+r*.35+data.level/100);
 
    blocks.push({
-    el,
-    hp,
-    max:hp,
-    x:14+c*(bw+gap),
-    y:14+r*(bh+gap),
+
+    x:left+c*(bw+gap),
+
+    y:top+r*(bh+gap),
+
     w:bw,
     h:bh,
-    alive:true
+
+    hp,
+    maxHP:hp,
+
+    reward:
+     5+Math.floor(data.level/2),
+
+    dead:false,
+
+    flash:0
    });
   }
  }
+
+ if(balls.length===0)
+  syncBalls();
+
+ updateHUD();
+
+ save();
 }
 
-function createBall(type=0){
- const rect=arena.getBoundingClientRect();
 
- const b={
-  x:rect.width/2,
-  y:rect.height-55,
-  vx:(Math.random()>.5?1:-1)*ballSpeed,
-  vy:-ballSpeed,
-  type,
-  el:document.createElement("div")
- };
+/* =========================
+   PARTICLES
+========================= */
 
- b.el.className="ball "+ballTypes[type].class;
- arena.appendChild(b.el);
+function burst(x,y,big=false){
 
- balls.push(b);
- updateBallPosition(b);
- renderUI();
+ const amount=big?24:7;
+
+ for(let i=0;i<amount;i++){
+
+  const angle=
+   Math.random()*Math.PI*2;
+
+  const speed=
+   (big?80:45)+
+   Math.random()*100;
+
+  particles.push({
+
+   x,
+   y,
+
+   vx:Math.cos(angle)*speed,
+   vy:Math.sin(angle)*speed,
+
+   life:.45+
+        Math.random()*.45,
+
+   size:
+    2+Math.random()*4
+  });
+ }
 }
 
-function updateBallPosition(b){
- b.el.style.left=b.x+"px";
- b.el.style.top=b.y+"px";
+
+/* =========================
+   CLAMP
+========================= */
+
+function clamp(value,min,max){
+
+ return Math.max(
+  min,
+  Math.min(max,value)
+ );
 }
 
-function hitBlock(b,block){
- if(!block.alive)return;
 
- const actualDamage=Math.max(
-  1,
-  Math.floor(damage*ballTypes[b.type].damage)*(double?2:1)
+/* =========================
+   BLOCK COLLISION
+========================= */
+
+function collideBlock(block,ball,now){
+
+ const closestX=
+  clamp(
+   ball.x,
+   block.x,
+   block.x+block.w
+  );
+
+ const closestY=
+  clamp(
+   ball.y,
+   block.y,
+   block.y+block.h
+  );
+
+ let dx=
+  ball.x-closestX;
+
+ let dy=
+  ball.y-closestY;
+
+ const distanceSquared=
+  dx*dx+dy*dy;
+
+ if(
+  distanceSquared>
+  ball.r*ball.r
+ )
+  return false;
+
+
+ const blockID=
+  blocks.indexOf(block);
+
+ const previousHit=
+  ball.lastHits.get(blockID)||0;
+
+ if(now-previousHit<70)
+  return false;
+
+ ball.lastHits.set(
+  blockID,
+  now
  );
 
- block.hp-=actualDamage;
 
- const ratio=Math.max(0,block.hp/block.max);
+ let nx=0;
+ let ny=0;
+ let penetration=0;
 
- block.el.style.filter=`brightness(${.55+ratio*.7})`;
 
- const hpText=block.el.querySelector("span");
- hpText.textContent=Math.max(0,Math.floor(block.hp));
+ /*
+   BALL CENTER INSIDE BLOCK
+ */
 
- const hpBar=block.el.querySelector(".hp i");
- hpBar.style.width=(ratio*100)+"%";
+ if(distanceSquared<0.0001){
 
- hitFlash(block);
+  const left=
+   Math.abs(ball.x-block.x);
 
- if(block.hp<=0){
-  destroyBlock(block);
- }
-}
+  const right=
+   Math.abs(
+    ball.x-(block.x+block.w)
+   );
 
-function hitFlash(block){
- block.el.animate([
-  {transform:"scale(1)",filter:"brightness(1)"},
-  {transform:"scale(1.12)",filter:"brightness(2.2)"},
-  {transform:"scale(1)",filter:"brightness(.8)"}
- ],{duration:150});
+  const top=
+   Math.abs(ball.y-block.y);
 
- for(let i=0;i<3;i++){
-  const p=document.createElement("div");
-  p.className="particle";
-  p.style.left=(block.x+block.w/2)+"px";
-  p.style.top=(block.y+block.h/2)+"px";
-  p.style.background="#fff";
-  p.style.setProperty("--x",(Math.random()*40-20)+"px");
-  p.style.setProperty("--y",(Math.random()*40-20)+"px");
-  arena.appendChild(p);
-  setTimeout(()=>p.remove(),600);
- }
-}
+  const bottom=
+   Math.abs(
+    ball.y-(block.y+block.h)
+   );
 
-function destroyBlock(block){
- block.alive=false;
+  const nearest=
+   Math.min(
+    left,
+    right,
+    top,
+    bottom
+   );
 
- const reward=Math.max(2,Math.floor(level*.8)+1);
- credits+=reward;
+  if(nearest===left){
 
- showFloat("+"+reward+" 💰",block.x+block.w/2,block.y+block.h/2);
+   nx=-1;
+   ny=0;
+   penetration=ball.r+left;
 
- for(let i=0;i<14;i++){
-  const p=document.createElement("div");
-  p.className="particle";
-  p.style.left=(block.x+block.w/2)+"px";
-  p.style.top=(block.y+block.h/2)+"px";
-  p.style.background=["#fff","#7cecff","#ffde68","#ff75bd"][i%4];
-  p.style.setProperty("--x",(Math.random()*110-55)+"px");
-  p.style.setProperty("--y",(Math.random()*110-55)+"px");
-  arena.appendChild(p);
-  setTimeout(()=>p.remove(),650);
- }
+  }else if(nearest===right){
 
- block.el.animate([
-  {transform:"scale(1)",opacity:1},
-  {transform:"scale(1.35)",opacity:.8},
-  {transform:"scale(.1)",opacity:0}
- ],{duration:320}).onfinish=()=>{
-  block.el.remove();
- };
+   nx=1;
+   ny=0;
+   penetration=ball.r+right;
 
- arena.classList.remove("shake");
- void arena.offsetWidth;
- arena.classList.add("shake");
+  }else if(nearest===top){
 
- checkLevel();
-}
+   nx=0;
+   ny=-1;
+   penetration=ball.r+top;
 
-function showFloat(text,x,y){
- const f=document.createElement("div");
- f.className="float";
- f.textContent=text;
- f.style.left=x+"px";
- f.style.top=y+"px";
- arena.appendChild(f);
- setTimeout(()=>f.remove(),850);
-}
+  }else{
 
-function checkLevel(){
- const remaining=blocks.filter(b=>b.alive).length;
-
- if(remaining===0){
-  level++;
-
-  if(level<=200){
-   if(level%10===0){
-    shards++;
-    showMessage("💎 SHARD +1!");
-   }else{
-    showMessage("⭐ LEVEL "+level+"!");
-   }
-
-   makeBlocks();
+   nx=0;
+   ny=1;
+   penetration=ball.r+bottom;
   }
+
+ }else{
+
+  const distance=
+   Math.sqrt(distanceSquared);
+
+  nx=dx/distance;
+  ny=dy/distance;
+
+  penetration=
+   ball.r-distance;
  }
 
- renderUI();
-}
 
-function gameLoop(){
- const w=arena.clientWidth;
- const h=arena.clientHeight;
+ /*
+   PUSH BALL OUT OF BLOCK
+ */
 
- balls.forEach(b=>{
-  b.x+=b.vx;
-  b.y+=b.vy;
+ ball.x+=
+  nx*(penetration+.5);
 
-  if(b.x<9){
-   b.x=9;
-   b.vx=Math.abs(b.vx);
-  }
+ ball.y+=
+  ny*(penetration+.5);
 
-  if(b.x>w-9){
-   b.x=w-9;
-   b.vx=-Math.abs(b.vx);
-  }
 
-  if(b.y<9){
-   b.y=9;
-   b.vy=Math.abs(b.vy);
-  }
+ /*
+   REFLECT VELOCITY
+ */
 
-  if(b.y>h-9){
-   b.y=h-9;
-   b.vy=-Math.abs(b.vy);
-  }
+ const velocityNormal=
+  ball.vx*nx+
+  ball.vy*ny;
 
-  blocks.forEach(block=>{
-   if(!block.alive)return;
+ if(velocityNormal<0){
 
-   if(
-    b.x>block.x &&
-    b.x<block.x+block.w &&
-    b.y>block.y &&
-    b.y<block.y+block.h
-   ){
-    hitBlock(b,block);
+  ball.vx-=
+   2*velocityNormal*nx;
 
-    if(b.vy>0 && b.y<block.y+block.h/2)b.vy=-Math.abs(b.vy);
-    else if(b.vy<0 && b.y>block.y+block.h/2)b.vy=Math.abs(b.vy);
-    else b.vx*=-1;
-   }
+  ball.vy-=
+   2*velocityNormal*ny;
+ }
+
+
+ /*
+   DAMAGE BLOCK
+ */
+
+ block.hp-=
+  getDamage(ball.type);
+
+ block.flash=1;
+
+ burst(
+  ball.x,
+  ball.y
+ );
+
+ screenShake=
+  Math.min(
+   8,
+   screenShake+1
+  );
+
+
+ /*
+   BLOCK DESTROYED
+ */
+
+ if(
+  block.hp<=0 &&
+  !block.dead
+ ){
+
+  block.dead=true;
+
+  data.credits+=
+   block.reward;
+
+  texts.push({
+
+   text:"+"+block.reward,
+
+   x:block.x+
+     block.w/2,
+
+   y:block.y+
+     block.h/2,
+
+   life:1
   });
 
-  updateBallPosition(b);
- });
+  burst(
+   block.x+
+   block.w/2,
 
- requestAnimationFrame(gameLoop);
+   block.y+
+   block.h/2,
+
+   true
+  );
+
+
+  /*
+    NEXT LEVEL
+  */
+
+  if(
+   blocks.every(b=>b.dead)
+  ){
+
+   if(data.level<200){
+
+    data.level++;
+
+    if(
+     data.level%10===0
+    ){
+
+     data.shards++;
+    }
+
+    buildLevel();
+
+    levelBanner=1.3;
+
+   }else{
+
+    data.level=200;
+
+    maxLevel=true;
+   }
+
+   save();
+  }
+ }
+
+ return true;
 }
 
-function buyBall(){
- if(credits<nextBallCost){
-  showMessage("Not enough Credits");
-  return;
+
+/* =========================
+   GAME UPDATE
+========================= */
+
+function update(dt,now){
+
+ for(const ball of balls){
+
+  /*
+    TRAIL
+  */
+
+  ball.trail.unshift({
+
+   x:ball.x,
+   y:ball.y
+  });
+
+  if(
+   ball.trail.length>7
+  )
+   ball.trail.pop();
+
+
+  /*
+    MOVE
+  */
+
+  ball.x+=
+   ball.vx*dt;
+
+  ball.y+=
+   ball.vy*dt;
+
+
+  /*
+    LEFT BORDER
+  */
+
+  if(
+   ball.x<ball.r
+  ){
+
+   ball.x=ball.r;
+
+   ball.vx=
+    Math.abs(ball.vx);
+  }
+
+
+  /*
+    RIGHT BORDER
+  */
+
+  if(
+   ball.x>
+   W-ball.r
+  ){
+
+   ball.x=
+    W-ball.r;
+
+   ball.vx=
+    -Math.abs(ball.vx);
+  }
+
+
+  /*
+    TOP BORDER
+  */
+
+  const topBorder=
+   65+ball.r;
+
+  if(
+   ball.y<topBorder
+  ){
+
+   ball.y=topBorder;
+
+   ball.vy=
+    Math.abs(ball.vy);
+  }
+
+
+  /*
+    BOTTOM BORDER
+    IMPORTANT:
+    THE BALL DOES NOT FALL OFF.
+  */
+
+  const bottomBorder=
+   H-ball.r;
+
+  if(
+   ball.y>bottomBorder
+  ){
+
+   ball.y=
+    bottomBorder;
+
+   ball.vy=
+    -Math.abs(ball.vy);
+  }
+
+
+  /*
+    BLOCKS
+  */
+
+  for(
+   const block of blocks
+  ){
+
+   if(block.dead)
+    continue;
+
+   if(
+    collideBlock(
+     block,
+     ball,
+     now
+    )
+   ){
+
+    break;
+   }
+  }
  }
 
- credits-=nextBallCost;
- createBall(currentType);
 
- if(balls.length>=10){
-  mergeBalls();
+ /*
+   PARTICLES
+ */
+
+ for(
+  let i=particles.length-1;
+  i>=0;
+  i--
+ ){
+
+  const p=particles[i];
+
+  p.x+=p.vx*dt;
+  p.y+=p.vy*dt;
+
+  p.vy+=300*dt;
+
+  p.life-=dt;
+
+  if(p.life<=0)
+   particles.splice(i,1);
  }
 
- nextBallCost=Math.floor(nextBallCost*1.12);
- renderUI();
+
+ /*
+   TEXT
+ */
+
+ for(
+  let i=texts.length-1;
+  i>=0;
+  i--
+ ){
+
+  const t=texts[i];
+
+  t.y-=35*dt;
+
+  t.life-=dt;
+
+  if(t.life<=0)
+   texts.splice(i,1);
+ }
+
+
+ /*
+   EFFECTS
+ */
+
+ for(
+  const block of blocks
+ ){
+
+  if(block.flash>0)
+   block.flash-=dt*5;
+ }
+
+ levelBanner=
+  Math.max(
+   0,
+   levelBanner-dt
+  );
+
+ screenShake=
+  Math.max(
+   0,
+   screenShake-dt*12
+  );
 }
 
-function mergeBalls(){
- if(balls.length<10)return;
 
- const old=balls.splice(0,10);
+/* =========================
+   DRAW
+========================= */
 
- old.forEach(b=>b.el.remove());
+function draw(){
 
- if(currentType<3){
-  currentType++;
+ ctx.clearRect(
+  0,
+  0,
+  W,
+  H
+ );
+
+
+ /*
+   BACKGROUND
+ */
+
+ const bg=
+  ctx.createRadialGradient(
+   W/2,
+   H*.2,
+   20,
+   W/2,
+   H*.5,
+   H
+  );
+
+ bg.addColorStop(
+  0,
+  "#182642"
+ );
+
+ bg.addColorStop(
+  1,
+  "#070b14"
+ );
+
+ ctx.fillStyle=bg;
+
+ ctx.fillRect(
+  0,
+  0,
+  W,
+  H
+ );
+
+
+ ctx.save();
+
+
+ /*
+   SCREEN SHAKE
+ */
+
+ if(screenShake){
+
+  ctx.translate(
+   (Math.random()-.5)*
+   screenShake,
+
+   (Math.random()-.5)*
+   screenShake
+  );
  }
 
- createBall(currentType);
 
- showMessage("✨ MERGE! "+ballTypes[currentType].name);
+ /*
+   BLOCKS
+ */
 
- renderUI();
+ for(
+  const block of blocks
+ ){
+
+  if(block.dead)
+   continue;
+
+
+  const ratio=
+   Math.max(
+    0,
+    block.hp/
+    block.maxHP
+   );
+
+
+  /*
+    0.7 OPACITY
+  */
+
+  ctx.globalAlpha=.7;
+
+  const gradient=
+   ctx.createLinearGradient(
+    block.x,
+    block.y,
+    block.x,
+    block.y+block.h
+   );
+
+  gradient.addColorStop(
+   0,
+   "#708cc0"
+  );
+
+  gradient.addColorStop(
+   1,
+   "#263a63"
+  );
+
+  ctx.fillStyle=
+   gradient;
+
+  ctx.fillRect(
+   block.x,
+   block.y,
+   block.w,
+   block.h
+  );
+
+
+  ctx.globalAlpha=1;
+
+  ctx.strokeStyle=
+   block.flash>0?
+   "#ffffff":
+   "#8195bd";
+
+  ctx.strokeRect(
+   block.x,
+   block.y,
+   block.w,
+   block.h
+  );
+
+
+  /*
+    HP
+  */
+
+  ctx.fillStyle=
+   "#ffffff";
+
+  ctx.font=
+   "bold 12px Arial";
+
+  ctx.textAlign=
+   "center";
+
+  ctx.fillText(
+   Math.ceil(block.hp),
+
+   block.x+
+   block.w/2,
+
+   block.y+
+   block.h/2+
+   4
+  );
+
+
+  /*
+    HP BAR
+  */
+
+  ctx.fillStyle=
+   "#10182a";
+
+  ctx.fillRect(
+   block.x+3,
+   block.y+
+   block.h-5,
+
+   (block.w-6)*
+   ratio,
+
+   2
+  );
+ }
+
+
+ /*
+   BALLS
+ */
+
+ for(
+  const ball of balls
+ ){
+
+  const type=
+   TYPES.find(
+    t=>t.name===ball.type
+   );
+
+
+  /*
+    TRAIL
+  */
+
+  for(
+   let i=ball.trail.length-1;
+   i>=0;
+   i--
+  ){
+
+   const p=
+    ball.trail[i];
+
+   ctx.globalAlpha=
+    (1-
+     i/ball.trail.length)
+    *.25;
+
+   ctx.fillStyle=
+    type.color;
+
+   ctx.beginPath();
+
+   ctx.arc(
+    p.x,
+    p.y,
+    ball.r,
+    0,
+    Math.PI*2
+   );
+
+   ctx.fill();
+  }
+
+
+  ctx.globalAlpha=1;
+
+  /*
+    BALL GLOW
+  */
+
+  ctx.shadowBlur=15;
+  ctx.shadowColor=
+   type.color;
+
+  ctx.fillStyle=
+   type.color;
+
+  ctx.beginPath();
+
+  ctx.arc(
+   ball.x,
+   ball.y,
+   ball.r,
+   0,
+   Math.PI*2
+  );
+
+  ctx.fill();
+
+  ctx.shadowBlur=0;
+ }
+
+
+ /*
+   PARTICLES
+ */
+
+ for(
+  const p of particles
+ ){
+
+  ctx.globalAlpha=
+   Math.max(
+    0,
+    p.life
+   );
+
+  ctx.fillStyle=
+   "#ffffff";
+
+  ctx.fillRect(
+   p.x,
+   p.y,
+   p.size,
+   p.size
+  );
+ }
+
+
+ /*
+   CREDIT TEXT
+ */
+
+ for(
+  const t of texts
+ ){
+
+  ctx.globalAlpha=
+   t.life;
+
+  ctx.fillStyle=
+   "#ffd86b";
+
+  ctx.font=
+   "bold 16px Arial";
+
+  ctx.textAlign=
+   "center";
+
+  ctx.fillText(
+   t.text,
+   t.x,
+   t.y
+  );
+ }
+
+
+ ctx.restore();
+
+ ctx.globalAlpha=1;
+
+
+ /*
+   LEVEL MESSAGE
+ */
+
+ if(levelBanner>0){
+
+  ctx.font=
+   "900 34px Arial";
+
+  ctx.textAlign=
+   "center";
+
+  ctx.fillStyle=
+   "#ffffff";
+
+  ctx.fillText(
+   "LEVEL "+data.level,
+   W/2,
+   H*.78
+  );
+ }
+
+
+ if(maxLevel){
+
+  ctx.font=
+   "900 28px Arial";
+
+  ctx.textAlign=
+   "center";
+
+  ctx.fillStyle=
+   "#ffd86b";
+
+  ctx.fillText(
+   "MAX LEVEL 200",
+   W/2,
+   H*.78
+  );
+ }
 }
 
-function upgradeDamage(){
- const cost=upgradeCost();
 
- if(damageLevel>=100){
-  showMessage("MAX DAMAGE LEVEL");
-  return;
- }
+/* =========================
+   GAME LOOP
+========================= */
 
- if(credits<cost){
-  showMessage("Not enough Credits");
-  return;
- }
+function gameLoop(now){
 
- credits-=cost;
+ const dt=
+  Math.min(
+   .033,
+   (now-lastTime)/1000
+  );
 
- damage*=1.25;
- damageLevel++;
+ lastTime=now;
 
- if([25,50,75,100].includes(damageLevel)){
-  damage*=1.25;
-  showMessage("🎁 FREE +25% DAMAGE!");
- }else{
-  showMessage("💥 DAMAGE UPGRADED!");
- }
+ update(
+  dt,
+  now
+ );
 
- renderUI();
+ draw();
+
+ updateHUD();
+
+ requestAnimationFrame(
+  gameLoop
+ );
 }
 
-function speedUpgrade(){
- if(ballSpeed>=2){
-  showMessage("MAX SPEED");
-  return;
+
+/* =========================
+   SHOP
+========================= */
+
+document.getElementById(
+ "shopBtn"
+).onclick=()=>{
+
+ const shop=
+  document.getElementById("shop");
+
+ shop.style.display=
+  shop.style.display==="block"?
+  "none":
+  "block";
+};
+
+
+/*
+  BUY BALL
+*/
+
+document.getElementById(
+ "buyBtn"
+).onclick=()=>{
+
+ if(
+  data.credits>=100
+ ){
+
+  data.credits-=100;
+
+  data.inventory.basic++;
+
+  mergeBalls("basic");
+
+  syncBalls();
+
+  save();
  }
+};
 
- const cost=Math.floor(500*Math.pow(1.15,Math.round((ballSpeed-1.2)*10)));
 
- if(credits<cost){
-  showMessage("Not enough Credits");
-  return;
+/*
+  DAMAGE
+*/
+
+document.getElementById(
+ "damageBtn"
+).onclick=()=>{
+
+ const lv=
+  data.damageLevel.basic;
+
+ const cost=
+  Math.floor(
+   100*
+   Math.pow(
+    1.08,
+    lv-1
+   )
+  );
+
+ if(
+  lv<100 &&
+  data.credits>=cost
+ ){
+
+  data.credits-=cost;
+
+  data.damageLevel.basic=
+   lv+1;
+
+  save();
  }
+};
 
- credits-=cost;
- ballSpeed=Math.min(2,ballSpeed+.1);
 
- balls.forEach(b=>{
-  const dirX=b.vx>=0?1:-1;
-  const dirY=b.vy>=0?1:-1;
-  b.vx=dirX*ballSpeed;
-  b.vy=dirY*ballSpeed;
- });
+/*
+  SPEED
+*/
 
- showMessage("⚡ SPEED UP!");
- renderUI();
-}
+document.getElementById(
+ "speedBtn"
+).onclick=()=>{
 
-function doubleDamage(){
- const cost=10000;
+ if(data.speed<2){
 
- if(double){
-  showMessage("DOUBLE DAMAGE ACTIVE");
-  return;
+  data.speed=
+   Math.min(
+    2,
+    data.speed+.1
+   );
+
+  for(
+   const ball of balls
+  ){
+
+   ball.vx*=1.05;
+   ball.vy*=1.05;
+  }
+
+  save();
  }
+};
 
- if(credits<cost){
-  showMessage("Need "+cost+" Credits");
-  return;
+
+/*
+  DOUBLE DAMAGE
+*/
+
+document.getElementById(
+ "doubleBtn"
+).onclick=()=>{
+
+ if(
+  !data.doubleDamage &&
+  data.credits>=10000
+ ){
+
+  data.credits-=10000;
+
+  data.doubleDamage=true;
+
+  save();
  }
+};
 
- credits-=cost;
- double=true;
 
- showMessage("🔥 DOUBLE DAMAGE!");
- renderUI();
-}
+/* =========================
+   START
+========================= */
 
-function rebirth(){
- if(level<100){
-  showMessage("Reach Level 100 first");
-  return;
- }
+syncBalls();
 
- const gained=Math.floor(level/10);
+resize();
 
- permanentBonus+=gained;
-
- credits=1000;
- level=1;
- damage=1;
- damageLevel=1;
- ballSpeed=1.2;
- double=false;
- currentType=0;
- nextBallCost=100;
-
- balls.forEach(b=>b.el.remove());
- balls=[];
-
- makeBlocks();
- createBall(0);
-
- showMessage("🔄 REBIRTH! +"+gained+"% PERMANENT DAMAGE");
- renderUI();
-}
-
-function showMessage(text){
- const m=document.getElementById("message");
- m.textContent=text;
- m.classList.add("show");
- clearTimeout(window.msgTimer);
- window.msgTimer=setTimeout(()=>m.classList.remove("show"),1200);
-}
-
-makeBlocks();
-createBall(0);
-renderUI();
-gameLoop();
+requestAnimationFrame(
+ gameLoop
+);
 
 </script>
+
 </body>
-                      </html>
+</html>
