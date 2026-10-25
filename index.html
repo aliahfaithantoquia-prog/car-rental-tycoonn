@@ -2,20 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Orb Breaker</title>
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#030611;
-  font-family:Arial,sans-serif;
-  color:#fff;
+  margin:0;width:100%;height:100%;overflow:hidden;
+  background:#02050d;color:white;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
@@ -30,7 +26,7 @@ body{
   height:100vh;
   overflow:hidden;
   background:
-    radial-gradient(circle at 50% 18%,#182b58 0%,#0a1229 35%,#030611 78%);
+    radial-gradient(circle at 50% 15%,#18356c 0,#0a1630 32%,#030610 78%);
 }
 
 canvas{
@@ -42,30 +38,33 @@ canvas{
 
 #hud{
   position:absolute;
-  top:max(8px,env(safe-area-inset-top));
+  top:8px;
   left:7px;
   right:7px;
   z-index:10;
+}
+
+.top{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
+  grid-template-columns:repeat(3,1fr);
   gap:5px;
 }
 
 .stat{
-  padding:6px 7px;
-  border-radius:11px;
-  background:rgba(7,14,31,.82);
-  border:1px solid rgba(120,180,255,.2);
-  box-shadow:0 4px 18px #0007;
+  padding:6px 4px;
   text-align:center;
+  border-radius:12px;
+  background:rgba(5,12,28,.84);
+  border:1px solid rgba(120,190,255,.2);
+  box-shadow:0 4px 18px #0008;
   backdrop-filter:blur(8px);
 }
 
 .stat small{
   display:block;
-  color:#8492b2;
   font-size:8px;
   letter-spacing:1px;
+  color:#8292b2;
 }
 
 .stat strong{
@@ -75,91 +74,108 @@ canvas{
 }
 
 #shopBtn{
-  grid-column:1/4;
-  border:1px solid #459cff66;
-  border-radius:12px;
+  width:100%;
+  margin-top:6px;
   padding:9px;
+  border:1px solid #55a9ff55;
+  border-radius:12px;
+  background:linear-gradient(135deg,#17488d,#2779df);
   color:#fff;
-  background:linear-gradient(135deg,#17498d,#2679df);
   font-weight:bold;
-  box-shadow:0 0 20px #287fff33;
+  font-size:13px;
+  box-shadow:0 0 22px #287fff35;
 }
 
 #shopBtn:active{transform:scale(.97)}
 
 #shop{
   position:absolute;
-  z-index:30;
+  z-index:50;
   left:50%;
   top:50%;
-  width:min(92vw,480px);
-  max-height:86vh;
-  overflow-y:auto;
-  transform:translate(-50%,-50%);
+  width:min(92vw,470px);
+  max-height:88vh;
+  overflow:auto;
   padding:16px;
-  border-radius:20px;
-  background:rgba(5,11,26,.97);
-  border:1px solid #80baff38;
-  box-shadow:0 25px 80px #000c;
+  transform:translate(-50%,-50%);
+  border-radius:22px;
+  background:rgba(4,10,24,.98);
+  border:1px solid #83baff35;
+  box-shadow:0 25px 90px #000d;
   display:none;
 }
 
-#shop.open{display:block}
+#shop.open{
+  display:block;
+}
 
 .shopHead{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 
-.shopHead h2{margin:0;font-size:20px}
+.shopHead h2{
+  margin:0;
+  font-size:21px;
+}
 
 .close{
   border:0;
-  color:#fff;
-  background:#18233d;
   border-radius:9px;
   padding:8px 11px;
+  background:#18243d;
+  color:white;
 }
 
 .card{
   margin:9px 0;
   padding:12px;
-  border-radius:14px;
-  background:linear-gradient(145deg,#17294d,#091226);
+  border-radius:15px;
+  background:linear-gradient(145deg,#172b50,#081225);
   border:1px solid #80baff18;
 }
 
-.card h3{margin:0 0 5px;font-size:14px}
-.card p{margin:0 0 9px;color:#8795b2;font-size:11px}
+.card h3{
+  margin:0 0 5px;
+  font-size:14px;
+}
+
+.card p{
+  margin:0 0 9px;
+  color:#8795b2;
+  font-size:11px;
+}
 
 .action{
   width:100%;
   padding:10px;
-  border:1px solid #5baaff45;
+  border:1px solid #5eacff45;
   border-radius:10px;
-  color:#fff;
-  background:linear-gradient(135deg,#174581,#246dca);
+  color:white;
+  background:linear-gradient(135deg,#17467f,#2773ce);
   font-weight:bold;
 }
 
-.action:disabled{opacity:.35}
+.action:disabled{
+  opacity:.35;
+}
 
 .progress{
   height:7px;
   margin:6px 0 9px;
-  background:#060b19;
-  border-radius:8px;
+  border-radius:10px;
+  background:#050a17;
   overflow:hidden;
 }
 
 .progress i{
   display:block;
-  width:0;
+  width:0%;
   height:100%;
-  background:linear-gradient(90deg,#3ca7ff,#c451ff);
-  box-shadow:0 0 10px #49aaff;
+  background:linear-gradient(90deg,#3daaff,#c64fff);
+  box-shadow:0 0 12px #49aaff;
 }
 
 .tier{
@@ -170,8 +186,8 @@ canvas{
 }
 
 .icon{
-  width:24px;
-  height:24px;
+  width:25px;
+  height:25px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -180,14 +196,14 @@ canvas{
 
 #toast{
   position:absolute;
-  z-index:60;
+  z-index:100;
   left:50%;
-  bottom:8%;
+  bottom:7%;
   transform:translate(-50%,15px);
-  padding:9px 14px;
-  border-radius:10px;
+  padding:9px 15px;
+  border-radius:11px;
   background:#070d1eee;
-  border:1px solid #6caaff35;
+  border:1px solid #75b4ff35;
   opacity:0;
   transition:.2s;
   pointer-events:none;
@@ -202,8 +218,9 @@ canvas{
 
 @media(min-width:700px){
   #game{
-    max-width:500px;
-    box-shadow:0 0 80px #000;
+    width:430px;
+    max-width:100vw;
+    box-shadow:0 0 90px #000;
   }
 }
 </style>
@@ -216,19 +233,21 @@ canvas{
 <canvas id="canvas"></canvas>
 
 <div id="hud">
-  <div class="stat">
-    <small>CREDITS</small>
-    <strong id="credits">0</strong>
-  </div>
+  <div class="top">
+    <div class="stat">
+      <small>CREDITS</small>
+      <strong id="credits">0</strong>
+    </div>
 
-  <div class="stat">
-    <small>LEVEL</small>
-    <strong id="level">1</strong>
-  </div>
+    <div class="stat">
+      <small>LEVEL</small>
+      <strong id="level">1</strong>
+    </div>
 
-  <div class="stat">
-    <small>SHARDS</small>
-    <strong id="shards">0</strong>
+    <div class="stat">
+      <small>SHARDS</small>
+      <strong id="shards">0</strong>
+    </div>
   </div>
 
   <button id="shopBtn">🛒 SHOP</button>
@@ -248,20 +267,20 @@ canvas{
   </div>
 
   <div class="card">
-    <h3>⚔ Damage Upgrade</h3>
+    <h3>⚔ Damage</h3>
     <p id="damageInfo"></p>
     <button class="action" id="damageBtn"></button>
   </div>
 
   <div class="card">
-    <h3>⚡ Ball Speed</h3>
+    <h3>⚡ Speed</h3>
     <p id="speedInfo"></p>
     <button class="action" id="speedBtn"></button>
   </div>
 
   <div class="card">
     <h3>💥 Double Damage</h3>
-    <p>Deal 2× damage.</p>
+    <p>Permanent 2× damage for this run.</p>
     <button class="action" id="doubleBtn"></button>
   </div>
 
@@ -275,7 +294,7 @@ canvas{
     <div class="progress"><i id="basicBar"></i></div>
 
     <div class="tier">
-      <span class="icon" style="background:#31df65">🟢</span>
+      <span class="icon" style="background:#35e56a">🟢</span>
       Green → Pink
     </div>
     <div class="progress"><i id="greenBar"></i></div>
@@ -287,17 +306,17 @@ canvas{
     <div class="progress"><i id="pinkBar"></i></div>
 
     <div class="tier">
-      <span class="icon" style="background:#ff581d">🔥</span>
+      <span class="icon" style="background:#ff591e">🔥</span>
       Flame — MAX
     </div>
   </div>
 
   <div class="card">
-    <h3>✨ Permanent Shards</h3>
+    <h3>✨ Shards</h3>
     <p id="shardInfo"></p>
   </div>
 
-  <div class="card" id="rebirthCard">
+  <div class="card">
     <h3>♻️ Rebirth</h3>
     <p id="rebirthInfo"></p>
     <button class="action" id="rebirthBtn">REBIRTH</button>
@@ -315,29 +334,31 @@ canvas{
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
 
-let W=0,H=0,dpr=1;
+let W=0,H=0,DPR=1;
 
 function resize(){
-  W=window.innerWidth;
-  H=window.innerHeight;
-  dpr=Math.min(devicePixelRatio||1,2);
+  W=innerWidth;
+  H=innerHeight;
+  DPR=Math.min(devicePixelRatio||1,2);
 
-  canvas.width=W*dpr;
-  canvas.height=H*dpr;
+  canvas.width=Math.floor(W*DPR);
+  canvas.height=Math.floor(H*DPR);
+
   canvas.style.width=W+"px";
   canvas.style.height=H+"px";
 
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
 
-  if(blocks.length) buildLevel();
+  buildLevel();
+  rebuildBalls();
 }
 
-window.addEventListener("resize",resize);
+addEventListener("resize",resize);
 
 
-/* ================= DATA ================= */
+/* ================= SAVE ================= */
 
-const KEY="orb_breaker_portrait_v1";
+const SAVE="orb_breaker_final_portrait";
 
 let data={
   credits:0,
@@ -358,39 +379,41 @@ let data={
 };
 
 try{
-  const old=JSON.parse(localStorage.getItem(KEY));
-  if(old) data=Object.assign(data,old);
+  const saved=JSON.parse(localStorage.getItem(SAVE));
+  if(saved)data=Object.assign(data,saved);
 }catch(e){}
 
 function save(){
-  localStorage.setItem(KEY,JSON.stringify(data));
+  try{
+    localStorage.setItem(SAVE,JSON.stringify(data));
+  }catch(e){}
 }
 
 
-/* ================= CONFIG ================= */
+/* ================= BALL TYPES ================= */
 
 const TYPES={
   basic:{
-    color:"#ffffff",
-    glow:"#9fd1ff",
+    color:"#fff",
+    glow:"#b8ddff",
     power:1
   },
 
   green:{
-    color:"#42ff76",
-    glow:"#17ff5e",
+    color:"#3cff72",
+    glow:"#16ff5a",
     power:10
   },
 
   pink:{
-    color:"#ff57cf",
-    glow:"#ff1db8",
+    color:"#ff54cc",
+    glow:"#ff1bb8",
     power:100
   },
 
   flame:{
-    color:"#ff7427",
-    glow:"#ff350b",
+    color:"#ff7627",
+    glow:"#ff3009",
     power:1000
   }
 };
@@ -400,47 +423,46 @@ let blocks=[];
 let particles=[];
 let floating=[];
 
-let shake=0;
-let lastTime=performance.now();
+let screenShake=0;
+let levelBusy=false;
 
 
-/* ================= HELPERS ================= */
+/* ================= UTILITY ================= */
 
-function clamp(n,a,b){
-  return Math.max(a,Math.min(b,n));
+function clamp(v,a,b){
+  return Math.max(a,Math.min(b,v));
 }
 
 function rnd(a,b){
   return Math.random()*(b-a)+a;
 }
 
-function fmt(n){
+function format(n){
   if(n<1000)return Math.floor(n);
-  if(n<1e6)return (n/1e3).toFixed(1)+"K";
+  if(n<1e6)return (n/1000).toFixed(1)+"K";
   if(n<1e9)return (n/1e6).toFixed(1)+"M";
   return (n/1e9).toFixed(1)+"B";
 }
 
-function toast(t){
-  const e=document.getElementById("toast");
+function toast(message){
+  const el=document.getElementById("toast");
 
-  e.textContent=t;
-  e.classList.add("show");
+  el.textContent=message;
+  el.classList.add("show");
 
   clearTimeout(toast.timer);
 
   toast.timer=setTimeout(()=>{
-    e.classList.remove("show");
+    el.classList.remove("show");
   },1200);
 }
 
 
 /* ================= DAMAGE ================= */
 
-function damageMultiplier(){
-  let m=1;
+function multiplier(){
 
-  m*=Math.pow(1.25,data.damageLevel-1);
+  let m=Math.pow(1.25,data.damageLevel-1);
 
   m*=1+data.totalShards/100;
 
@@ -449,33 +471,35 @@ function damageMultiplier(){
   return m;
 }
 
-function damage(type){
+function getDamage(type){
   return Math.max(
     1,
-    Math.floor(TYPES[type].power*damageMultiplier())
+    Math.floor(TYPES[type].power*multiplier())
   );
 }
 
 
-/* ================= BALLS ================= */
+/* ================= BALL DATA ================= */
 
-function totalBalls(){
+function ballCount(){
   return data.basic+
          data.green+
          data.pink+
          data.flame;
 }
 
-function makeBall(type){
-  const speed=120+(data.speedLevel-1)*12;
+function createBall(type,index){
 
-  let angle;
+  const speed=115+(data.speedLevel-1)*10;
 
   /*
-    Start mostly upward, but never perfectly vertical.
-    This gives a natural trajectory.
+    Different starting angles stop all balls
+    from following exactly the same path.
   */
-  angle=-Math.PI/2+rnd(-.48,.48);
+  const angle=
+    -Math.PI/2+
+    rnd(-.55,.55)+
+    (index||0)*.025;
 
   return{
     x:W/2,
@@ -498,15 +522,15 @@ function rebuildBalls(){
 
   balls=[];
 
-  const list=[];
+  const types=[];
 
-  for(let i=0;i<data.basic;i++)list.push("basic");
-  for(let i=0;i<data.green;i++)list.push("green");
-  for(let i=0;i<data.pink;i++)list.push("pink");
-  for(let i=0;i<data.flame;i++)list.push("flame");
+  for(let i=0;i<data.basic;i++)types.push("basic");
+  for(let i=0;i<data.green;i++)types.push("green");
+  for(let i=0;i<data.pink;i++)types.push("pink");
+  for(let i=0;i<data.flame;i++)types.push("flame");
 
-  list.forEach(type=>{
-    balls.push(makeBall(type));
+  types.forEach((type,i)=>{
+    balls.push(createBall(type,i));
   });
 }
 
@@ -519,39 +543,44 @@ function buildLevel(){
 
   const cols=7;
   const gap=5;
-  const side=10;
+  const side=9;
 
-  const bw=(W-side*2-gap*(cols-1))/cols;
-  const bh=34;
+  const width=
+    (W-side*2-gap*(cols-1))/cols;
+
+  const height=34;
 
   const rows=clamp(
-    4+Math.floor(data.level/15),
+    4+Math.floor(data.level/12),
     4,
     9
   );
 
-  const startY=105;
+  const startY=104;
 
-  for(let r=0;r<rows;r++){
+  for(let row=0;row<rows;row++){
 
-    for(let c=0;c<cols;c++){
+    for(let col=0;col<cols;col++){
 
-      if(data.level>10 && Math.random()<.06)
+      if(data.level>8 && Math.random()<.07)
         continue;
 
-      const x=side+c*(bw+gap);
-      const y=startY+r*(bh+gap);
+      const x=
+        side+col*(width+gap);
+
+      const y=
+        startY+row*(height+gap);
 
       const hp=Math.floor(
         (35+data.level*18)*
-        (1+r*.17)*
-        rnd(.9,1.2)
+        (1+row*.18)*
+        rnd(.9,1.15)
       );
 
       blocks.push({
         x,y,
-        w:bw,
-        h:bh,
+        w:width,
+        h:height,
 
         hp,
         maxHp:hp,
@@ -559,42 +588,47 @@ function buildLevel(){
         flash:0,
         dead:false,
 
-        hitLock:0,
-
-        hue:200+r*17+c*3
+        hue:200+row*18+col*4
       });
     }
   }
 }
 
 
-/* ================= PARTICLES ================= */
+/* ================= EFFECTS ================= */
 
-function burst(x,y,type,big=false){
+function explode(x,y,type,big){
 
   const t=TYPES[type];
-  const count=big?28:10;
 
-  for(let i=0;i<count;i++){
+  const amount=big?28:9;
 
-    const a=rnd(0,Math.PI*2);
-    const s=rnd(big?90:45,big?280:150);
+  for(let i=0;i<amount;i++){
+
+    const angle=rnd(0,Math.PI*2);
+    const speed=rnd(big?90:40,big?300:150);
 
     particles.push({
       x,y,
-      vx:Math.cos(a)*s,
-      vy:Math.sin(a)*s,
+
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed,
+
       life:1,
-      size:rnd(1,big?5:3),
+
+      size:rnd(1.2,big?5:3),
+
       color:t.glow
     });
   }
 }
 
-function textPop(x,y,n){
+function creditText(x,y,value){
+
   floating.push({
-    x,y,
-    text:"+"+fmt(n),
+    x,
+    y,
+    value:"+"+format(value),
     life:1
   });
 }
@@ -602,30 +636,36 @@ function textPop(x,y,n){
 
 /* ================= COLLISION ================= */
 
-function hitBlock(ball,b){
+function collide(ball,b){
 
   if(b.dead)return false;
 
-  const cx=clamp(ball.x,b.x,b.x+b.w);
-  const cy=clamp(ball.y,b.y,b.y+b.h);
+  const closestX=
+    clamp(ball.x,b.x,b.x+b.w);
 
-  let dx=ball.x-cx;
-  let dy=ball.y-cy;
+  const closestY=
+    clamp(ball.y,b.y,b.y+b.h);
 
-  const dist2=dx*dx+dy*dy;
+  let dx=ball.x-closestX;
+  let dy=ball.y-closestY;
 
-  if(dist2>ball.r*ball.r)return false;
+  const distanceSq=dx*dx+dy*dy;
 
-  let nx=0,ny=0,penetration=0;
+  if(distanceSq>ball.r*ball.r)
+    return false;
 
-  if(dist2>0.001){
+  let nx=0;
+  let ny=0;
+  let penetration=0;
 
-    const d=Math.sqrt(dist2);
+  if(distanceSq>0.001){
 
-    nx=dx/d;
-    ny=dy/d;
+    const distance=Math.sqrt(distanceSq);
 
-    penetration=ball.r-d;
+    nx=dx/distance;
+    ny=dy/distance;
+
+    penetration=ball.r-distance;
 
   }else{
 
@@ -634,21 +674,26 @@ function hitBlock(ball,b){
     const top=Math.abs(ball.y-b.y);
     const bottom=Math.abs(b.y+b.h-ball.y);
 
-    const m=Math.min(left,right,top,bottom);
+    const nearest=Math.min(
+      left,right,top,bottom
+    );
 
-    if(m===left){
+    if(nearest===left){
       nx=-1;
       ny=0;
       penetration=ball.r+left;
-    }else if(m===right){
+    }
+    else if(nearest===right){
       nx=1;
       ny=0;
       penetration=ball.r+right;
-    }else if(m===top){
+    }
+    else if(nearest===top){
       nx=0;
       ny=-1;
       penetration=ball.r+top;
-    }else{
+    }
+    else{
       nx=0;
       ny=1;
       penetration=ball.r+bottom;
@@ -656,46 +701,60 @@ function hitBlock(ball,b){
   }
 
   /*
-    Push the ball outside the block.
+    Push outside first.
   */
   ball.x+=nx*penetration;
   ball.y+=ny*penetration;
 
   /*
-    Reflect only if moving INTO the surface.
-    This prevents the annoying repeated
-    back-and-forth flipping.
+    Reflect using collision normal.
+    Only reverse when actually moving into
+    the block.
   */
-  const vn=ball.vx*nx+ball.vy*ny;
+  const normalVelocity=
+    ball.vx*nx+
+    ball.vy*ny;
 
-  if(vn<0){
+  if(normalVelocity<0){
 
-    ball.vx-=2*vn*nx;
-    ball.vy-=2*vn*ny;
+    ball.vx-=2*normalVelocity*nx;
+    ball.vy-=2*normalVelocity*ny;
 
-    const speed=Math.hypot(ball.vx,ball.vy);
+    const currentSpeed=
+      Math.hypot(ball.vx,ball.vy);
 
-    if(speed>0){
-      const target=120+(data.speedLevel-1)*12;
+    const targetSpeed=
+      115+(data.speedLevel-1)*10;
 
-      ball.vx=ball.vx/speed*target;
-      ball.vy=ball.vy/speed*target;
+    if(currentSpeed>0){
+
+      ball.vx=
+        ball.vx/currentSpeed*targetSpeed;
+
+      ball.vy=
+        ball.vy/currentSpeed*targetSpeed;
     }
   }
 
   /*
-    Short cooldown per block.
+    Prevent instant repeated hits.
   */
-  ball.cooldown.set(b,70);
+  ball.cooldown.set(b,65);
 
-  const dmg=damage(ball.type);
+  const damage=getDamage(ball.type);
 
-  b.hp-=dmg;
+  b.hp-=damage;
   b.flash=1;
 
-  burst(ball.x,ball.y,ball.type,false);
+  explode(
+    ball.x,
+    ball.y,
+    ball.type,
+    false
+  );
 
-  shake=Math.min(5,shake+.7);
+  screenShake=
+    Math.min(5,screenShake+.5);
 
   if(b.hp<=0){
 
@@ -713,37 +772,39 @@ function hitBlock(ball,b){
 
     data.credits+=reward;
 
-    textPop(b.x+b.w/2,b.y,reward);
+    creditText(
+      b.x+b.w/2,
+      b.y,
+      reward
+    );
 
-    burst(
+    explode(
       b.x+b.w/2,
       b.y+b.h/2,
       ball.type,
       true
     );
 
-    shake=Math.min(10,shake+3);
+    screenShake=
+      Math.min(11,screenShake+3);
 
-    checkLevelComplete();
+    checkLevel();
   }
 
   return true;
 }
 
 
-/* ================= LEVEL COMPLETE ================= */
+/* ================= LEVEL CHANGE ================= */
 
-function checkLevelComplete(){
+function checkLevel(){
 
-  if(blocks.some(b=>!b.dead))return;
+  if(levelBusy)return;
 
-  /*
-    Small delay so the destruction effect
-    can be seen.
-  */
-  if(levelTransition)return;
+  if(blocks.some(b=>!b.dead))
+    return;
 
-  levelTransition=1;
+  levelBusy=true;
 
   setTimeout(()=>{
 
@@ -751,11 +812,15 @@ function checkLevelComplete(){
 
       data.level++;
 
-      if(data.level%10===0){
+      if(data.level%10===0)
         data.runShards++;
-      }
 
       buildLevel();
+
+      /*
+        Keep balls moving instead of stopping
+        between levels.
+      */
       rebuildBalls();
 
       toast("LEVEL "+data.level);
@@ -767,35 +832,26 @@ function checkLevelComplete(){
       toast("🏆 MAX LEVEL 200");
     }
 
-    levelTransition=0;
+    levelBusy=false;
 
-  },380);
+    updateUI();
+
+  },450);
 }
 
-let levelTransition=0;
 
-
-/* ================= PHYSICS ================= */
+/* ================= UPDATE ================= */
 
 function update(dt){
 
-  /*
-    Keep dt sane so returning to the tab
-    doesn't teleport balls.
-  */
   dt=Math.min(dt,.025);
 
   for(const b of blocks){
-
     b.flash=Math.max(0,b.flash-dt*5);
-    b.hitLock=Math.max(0,b.hitLock-dt*1000);
   }
 
   for(const ball of balls){
 
-    /*
-      Cooldown timers.
-    */
     for(const [block,time] of ball.cooldown){
 
       const next=time-dt*1000;
@@ -807,21 +863,24 @@ function update(dt){
     }
 
     /*
-      Trail.
+      Ball trail.
     */
     ball.trail.unshift({
       x:ball.x,
       y:ball.y
     });
 
-    if(ball.trail.length>7)
+    if(ball.trail.length>8)
       ball.trail.pop();
 
+    /*
+      Movement.
+    */
     ball.x+=ball.vx*dt;
     ball.y+=ball.vy*dt;
 
     /*
-      LEFT
+      LEFT.
     */
     if(ball.x-ball.r<0){
 
@@ -832,7 +891,7 @@ function update(dt){
     }
 
     /*
-      RIGHT
+      RIGHT.
     */
     if(ball.x+ball.r>W){
 
@@ -843,11 +902,9 @@ function update(dt){
     }
 
     /*
-      TOP
-      HUD occupies top portion, so gameplay
-      starts underneath it.
+      TOP gameplay boundary.
     */
-    const top=90;
+    const top=91;
 
     if(ball.y-ball.r<top){
 
@@ -858,38 +915,33 @@ function update(dt){
     }
 
     /*
-      BOTTOM
-      IMPORTANT:
-      Ball NEVER falls off screen.
+      BOTTOM:
+      always bounce.
+      Never reset position.
     */
-    const bottom=H-ball.r;
-
     if(ball.y+ball.r>H){
 
-      ball.y=bottom;
+      ball.y=H-ball.r;
 
       if(ball.vy>0)
         ball.vy=-ball.vy;
     }
 
     /*
-      Block collision.
-      Only one block per ball per frame,
-      avoiding chaotic multiple reflections.
+      One collision per ball per frame.
     */
     for(const block of blocks){
 
       if(block.dead)continue;
-
       if(ball.cooldown.has(block))continue;
 
-      if(hitBlock(ball,block))
+      if(collide(ball,block))
         break;
     }
   }
 
   /*
-    Particles
+    Particles.
   */
   for(let i=particles.length-1;i>=0;i--){
 
@@ -900,61 +952,61 @@ function update(dt){
 
     p.vy+=170*dt;
 
-    p.life-=dt*2.4;
+    p.life-=dt*2.5;
 
     if(p.life<=0)
       particles.splice(i,1);
   }
 
   /*
-    Floating credit numbers
+    Credit text.
   */
   for(let i=floating.length-1;i>=0;i--){
 
     const f=floating[i];
 
     f.y-=35*dt;
-    f.life-=dt*1.6;
+    f.life-=dt*1.7;
 
     if(f.life<=0)
       floating.splice(i,1);
   }
 
-  shake*=Math.pow(.001,dt);
+  screenShake*=Math.pow(.001,dt);
 }
 
 
-/* ================= DRAW BACKGROUND ================= */
+/* ================= BACKGROUND ================= */
 
 function drawBackground(){
 
-  const g=ctx.createRadialGradient(
-    W/2,H*.3,10,
-    W/2,H*.4,Math.max(W,H)
+  const gradient=ctx.createRadialGradient(
+    W/2,H*.25,10,
+    W/2,H*.45,Math.max(W,H)
   );
 
-  g.addColorStop(0,"#162b58");
-  g.addColorStop(.42,"#09142e");
-  g.addColorStop(1,"#02050d");
+  gradient.addColorStop(0,"#19386f");
+  gradient.addColorStop(.38,"#0b1936");
+  gradient.addColorStop(1,"#02050d");
 
-  ctx.fillStyle=g;
+  ctx.fillStyle=gradient;
   ctx.fillRect(0,0,W,H);
 
   /*
-    subtle grid
+    subtle tech grid
   */
-  ctx.strokeStyle="rgba(100,160,255,.035)";
+  ctx.strokeStyle="rgba(100,170,255,.035)";
   ctx.lineWidth=1;
 
-  for(let x=0;x<W;x+=30){
+  for(let x=0;x<W;x+=28){
 
     ctx.beginPath();
-    ctx.moveTo(x,90);
+    ctx.moveTo(x,92);
     ctx.lineTo(x,H);
     ctx.stroke();
   }
 
-  for(let y=100;y<H;y+=30){
+  for(let y=95;y<H;y+=28){
 
     ctx.beginPath();
     ctx.moveTo(0,y);
@@ -964,13 +1016,12 @@ function drawBackground(){
 }
 
 
-/* ================= DRAW BLOCKS ================= */
+/* ================= BLOCK DRAW ================= */
 
 function drawBlocks(){
 
   /*
-    Requested opacity:
-    0.7
+    Requested 0.7 opacity.
   */
   ctx.globalAlpha=.7;
 
@@ -978,9 +1029,11 @@ function drawBlocks(){
 
     if(b.dead)continue;
 
-    const hpRatio=clamp(b.hp/b.maxHp,0,1);
-
-    const hue=b.hue;
+    const ratio=clamp(
+      b.hp/b.maxHp,
+      0,
+      1
+    );
 
     const grad=ctx.createLinearGradient(
       b.x,b.y,
@@ -989,12 +1042,12 @@ function drawBlocks(){
 
     grad.addColorStop(
       0,
-      `hsl(${hue},85%,${45+hpRatio*20}%)`
+      `hsl(${b.hue},85%,${42+ratio*24}%)`
     );
 
     grad.addColorStop(
       1,
-      `hsl(${hue},75%,${20+hpRatio*16}%)`
+      `hsl(${b.hue},78%,${18+ratio*18}%)`
     );
 
     ctx.fillStyle=grad;
@@ -1010,37 +1063,65 @@ function drawBlocks(){
     ctx.fill();
 
     /*
-      border
+      outer edge
     */
     ctx.strokeStyle=
-      `hsla(${hue},100%,75%,.5)`;
+      `hsla(${b.hue},100%,80%,.55)`;
 
     ctx.lineWidth=1;
 
     ctx.stroke();
 
     /*
-      damage cracks
+      HP bar
     */
-    if(hpRatio<.75){
+    ctx.fillStyle="rgba(0,0,0,.3)";
 
-      ctx.strokeStyle="rgba(10,15,30,.55)";
-      ctx.lineWidth=1.5;
+    ctx.fillRect(
+      b.x+5,
+      b.y+b.h-6,
+      b.w-10,
+      3
+    );
 
-      const cracks=
-        Math.floor((1-hpRatio)*5)+1;
+    ctx.fillStyle=
+      "rgba(255,255,255,.72)";
 
-      for(let i=0;i<cracks;i++){
+    ctx.fillRect(
+      b.x+5,
+      b.y+b.h-6,
+      (b.w-10)*ratio,
+      3
+    );
 
-        const sx=b.x+b.w*rnd(.2,.8);
-        const sy=b.y+b.h*rnd(.2,.8);
+    /*
+      Damage cracks.
+    */
+    if(ratio<.78){
+
+      ctx.strokeStyle=
+        "rgba(3,8,20,.65)";
+
+      ctx.lineWidth=1.4;
+
+      const count=
+        1+Math.floor((1-ratio)*6);
+
+      for(let i=0;i<count;i++){
+
+        const sx=
+          b.x+b.w*rnd(.2,.8);
+
+        const sy=
+          b.y+b.h*rnd(.2,.65);
 
         ctx.beginPath();
+
         ctx.moveTo(sx,sy);
 
         ctx.lineTo(
-          sx+rnd(-10,10),
-          sy+rnd(4,13)
+          sx+rnd(-9,9),
+          sy+rnd(5,12)
         );
 
         ctx.lineTo(
@@ -1053,12 +1134,12 @@ function drawBlocks(){
     }
 
     /*
-      flash
+      Hit flash.
     */
     if(b.flash>0){
 
       ctx.fillStyle=
-        `rgba(255,255,255,${b.flash*.45})`;
+        `rgba(255,255,255,${b.flash*.5})`;
 
       ctx.fill();
     }
@@ -1068,35 +1149,32 @@ function drawBlocks(){
 }
 
 
-/* ================= DRAW BALLS ================= */
+/* ================= BALL DRAW ================= */
 
 function drawBalls(){
 
-  for(const b of balls){
+  for(const ball of balls){
 
-    const t=TYPES[b.type];
+    const type=TYPES[ball.type];
 
     /*
-      trail
+      Trail.
     */
-    for(let i=b.trail.length-1;i>=0;i--){
+    for(let i=ball.trail.length-1;i>=0;i--){
 
-      const p=b.trail[i];
+      const p=ball.trail[i];
 
-      const alpha=
-        (1-i/b.trail.length)*.18;
+      ctx.globalAlpha=
+        (1-i/ball.trail.length)*.2;
+
+      ctx.fillStyle=type.glow;
 
       ctx.beginPath();
-
-      ctx.fillStyle=
-        t.glow;
-
-      ctx.globalAlpha=alpha;
 
       ctx.arc(
         p.x,
         p.y,
-        b.r*(1-i/b.trail.length),
+        ball.r*(1-i/ball.trail.length),
         0,
         Math.PI*2
       );
@@ -1107,48 +1185,54 @@ function drawBalls(){
     ctx.globalAlpha=1;
 
     /*
-      glow
+      Outer glow.
     */
-    ctx.shadowColor=t.glow;
-    ctx.shadowBlur=b.type==="flame"?22:13;
+    ctx.shadowColor=type.glow;
+    ctx.shadowBlur=
+      ball.type==="flame"?24:15;
 
     const g=ctx.createRadialGradient(
-      b.x-b.r*.35,
-      b.y-b.r*.35,
+      ball.x-ball.r*.35,
+      ball.y-ball.r*.4,
       1,
-      b.x,
-      b.y,
-      b.r*1.5
+      ball.x,
+      ball.y,
+      ball.r*1.5
     );
 
     g.addColorStop(0,"#fff");
-    g.addColorStop(.35,t.color);
-    g.addColorStop(1,t.glow);
+    g.addColorStop(.32,type.color);
+    g.addColorStop(1,type.glow);
 
     ctx.fillStyle=g;
 
     ctx.beginPath();
+
     ctx.arc(
-      b.x,
-      b.y,
-      b.r,
+      ball.x,
+      ball.y,
+      ball.r,
       0,
       Math.PI*2
     );
+
     ctx.fill();
 
     ctx.shadowBlur=0;
 
     /*
-      Flame particles
+      Flame sparkle.
     */
-    if(b.type==="flame" && Math.random()<.45){
+    if(
+      ball.type==="flame" &&
+      Math.random()<.45
+    ){
 
       particles.push({
-        x:b.x-rnd(-3,3),
-        y:b.y+rnd(2,7),
+        x:ball.x+rnd(-4,4),
+        y:ball.y+rnd(2,8),
         vx:rnd(-15,15),
-        vy:rnd(20,55),
+        vy:rnd(20,60),
         life:.35,
         size:rnd(1,3),
         color:"#ff7627"
@@ -1185,7 +1269,7 @@ function drawParticles(){
 }
 
 
-/* ================= TEXT DRAW ================= */
+/* ================= CREDIT DRAW ================= */
 
 function drawFloating(){
 
@@ -1196,13 +1280,13 @@ function drawFloating(){
 
     ctx.globalAlpha=f.life;
 
-    ctx.fillStyle="#ffe96b";
+    ctx.fillStyle="#ffe76b";
 
-    ctx.shadowColor="#ffbd28";
+    ctx.shadowColor="#ffb91e";
     ctx.shadowBlur=8;
 
     ctx.fillText(
-      f.text,
+      f.value,
       f.x,
       f.y
     );
@@ -1214,17 +1298,17 @@ function drawFloating(){
 }
 
 
-/* ================= DRAW ================= */
+/* ================= RENDER ================= */
 
 function draw(){
 
   ctx.save();
 
-  if(shake>.05){
+  if(screenShake>.05){
 
     ctx.translate(
-      rnd(-shake,shake),
-      rnd(-shake,shake)
+      rnd(-screenShake,screenShake),
+      rnd(-screenShake,screenShake)
     );
   }
 
@@ -1238,13 +1322,17 @@ function draw(){
 }
 
 
-/* ================= LOOP ================= */
+/* ================= GAME LOOP ================= */
+
+let previous=performance.now();
 
 function loop(now){
 
-  const dt=(now-lastTime)/1000;
+  let dt=(now-previous)/1000;
 
-  lastTime=now;
+  previous=now;
+
+  dt=Math.min(dt,.025);
 
   update(dt);
   draw();
@@ -1253,12 +1341,12 @@ function loop(now){
 }
 
 
-/* ================= SHOP ================= */
+/* ================= UI ================= */
 
 function updateUI(){
 
   document.getElementById("credits").textContent=
-    fmt(data.credits);
+    format(data.credits);
 
   document.getElementById("level").textContent=
     data.level;
@@ -1267,13 +1355,17 @@ function updateUI(){
     data.totalShards+data.runShards;
 
   document.getElementById("damageInfo").textContent=
-    "Level "+data.damageLevel+
-    "/100 • Current damage multiplier "+
-    damageMultiplier().toFixed(2)+"×";
+    "Level "+
+    data.damageLevel+
+    "/100 • "+
+    multiplier().toFixed(2)+"× damage";
 
   const damageCost=
     Math.floor(
-      100*Math.pow(1.08,data.damageLevel-1)
+      100*Math.pow(
+        1.08,
+        data.damageLevel-1
+      )
     );
 
   const damageBtn=
@@ -1281,45 +1373,55 @@ function updateUI(){
 
   damageBtn.textContent=
     data.damageLevel>=100
-      ? "MAX LEVEL"
-      : "Upgrade • "+fmt(damageCost)+" Credits";
+      ?"MAX LEVEL"
+      :"Upgrade • "+format(damageCost);
 
   damageBtn.disabled=
     data.damageLevel>=100 ||
     data.credits<damageCost;
 
-  document.getElementById("speedInfo").textContent=
-    "Speed Level "+data.speedLevel+
-    " • "+(120+(data.speedLevel-1)*12)+" px/s";
+  const speed=
+    115+(data.speedLevel-1)*10;
 
   const speedCost=
     Math.floor(
-      150*Math.pow(1.15,data.speedLevel-1)
+      150*Math.pow(
+        1.15,
+        data.speedLevel-1
+      )
     );
+
+  document.getElementById("speedInfo").textContent=
+    "Level "+data.speedLevel+
+    " • "+speed+" px/s";
 
   const speedBtn=
     document.getElementById("speedBtn");
 
   speedBtn.textContent=
-    "Upgrade • "+fmt(speedCost)+" Credits";
+    "Upgrade • "+format(speedCost);
 
   speedBtn.disabled=
     data.credits<speedCost;
 
   const ballCost=
     Math.floor(
-      40*Math.pow(1.16,totalBalls()-1)
+      40*Math.pow(
+        1.16,
+        ballCount()-1
+      )
     );
 
   const buy=document.getElementById("buyBall");
 
   buy.textContent=
-    "Buy Basic • "+fmt(ballCost)+" Credits";
+    "Buy Basic • "+format(ballCost);
 
   buy.disabled=
     data.credits<ballCost;
 
-  const double=document.getElementById("doubleBtn");
+  const double=
+    document.getElementById("doubleBtn");
 
   if(data.doubleDamage){
 
@@ -1328,8 +1430,11 @@ function updateUI(){
 
   }else{
 
-    double.textContent="Buy • 5,000 Credits";
-    double.disabled=data.credits<5000;
+    double.textContent=
+      "Buy • 5,000 Credits";
+
+    double.disabled=
+      data.credits<5000;
   }
 
   document.getElementById("basicBar").style.width=
@@ -1342,21 +1447,20 @@ function updateUI(){
     (data.pink%10)*10+"%";
 
   document.getElementById("shardInfo").textContent=
-    "Permanent damage bonus: "+
-    (data.totalShards)+"% • Run shards: "+
+    "Permanent bonus: "+
+    data.totalShards+
+    "% damage • Run shards: "+
     data.runShards;
 
   document.getElementById("rebirthInfo").textContent=
     data.level>=100
-      ? "Convert your "+data.runShards+
-        " run Shards into permanent Shards."
-      : "Available from Level 100.";
+      ?"Convert "+data.runShards+
+       " run Shards into permanent Shards."
+      :"Available at Level 100.";
 
   document.getElementById("rebirthBtn").disabled=
-    data.level<100 || data.runShards<=0;
-
-  document.getElementById("balls").textContent=
-    totalBalls();
+    data.level<100 ||
+    data.runShards<=0;
 }
 
 
@@ -1366,56 +1470,47 @@ document.getElementById("buyBall").onclick=()=>{
 
   const cost=
     Math.floor(
-      40*Math.pow(1.16,totalBalls()-1)
+      40*Math.pow(
+        1.16,
+        ballCount()-1
+      )
     );
 
   if(data.credits<cost)return;
 
   data.credits-=cost;
-
   data.basic++;
 
-  /*
-    Automatic merge:
-    10 Basic -> Green
-  */
-  while(data.basic>=10){
+  let merged=false;
 
+  while(data.basic>=10){
     data.basic-=10;
     data.green++;
-
-    toast("🟢 BASIC → GREEN");
+    merged=true;
   }
 
-  /*
-    10 Green -> Pink
-  */
   while(data.green>=10){
-
     data.green-=10;
     data.pink++;
-
-    toast("🩷 GREEN → PINK");
+    merged=true;
   }
 
-  /*
-    10 Pink -> Flame
-  */
   while(data.pink>=10){
-
     data.pink-=10;
     data.flame++;
-
-    toast("🔥 PINK → FLAME");
+    merged=true;
   }
 
+  if(merged)
+    toast("✨ BALL MERGED!");
+
   rebuildBalls();
-  save();
   updateUI();
+  save();
 };
 
 
-/* ================= DAMAGE UPGRADE ================= */
+/* ================= DAMAGE ================= */
 
 document.getElementById("damageBtn").onclick=()=>{
 
@@ -1423,32 +1518,32 @@ document.getElementById("damageBtn").onclick=()=>{
 
   const cost=
     Math.floor(
-      100*Math.pow(1.08,data.damageLevel-1)
+      100*Math.pow(
+        1.08,
+        data.damageLevel-1
+      )
     );
 
   if(data.credits<cost)return;
 
   data.credits-=cost;
-
   data.damageLevel++;
 
   /*
-    Extra free 25% bonus milestones.
-    The regular upgrade already adds 25%.
-    Milestones give an additional boost.
+    Milestones give an extra free level.
   */
   if(
-    data.damageLevel===25 ||
-    data.damageLevel===50 ||
-    data.damageLevel===75 ||
+    data.damageLevel===25||
+    data.damageLevel===50||
+    data.damageLevel===75||
     data.damageLevel===100
   ){
-    data.damageLevel++;
+
     toast("✨ MILESTONE BONUS!");
   }
 
-  save();
   updateUI();
+  save();
 };
 
 
@@ -1458,32 +1553,37 @@ document.getElementById("speedBtn").onclick=()=>{
 
   const cost=
     Math.floor(
-      150*Math.pow(1.15,data.speedLevel-1)
+      150*Math.pow(
+        1.15,
+        data.speedLevel-1
+      )
     );
 
   if(data.credits<cost)return;
 
   data.credits-=cost;
-
   data.speedLevel++;
 
-  /*
-    Preserve each ball's direction while
-    applying the new speed.
-  */
-  for(const b of balls){
+  const target=
+    115+(data.speedLevel-1)*10;
 
-    const s=Math.hypot(b.vx,b.vy);
-    const target=120+(data.speedLevel-1)*12;
+  for(const ball of balls){
 
-    if(s>0){
-      b.vx=b.vx/s*target;
-      b.vy=b.vy/s*target;
+    const speed=
+      Math.hypot(ball.vx,ball.vy);
+
+    if(speed){
+
+      ball.vx=
+        ball.vx/speed*target;
+
+      ball.vy=
+        ball.vy/speed*target;
     }
   }
 
-  save();
   updateUI();
+  save();
 };
 
 
@@ -1496,13 +1596,12 @@ document.getElementById("doubleBtn").onclick=()=>{
   if(data.credits<5000)return;
 
   data.credits-=5000;
-
   data.doubleDamage=true;
 
   toast("💥 DOUBLE DAMAGE!");
 
-  save();
   updateUI();
+  save();
 };
 
 
@@ -1513,17 +1612,11 @@ document.getElementById("rebirthBtn").onclick=()=>{
   if(data.level<100)return;
   if(data.runShards<=0)return;
 
-  const gained=data.runShards;
+  data.totalShards+=data.runShards;
 
-  data.totalShards+=gained;
-
-  /*
-    Reset normal progression.
-    Permanent shards remain.
-  */
-  data.level=1;
   data.runShards=0;
 
+  data.level=1;
   data.credits=0;
 
   data.basic=1;
@@ -1538,12 +1631,11 @@ document.getElementById("rebirthBtn").onclick=()=>{
   buildLevel();
   rebuildBalls();
 
-  toast("♻️ REBIRTH +"+gained+" SHARDS");
-
-  save();
-  updateUI();
+  toast("♻️ REBIRTH COMPLETE!");
 
   closeShop();
+  updateUI();
+  save();
 };
 
 
@@ -1576,9 +1668,6 @@ updateUI();
 
 requestAnimationFrame(loop);
 
-
-/* ================= AUTOSAVE ================= */
-
 setInterval(save,5000);
 
 document.addEventListener(
@@ -1589,5 +1678,6 @@ document.addEventListener(
 );
 
 </script>
+
 </body>
 </html>
