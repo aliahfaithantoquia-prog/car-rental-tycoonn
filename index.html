@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Car Rental Tycoon</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18233b;--text:#eef3ff;--muted:#9aa8c2;--accent:#57d68d;--accent2:#5ca8ff;--danger:#ff7180;--line:#263452}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080d19,#101a31);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+.app{max-width:1180px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.brand{font-size:22px;font-weight:800}.badge{font-size:11px;padding:7px 10px;border:1px solid #31513f;background:#10251b;color:#83e7ab;border-radius:999px}
+.grid{display:grid;grid-template-columns:220px 1fr;gap:16px}.side,.card{background:rgba(18,26,45,.94);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 35px #0003}
+.side{padding:12px;height:max-content;position:sticky;top:12px}.nav{width:100%;text-align:left;background:transparent;border:0;color:var(--muted);padding:12px;border-radius:10px;font-size:14px;margin:2px 0}.nav.active,.nav:hover{background:var(--panel2);color:var(--text)}
+main{min-width:0}.hero{padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#162746,#102037)}h1{margin:0 0 5px;font-size:28px}.sub{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat{padding:16px}.label{color:var(--muted);font-size:12px}.value{font-size:24px;font-weight:800;margin-top:5px}.section{display:none}.section.active{display:block}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{padding:16px;margin-bottom:14px}.cars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.car{background:#10182b;border:1px solid var(--line);border-radius:15px;padding:14px}.car-icon{height:95px;border-radius:12px;background:linear-gradient(135deg,#263b63,#10182b);display:grid;place-items:center;font-size:48px;margin-bottom:10px}.car h3{margin:0 0 5px}.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin:5px 0}.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:700;background:var(--accent);color:#07130d;cursor:pointer;margin-top:8px}.btn.secondary{background:#233452;color:#dce8ff}.btn:disabled{opacity:.45;cursor:not-allowed}.bar{height:8px;background:#27344d;border-radius:9px;overflow:hidden}.fill{height:100%;background:var(--accent);border-radius:9px}.mission{padding:12px;background:#10182b;border:1px solid var(--line);border-radius:12px;margin:9px 0}.mission.done{opacity:.65}.notice{padding:11px;border-radius:12px;background:#171f31;border:1px dashed #3b4b69;color:#aebbd0;font-size:12px}.activity{color:var(--muted);font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)}.shopitem{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto;gap:5px}.nav{white-space:nowrap}.stats{grid-template-columns:repeat(2,1fr)}.cars,.row{grid-template-columns:1fr}.top{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div><div class="brand">🚗 Car Rental Tycoon</div><div class="sub">Build your fictional rental empire</div></div><div class="badge">PROTOTYPE • SIMULATED ECONOMY</div></div>
+  <div class="grid">
+    <aside class="side">
+      <button class="nav active" data-tab="dashboard">🏠 Dashboard</button>
+      <button class="nav" data-tab="fleet">🚗 Fleet</button>
+      <button class="nav" data-tab="market">🛒 Vehicle Market</button>
+      <button class="nav" data-tab="missions">🏆 Missions</button>
+      <button class="nav" data-tab="shop">🎨 Demo Shop</button>
+      <button class="nav" data-tab="settings">⚙️ Settings</button>
+    </aside>
+    <main>
+      <section id="dashboard" class="section active">
+        <div class="card hero"><h1>Grow your rental company</h1><div class="sub">Buy cars, rent them to fictional customers, maintain your fleet and level up.</div><div class="notice" style="margin-top:14px">All Coins, revenue, rentals and progression are fictional gameplay data. No real money is accepted or paid out.</div></div>
+        <div class="stats">
+          <div class="card stat"><div class="label">Coins</div><div class="value" id="coins">0</div></div>
+          <div class="card stat"><div class="label">Company Level</div><div class="value" id="level">1</div></div>
+          <div class="card stat"><div class="label">Vehicles</div><div class="value" id="vehicles">0</div></div>
+          <div class="card stat"><div class="label">Simulated Revenue</div><div class="value" id="revenue">0</div></div>
+        </div>
+        <div class="row">
+          <div class="card"><h3>Company Progress</h3><div class="sub" id="xptext"></div><div class="bar" style="margin-top:10px"><div class="fill" id="xpbar"></div></div></div>
+          <div class="card"><h3>Recent Activity</h3><div id="activity"></div></div>
+        </div>
+      </section>
+
+      <section id="fleet" class="section"><div class="card"><h2>Your Fleet</h2><div class="sub">Manage your fictional vehicles.</div><div class="cars" id="fleetGrid"></div></div></section>
+      <section id="market" class="section"><div class="card"><h2>Vehicle Market</h2><div class="sub">Purchase vehicles using simulated Coins.</div><div class="cars" id="marketGrid"></div></div></section>
+      <section id="missions" class="section"><div class="card"><h2>Missions & Achievements</h2><div id="missionsList"></div></div></section>
+      <section id="shop" class="section"><div class="card"><h2>Demo Cosmetic Shop</h2><div class="notice">DEMO COSMETICS — NOT REAL PURCHASES. These items only change the local prototype.</div><div id="shopList"></div></div></section>
+      <section id="settings" class="section"><div class="card"><h2>Settings</h2><p class="sub">Progress is saved in this browser using localStorage.</p><button class="btn secondary" onclick="resetGame()">Reset Game</button></div></section>
+    </main>
+  </div>
+</div>
+<script>
+const CARS=[
+{id:'compact',name:'City Compact',price:500,rent:120,rel:92,pop:88,maint:55,icon:'🚙'},
+{id:'sedan',name:'Family Sedan',price:1500,rent:260,rel:88,pop:84,maint:90,icon:'🚘'},
+{id:'coupe',name:'Sport Coupe',price:3000,rent:480,rel:80,pop:78,maint:140,icon:'🏎️'},
+{id:'luxury',name:'Luxury Sedan',price:6000,rent:850,rel:86,pop:90,maint:220,icon:'🚗'},
+{id:'suv',name:'Premium SUV',price:10000,rent:1200,rel:84,pop:94,maint:300,icon:'🚙'}
+];
+const MISSIONS=[
+{id:'r5',title:'Complete 5 rentals',reward:600,check:s=>s.rentals>=5},
+{id:'v3',title:'Own 3 vehicles',reward:900,check:s=>s.fleet.length>=3},
+{id:'c5',title:'Earn 5,000 Coins of simulated revenue',reward:1000,check:s=>s.revenue>=5000},
+{id:'l5',title:'Reach Company Level 5',reward:2000,check:s=>s.level>=5}
+];
+let state=JSON.parse(localStorage.getItem('crt_state')||'null')||{coins:1000,level:1,xp:0,revenue:0,rentals:0,fleet:[{id:'compact',condition:100,rentals:0,active:false}],activity:['Welcome! Your first City Compact is ready to rent.'],done:[],cosmetics:[]};
+function save(){localStorage.setItem('crt_state',JSON.stringify(state));render()}
+function carInfo(id){return CARS.find(c=>c.id===id)}
+function addActivity(x){state.activity.unshift(x);state.activity=state.activity.slice(0,8)}
+function xpNeed(){return state.level*500}
+function gainXP(n){state.xp+=n;while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;addActivity('🎉 Company reached Level '+state.level+'!')}}
+function buy(id){let c=carInfo(id);if(state.coins<c.price)return alert('Not enough Coins.');state.coins-=c.price;state.fleet.push({id,condition:100,rentals:0,active:false});addActivity('Purchased '+c.name+' for '+c.price+' Coins.');save()}
+function rent(i){let f=state.fleet[i],c=carInfo(f.id);if(f.active)return;if(f.condition<35)return alert('Maintain this vehicle first.');f.active=true;addActivity('🚘 '+c.name+' rented to a fictional customer.');save();setTimeout(()=>completeRental(i),6000)}
+function completeRental(i){let f=state.fleet[i];if(!f||!f.active)return;let c=carInfo(f.id),earn=c.rent;f.active=false;f.rentals++;f.condition=Math.max(0,f.condition-8);state.coins+=earn;state.revenue+=earn;state.rentals++;gainXP(100);addActivity('💰 Rental completed: +'+earn+' simulated Coins.');checkMissions();save()}
+function maintain(i){let f=state.fleet[i],c=carInfo(f.id);if(state.coins<c.maint)return alert('Not enough Coins for maintenance.');state.coins-=c.maint;f.condition=100;addActivity('🔧 Maintained '+c.name+' for '+c.maint+' Coins.');save()}
+function upgrade(i){let f=state.fleet[i],c=carInfo(f.id),cost=Math.round(c.price*.35);if(state.coins<cost)return alert('Not enough Coins.');state.coins-=cost;f.rentals+=0;addActivity('⭐ Upgraded '+c.name+' for '+cost+' Coins.');c.rent=Math.round(c.rent*1.12);save()}
+function checkMissions(){for(const m of MISSIONS){if(!state.done.includes(m.id)&&m.check(state)){state.done.push(m.id);state.coins+=m.reward;addActivity('🏆 Mission complete: '+m.title+' (+'+m.reward+' Coins)')}}}
+function render(){
+ document.getElementById('coins').textContent=state.coins.toLocaleString();
+ document.getElementById('level').textContent=state.level;
+ document.getElementById('vehicles').textContent=state.fleet.length;
+ document.getElementById('revenue').textContent=state.revenue.toLocaleString();
+ document.getElementById('xptext').textContent=state.xp+' / '+xpNeed()+' XP';
+ document.getElementById('xpbar').style.width=Math.min(100,state.xp/xpNeed()*100)+'%';
+ document.getElementById('activity').innerHTML=state.activity.map(x=>'<div class="activity">'+x+'</div>').join('');
+ document.getElementById('fleetGrid').innerHTML=state.fleet.map((f,i)=>{let c=carInfo(f.id);return `<div class="car"><div class="car-icon">${c.icon}</div><h3>${c.name}</h3><div class="meta"><span>Status</span><b>${f.active?'On Rental':'Available'}</b></div><div class="meta"><span>Condition</span><b>${f.condition}%</b></div><div class="meta"><span>Rental</span><b>${c.rent} Coins</b></div><div class="meta"><span>Completed</span><b>${f.rentals}</b></div><button class="btn" onclick="rent(${i})" ${f.active?'disabled':''}>Rent Out</button> <button class="btn secondary" onclick="maintain(${i})">Maintain</button> <button class="btn secondary" onclick="upgrade(${i})">Upgrade</button></div>`}).join('');
+ document.getElementById('marketGrid').innerHTML=CARS.map(c=>`<div class="car"><div class="car-icon">${c.icon}</div><h3>${c.name}</h3><div class="meta"><span>Price</span><b>${c.price.toLocaleString()} Coins</b></div><div class="meta"><span>Rental</span><b>${c.rent} Coins</b></div><div class="meta"><span>Popularity</span><b>${c.pop}%</b></div><button class="btn" onclick="buy('${c.id}')">Buy Vehicle</button></div>`).join('');
+ document.getElementById('missionsList').innerHTML=MISSIONS.map(m=>`<div class="mission ${state.done.includes(m.id)?'done':''}"><b>${state.done.includes(m.id)?'✅':'🎯'} ${m.title}</b><div class="sub">Reward: ${m.reward} Coins</div></div>`).join('');
+ document.getElementById('shopList').innerHTML=['Neon Garage Theme','Premium Paint Pack','Custom Plate Style'].map((x,i)=>`<div class="shopitem"><span>🎨 ${x}</span><button class="btn secondary" onclick="demoCosmetic(${i})">${state.cosmetics.includes(i)?'Owned':'Demo'}</button></div>`).join('');
+}
+function demoCosmetic(i){if(!state.cosmetics.includes(i)){state.cosmetics.push(i);addActivity('🎨 Demo cosmetic unlocked.');save()}}
+function resetGame(){if(confirm('Reset all local game progress?')){localStorage.removeItem('crt_state');location.reload()}}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active')});
+render();
+</script>
+</body></html>
