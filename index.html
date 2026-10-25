@@ -3,237 +3,101 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Crystal Bloom</title>
-
+<title>Orb Breaker</title>
 <style>
 *{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial,sans-serif;
-  background:#090d1c;
-  color:white;
-  touch-action:none;
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b18;color:#fff;font-family:Arial,sans-serif;touch-action:none}
+body{background:radial-gradient(circle at 50% 35%,#24345f,#0c1228 55%,#050812)}
+#game{width:100vw;height:100vh;display:flex;flex-direction:column}
+#top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:8px 18px;flex-shrink:0}
+.logo{font-size:23px;font-weight:900}
+.sub{font-size:11px;color:#94a4c8;margin-top:3px}
+.stats{display:flex;gap:8px}
+.stat{background:#121b35dd;border:1px solid #304268;border-radius:12px;padding:7px 14px;text-align:center;min-width:90px}
+.stat small{display:block;color:#899abd;font-size:9px}
+.stat b{font-size:16px}
+#main{flex:1;display:flex;justify-content:center;align-items:center;gap:14px;padding:5px}
+#arena{
+ position:relative;width:min(78vh,700px);height:min(78vh,700px);
+ border-radius:22px;border:2px solid #34466d;
+ background:radial-gradient(circle,#17254a,#0b132a 70%);
+ box-shadow:0 20px 60px #0009;overflow:hidden;
 }
-
-#game{
-  width:100vw;
-  height:100vh;
-  min-height:500px;
-  display:flex;
-  flex-direction:column;
-  background:
-    radial-gradient(circle at 50% 30%,#263866 0,#111936 45%,#090d1c 100%);
+#blocks{position:absolute;inset:14px}
+.block{
+ position:absolute;border-radius:10px;
+ display:flex;align-items:center;justify-content:center;
+ font-size:10px;font-weight:bold;
+ border:2px solid #ffffff44;
+ box-shadow:inset 0 3px 8px #fff4,0 5px 14px #0006;
+ transition:filter .1s;
 }
-
-#top{
-  height:75px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 22px;
-  flex-shrink:0;
+.hp{position:absolute;bottom:-12px;left:0;width:100%;height:4px;background:#202941;border-radius:5px;overflow:hidden}
+.hp i{display:block;height:100%;background:#fff;border-radius:5px}
+.ball{
+ position:absolute;width:18px;height:18px;border-radius:50%;
+ transform:translate(-50%,-50%);
+ box-shadow:0 0 12px currentColor, inset 3px 3px 5px #fff8;
+ z-index:10;
 }
-
-.title{
-  font-size:25px;
-  font-weight:900;
+.basic{background:#fff;color:#bcd0ff}
+.green{background:#38ef7d;color:#38ef7d}
+.pink{background:#ff65b6;color:#ff65b6}
+.flame{background:#ff6a25;color:#ff9b43;box-shadow:0 0 18px #ff5722,inset 3px 3px 5px #fff8}
+#side{width:225px}
+.panel{background:#111a32e8;border:1px solid #304268;border-radius:16px;padding:13px;margin-bottom:10px}
+.panel h3{margin:0 0 9px;font-size:15px}
+.row{display:flex;justify-content:space-between;margin:7px 0;color:#a9b7d4;font-size:12px}
+.row b{color:#fff}
+button{
+ border:0;border-radius:10px;padding:9px 12px;font-weight:bold;cursor:pointer;
+ background:#55e58a;color:#06150c;
 }
-
-.subtitle{
-  color:#9eacd0;
-  font-size:12px;
-  margin-top:3px;
-}
-
-.stats{
-  display:flex;
-  gap:10px;
-}
-
-.stat{
-  min-width:110px;
-  padding:9px 14px;
-  border-radius:14px;
-  background:#151e38dd;
-  border:1px solid #344568;
-  text-align:center;
-}
-
-.stat small{
-  display:block;
-  color:#9eacd0;
-  font-size:10px;
-}
-
-.stat b{
-  font-size:18px;
-}
-
-#area{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:8px;
-}
-
-#board{
-  position:relative;
-  width:min(78vh,650px);
-  height:min(78vh,650px);
-  aspect-ratio:1/1;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  grid-template-rows:repeat(6,1fr);
-  gap:8px;
-  padding:10px;
-  border-radius:24px;
-  background:#0c1329dd;
-  border:2px solid #33466e;
-  box-shadow:0 20px 60px #0008;
-}
-
-.cell{
-  border-radius:15px;
-  background:#151f3b;
-  border:1px solid #263758;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  user-select:none;
-}
-
-.gem{
-  width:82%;
-  height:82%;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:clamp(18px,4vw,34px);
-  cursor:pointer;
-  border:3px solid #ffffff55;
-  box-shadow:0 7px 18px #0007,inset 0 3px 8px #fff5;
-  transition:.15s;
-}
-
-.gem:active{
-  transform:scale(.88);
-}
-
-.g1{background:radial-gradient(circle at 35% 30%,#b9fff0,#32d6bd 50%,#087f7b)}
-.g2{background:radial-gradient(circle at 35% 30%,#d5c5ff,#9170ff 50%,#5030b9)}
-.g3{background:radial-gradient(circle at 35% 30%,#ffd7a8,#ff9a43 50%,#c64d12)}
-.g4{background:radial-gradient(circle at 35% 30%,#ffb5cf,#ff5d98 50%,#b51d63)}
-.g5{background:radial-gradient(circle at 35% 30%,#aee5ff,#40a9ff 50%,#1555bd)}
-.g6{background:radial-gradient(circle at 35% 30%,#fff3a5,#ffd83d 50%,#b68b00)}
-
-#side{
-  width:210px;
-  margin-left:18px;
-}
-
-.info{
-  background:#121a32dd;
-  border:1px solid #344568;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
-}
-
-.info h3{
-  margin:0 0 8px;
-}
-
-.info p{
-  margin:6px 0;
-  color:#aab7d3;
-  font-size:13px;
-  line-height:1.5;
-}
-
+button.dark{background:#263654;color:#dce6ff}
+button:disabled{opacity:.4}
+.full{width:100%;margin-top:7px}
 #message{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%) scale(.9);
-  background:#101a34f5;
-  border:1px solid #6076a8;
-  padding:18px 25px;
-  border-radius:18px;
-  font-size:20px;
-  font-weight:bold;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:50;
+ position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);
+ background:#111b38f5;border:1px solid #7185b5;border-radius:16px;
+ padding:14px 22px;font-size:20px;font-weight:bold;opacity:0;
+ pointer-events:none;z-index:100;transition:.2s;
 }
-
-#message.show{
-  opacity:1;
-  transform:translate(-50%,-50%) scale(1);
+#message.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.float{
+ position:absolute;z-index:50;font-weight:900;color:#ffe86a;
+ pointer-events:none;animation:float .8s forwards;
 }
-
-#portrait{
-  display:none;
+@keyframes float{0%{opacity:1;transform:translateY(0) scale(1)}
+100%{opacity:0;transform:translateY(-45px) scale(1.3)}}
+.particle{
+ position:absolute;width:7px;height:7px;border-radius:50%;
+ pointer-events:none;z-index:40;animation:particle .55s forwards;
 }
-
-@media (orientation:portrait){
-  #portrait{
-    display:flex;
-    position:fixed;
-    inset:0;
-    z-index:1000;
-    background:#090d1c;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:30px;
-  }
-
-  #portrait div{
-    max-width:320px;
-  }
-
-  #portrait h2{
-    font-size:28px;
-  }
-
-  #portrait p{
-    color:#aab7d3;
-  }
+@keyframes particle{
+ 0%{opacity:1;transform:translate(0,0) scale(1)}
+ 100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.2)}
 }
-
+.shake{animation:shake .16s}
+@keyframes shake{
+ 0%,100%{transform:translate(0)}
+ 25%{transform:translate(3px,-2px)}
+ 50%{transform:translate(-3px,2px)}
+ 75%{transform:translate(2px,1px)}
+}
+#portrait{display:none}
+@media(orientation:portrait){
+ #portrait{display:flex;position:fixed;inset:0;background:#070b18;z-index:999;
+ align-items:center;justify-content:center;text-align:center;padding:30px}
+ #portrait div{max-width:300px}
+ #portrait h2{font-size:27px}
+ #portrait p{color:#9aa8c5}
+}
 @media(max-width:850px){
-  #side{
-    display:none;
-  }
-
-  #top{
-    padding:8px 12px;
-  }
-
-  .title{
-    font-size:20px;
-  }
-
-  .stat{
-    min-width:75px;
-    padding:7px;
-  }
-
-  .stat b{
-    font-size:15px;
-  }
-
-  #board{
-    width:min(82vh,92vw);
-    height:min(82vh,92vw);
-  }
+ #side{display:none}
+ #arena{width:min(88vh,94vw);height:min(88vh,94vw)}
+ #top{padding:7px 10px}
+ .logo{font-size:18px}
+ .stat{min-width:68px;padding:6px}
 }
 </style>
 </head>
@@ -241,229 +105,507 @@ html,body{
 <body>
 
 <div id="portrait">
-  <div>
-    <h2>📱↔️ Rotate Your Device</h2>
-    <p>Please use landscape mode to play Crystal Bloom.</p>
-  </div>
+ <div>
+  <h2>📱 Rotate Your Device</h2>
+  <p>Play Orb Breaker in landscape mode.</p>
+ </div>
 </div>
 
 <div id="game">
 
-  <div id="top">
-    <div>
-      <div class="title">💎 Crystal Bloom</div>
-      <div class="subtitle">Merge • Grow • Discover</div>
-    </div>
+<header id="top">
+ <div>
+  <div class="logo">🔮 Orb Breaker</div>
+  <div class="sub">Break blocks • Collect Credits • Grow stronger</div>
+ </div>
+ <div class="stats">
+  <div class="stat"><small>CREDITS</small><b id="credits">0</b></div>
+  <div class="stat"><small>LEVEL</small><b id="level">1</b></div>
+  <div class="stat"><small>SHARDS</small><b id="shards">0</b></div>
+ </div>
+</header>
 
-    <div class="stats">
-      <div class="stat">
-        <small>SCORE</small>
-        <b id="score">0</b>
-      </div>
+<div id="main">
 
-      <div class="stat">
-        <small>COINS</small>
-        <b id="coins">100</b>
-      </div>
-    </div>
+ <div id="arena">
+  <div id="blocks"></div>
+ </div>
+
+ <aside id="side">
+
+  <div class="panel">
+   <h3>⚪ Current Ball</h3>
+   <div class="row"><span>Type</span><b id="ballType">Basic</b></div>
+   <div class="row"><span>Damage</span><b id="damage">1</b></div>
+   <div class="row"><span>Speed</span><b id="speed">1.2</b></div>
+   <div class="row"><span>Balls</span><b id="ballCount">1</b></div>
   </div>
 
-  <div id="area">
-
-    <div id="board"></div>
-
-    <div id="side">
-      <div class="info">
-        <h3>💠 How to Play</h3>
-        <p>Tap two matching crystals to merge them.</p>
-        <p>Higher crystals give more score.</p>
-      </div>
-
-      <div class="info">
-        <h3>⭐ Current Level</h3>
-        <p id="level">Level 1</p>
-      </div>
-    </div>
-
+  <div class="panel">
+   <h3>⬆️ Damage Upgrade</h3>
+   <div class="row"><span>Upgrade</span><b id="upgradeLevel">Lv.1</b></div>
+   <div class="row"><span>Cost</span><b id="upgradeCost">100</b></div>
+   <button class="full" onclick="upgradeDamage()">Upgrade +25%</button>
   </div>
 
+  <div class="panel">
+   <h3>🛒 Buy Ball</h3>
+   <div class="row"><span>Next Ball</span><b id="nextBall">100</b></div>
+   <button class="full" onclick="buyBall()">Buy Ball</button>
+   <button class="full dark" onclick="speedUpgrade()">Speed Upgrade</button>
+   <button class="full dark" onclick="doubleDamage()">Double Damage</button>
+  </div>
+
+  <div class="panel">
+   <h3>💎 Rebirth</h3>
+   <div class="row"><span>Requirement</span><b>Lv.100+</b></div>
+   <div class="row"><span>Permanent</span><b id="permBonus">+0%</b></div>
+   <button class="full dark" onclick="rebirth()">Rebirth</button>
+  </div>
+
+ </aside>
+
+</div>
 </div>
 
 <div id="message"></div>
 
 <script>
+const arena=document.getElementById("arena");
+const blockLayer=document.getElementById("blocks");
 
-const SIZE=6;
+let credits=1000;
+let level=1;
+let shards=0;
+let permanentBonus=0;
+let damage=1;
+let damageLevel=1;
+let ballSpeed=1.2;
+let double=false;
+let balls=[];
+let blocks=[];
+let nextBallCost=100;
 
-const TYPES=[
-  {emoji:"💎",class:"g1"},
-  {emoji:"🔮",class:"g2"},
-  {emoji:"🟠",class:"g3"},
-  {emoji:"💗",class:"g4"},
-  {emoji:"🔵",class:"g5"},
-  {emoji:"🌟",class:"g6"}
+const ballTypes=[
+ {name:"Basic",class:"basic",damage:1},
+ {name:"Green",class:"green",damage:10},
+ {name:"Pink",class:"pink",damage:100},
+ {name:"Flame",class:"flame",damage:1000}
 ];
 
-let board=[];
-let score=0;
-let coins=100;
-let selected=null;
+let currentType=0;
 
-function createBoard(){
-
-  board=[];
-
-  for(let i=0;i<SIZE*SIZE;i++){
-
-    board.push({
-      type:Math.floor(Math.random()*3),
-      level:1
-    });
-
-  }
-
-  render();
+function format(n){
+ return Math.floor(n).toLocaleString();
 }
 
-function render(){
+function upgradeCost(){
+ return Math.floor(100*Math.pow(1.08,damageLevel-1));
+}
 
-  const el=document.getElementById("board");
+function renderUI(){
+ document.getElementById("credits").textContent=format(credits);
+ document.getElementById("level").textContent=level;
+ document.getElementById("shards").textContent=shards;
+ document.getElementById("damage").textContent=format(damage);
+ document.getElementById("upgradeLevel").textContent="Lv."+damageLevel;
+ document.getElementById("upgradeCost").textContent=format(upgradeCost());
+ document.getElementById("speed").textContent=ballSpeed.toFixed(1);
+ document.getElementById("ballCount").textContent=balls.length;
+ document.getElementById("ballType").textContent=ballTypes[currentType].name;
+ document.getElementById("nextBall").textContent=format(nextBallCost);
+ document.getElementById("permBonus").textContent="+"+permanentBonus+"%";
+}
 
-  el.innerHTML="";
+function makeBlocks(){
+ blocks=[];
+ blockLayer.innerHTML="";
 
-  board.forEach((gem,index)=>{
+ const cols=7;
+ const rows=Math.min(4+Math.floor(level/10),8);
+ const gap=5;
+ const W=arena.clientWidth-28;
+ const H=arena.clientHeight*.48;
+ const bw=(W-(cols-1)*gap)/cols;
+ const bh=(H-(rows-1)*gap)/rows;
 
-    const cell=document.createElement("div");
-    cell.className="cell";
+ for(let r=0;r<rows;r++){
+  for(let c=0;c<cols;c++){
+   const hp=Math.max(5,Math.floor(level*(1+r*.45)));
+   const el=document.createElement("div");
 
-    if(gem){
+   el.className="block";
+   el.style.width=bw+"px";
+   el.style.height=bh+"px";
+   el.style.left=(c*(bw+gap))+"px";
+   el.style.top=(r*(bh+gap))+"px";
 
-      const crystal=document.createElement("div");
+   const hue=(r*35+c*9)%360;
+   el.style.background=
+    `linear-gradient(135deg,hsl(${hue},85%,75%),hsl(${hue},75%,38%))`;
 
-      crystal.className="gem "+TYPES[gem.type].class;
+   el.dataset.hp=hp;
+   el.dataset.max=hp;
 
-      crystal.textContent=TYPES[gem.type].emoji;
+   el.innerHTML=`<span>${hp}</span><div class="hp"><i></i></div>`;
 
-      if(selected===index){
-        crystal.style.outline="4px solid white";
-        crystal.style.transform="scale(1.08)";
-      }
+   blockLayer.appendChild(el);
 
-      crystal.onclick=()=>selectGem(index);
+   blocks.push({
+    el,
+    hp,
+    max:hp,
+    x:14+c*(bw+gap),
+    y:14+r*(bh+gap),
+    w:bw,
+    h:bh,
+    alive:true
+   });
+  }
+ }
+}
 
-      cell.appendChild(crystal);
+function createBall(type=0){
+ const rect=arena.getBoundingClientRect();
 
-    }
+ const b={
+  x:rect.width/2,
+  y:rect.height-55,
+  vx:(Math.random()>.5?1:-1)*ballSpeed,
+  vy:-ballSpeed,
+  type,
+  el:document.createElement("div")
+ };
 
-    el.appendChild(cell);
+ b.el.className="ball "+ballTypes[type].class;
+ arena.appendChild(b.el);
 
+ balls.push(b);
+ updateBallPosition(b);
+ renderUI();
+}
+
+function updateBallPosition(b){
+ b.el.style.left=b.x+"px";
+ b.el.style.top=b.y+"px";
+}
+
+function hitBlock(b,block){
+ if(!block.alive)return;
+
+ const actualDamage=Math.max(
+  1,
+  Math.floor(damage*ballTypes[b.type].damage)*(double?2:1)
+ );
+
+ block.hp-=actualDamage;
+
+ const ratio=Math.max(0,block.hp/block.max);
+
+ block.el.style.filter=`brightness(${.55+ratio*.7})`;
+
+ const hpText=block.el.querySelector("span");
+ hpText.textContent=Math.max(0,Math.floor(block.hp));
+
+ const hpBar=block.el.querySelector(".hp i");
+ hpBar.style.width=(ratio*100)+"%";
+
+ hitFlash(block);
+
+ if(block.hp<=0){
+  destroyBlock(block);
+ }
+}
+
+function hitFlash(block){
+ block.el.animate([
+  {transform:"scale(1)",filter:"brightness(1)"},
+  {transform:"scale(1.12)",filter:"brightness(2.2)"},
+  {transform:"scale(1)",filter:"brightness(.8)"}
+ ],{duration:150});
+
+ for(let i=0;i<3;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=(block.x+block.w/2)+"px";
+  p.style.top=(block.y+block.h/2)+"px";
+  p.style.background="#fff";
+  p.style.setProperty("--x",(Math.random()*40-20)+"px");
+  p.style.setProperty("--y",(Math.random()*40-20)+"px");
+  arena.appendChild(p);
+  setTimeout(()=>p.remove(),600);
+ }
+}
+
+function destroyBlock(block){
+ block.alive=false;
+
+ const reward=Math.max(2,Math.floor(level*.8)+1);
+ credits+=reward;
+
+ showFloat("+"+reward+" 💰",block.x+block.w/2,block.y+block.h/2);
+
+ for(let i=0;i<14;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=(block.x+block.w/2)+"px";
+  p.style.top=(block.y+block.h/2)+"px";
+  p.style.background=["#fff","#7cecff","#ffde68","#ff75bd"][i%4];
+  p.style.setProperty("--x",(Math.random()*110-55)+"px");
+  p.style.setProperty("--y",(Math.random()*110-55)+"px");
+  arena.appendChild(p);
+  setTimeout(()=>p.remove(),650);
+ }
+
+ block.el.animate([
+  {transform:"scale(1)",opacity:1},
+  {transform:"scale(1.35)",opacity:.8},
+  {transform:"scale(.1)",opacity:0}
+ ],{duration:320}).onfinish=()=>{
+  block.el.remove();
+ };
+
+ arena.classList.remove("shake");
+ void arena.offsetWidth;
+ arena.classList.add("shake");
+
+ checkLevel();
+}
+
+function showFloat(text,x,y){
+ const f=document.createElement("div");
+ f.className="float";
+ f.textContent=text;
+ f.style.left=x+"px";
+ f.style.top=y+"px";
+ arena.appendChild(f);
+ setTimeout(()=>f.remove(),850);
+}
+
+function checkLevel(){
+ const remaining=blocks.filter(b=>b.alive).length;
+
+ if(remaining===0){
+  level++;
+
+  if(level<=200){
+   if(level%10===0){
+    shards++;
+    showMessage("💎 SHARD +1!");
+   }else{
+    showMessage("⭐ LEVEL "+level+"!");
+   }
+
+   makeBlocks();
+  }
+ }
+
+ renderUI();
+}
+
+function gameLoop(){
+ const w=arena.clientWidth;
+ const h=arena.clientHeight;
+
+ balls.forEach(b=>{
+  b.x+=b.vx;
+  b.y+=b.vy;
+
+  if(b.x<9){
+   b.x=9;
+   b.vx=Math.abs(b.vx);
+  }
+
+  if(b.x>w-9){
+   b.x=w-9;
+   b.vx=-Math.abs(b.vx);
+  }
+
+  if(b.y<9){
+   b.y=9;
+   b.vy=Math.abs(b.vy);
+  }
+
+  if(b.y>h-9){
+   b.y=h-9;
+   b.vy=-Math.abs(b.vy);
+  }
+
+  blocks.forEach(block=>{
+   if(!block.alive)return;
+
+   if(
+    b.x>block.x &&
+    b.x<block.x+block.w &&
+    b.y>block.y &&
+    b.y<block.y+block.h
+   ){
+    hitBlock(b,block);
+
+    if(b.vy>0 && b.y<block.y+block.h/2)b.vy=-Math.abs(b.vy);
+    else if(b.vy<0 && b.y>block.y+block.h/2)b.vy=Math.abs(b.vy);
+    else b.vx*=-1;
+   }
   });
 
-  document.getElementById("score").textContent=score.toLocaleString();
-  document.getElementById("coins").textContent=coins.toLocaleString();
+  updateBallPosition(b);
+ });
 
-  document.getElementById("level").textContent=
-    "Level "+(Math.floor(score/1000)+1);
+ requestAnimationFrame(gameLoop);
 }
 
-function selectGem(index){
+function buyBall(){
+ if(credits<nextBallCost){
+  showMessage("Not enough Credits");
+  return;
+ }
 
-  if(!board[index])return;
+ credits-=nextBallCost;
+ createBall(currentType);
 
-  if(selected===null){
+ if(balls.length>=10){
+  mergeBalls();
+ }
 
-    selected=index;
-    render();
-    return;
-
-  }
-
-  if(selected===index){
-
-    selected=null;
-    render();
-    return;
-
-  }
-
-  const a=board[selected];
-  const b=board[index];
-
-  if(a.type===b.type && a.level===b.level){
-
-    merge(selected,index);
-
-  }else{
-
-    selected=index;
-    render();
-
-  }
-
+ nextBallCost=Math.floor(nextBallCost*1.12);
+ renderUI();
 }
 
-function merge(a,b){
+function mergeBalls(){
+ if(balls.length<10)return;
 
-  const old=board[a];
+ const old=balls.splice(0,10);
 
-  board[a]={
-    type:old.type,
-    level:old.level+1
-  };
+ old.forEach(b=>b.el.remove());
 
-  board[b]=null;
+ if(currentType<3){
+  currentType++;
+ }
 
-  score+=old.level*100;
-  coins+=old.level*5;
+ createBall(currentType);
 
-  selected=null;
+ showMessage("✨ MERGE! "+ballTypes[currentType].name);
 
-  showMessage("✨ MERGED!");
-
-  fillEmpty();
-
-  render();
-
+ renderUI();
 }
 
-function fillEmpty(){
+function upgradeDamage(){
+ const cost=upgradeCost();
 
-  const empty=[];
+ if(damageLevel>=100){
+  showMessage("MAX DAMAGE LEVEL");
+  return;
+ }
 
-  board.forEach((g,i)=>{
-    if(!g)empty.push(i);
-  });
+ if(credits<cost){
+  showMessage("Not enough Credits");
+  return;
+ }
 
-  empty.forEach(i=>{
+ credits-=cost;
 
-    board[i]={
-      type:Math.floor(Math.random()*3),
-      level:1
-    };
+ damage*=1.25;
+ damageLevel++;
 
-  });
+ if([25,50,75,100].includes(damageLevel)){
+  damage*=1.25;
+  showMessage("🎁 FREE +25% DAMAGE!");
+ }else{
+  showMessage("💥 DAMAGE UPGRADED!");
+ }
 
+ renderUI();
+}
+
+function speedUpgrade(){
+ if(ballSpeed>=2){
+  showMessage("MAX SPEED");
+  return;
+ }
+
+ const cost=Math.floor(500*Math.pow(1.15,Math.round((ballSpeed-1.2)*10)));
+
+ if(credits<cost){
+  showMessage("Not enough Credits");
+  return;
+ }
+
+ credits-=cost;
+ ballSpeed=Math.min(2,ballSpeed+.1);
+
+ balls.forEach(b=>{
+  const dirX=b.vx>=0?1:-1;
+  const dirY=b.vy>=0?1:-1;
+  b.vx=dirX*ballSpeed;
+  b.vy=dirY*ballSpeed;
+ });
+
+ showMessage("⚡ SPEED UP!");
+ renderUI();
+}
+
+function doubleDamage(){
+ const cost=10000;
+
+ if(double){
+  showMessage("DOUBLE DAMAGE ACTIVE");
+  return;
+ }
+
+ if(credits<cost){
+  showMessage("Need "+cost+" Credits");
+  return;
+ }
+
+ credits-=cost;
+ double=true;
+
+ showMessage("🔥 DOUBLE DAMAGE!");
+ renderUI();
+}
+
+function rebirth(){
+ if(level<100){
+  showMessage("Reach Level 100 first");
+  return;
+ }
+
+ const gained=Math.floor(level/10);
+
+ permanentBonus+=gained;
+
+ credits=1000;
+ level=1;
+ damage=1;
+ damageLevel=1;
+ ballSpeed=1.2;
+ double=false;
+ currentType=0;
+ nextBallCost=100;
+
+ balls.forEach(b=>b.el.remove());
+ balls=[];
+
+ makeBlocks();
+ createBall(0);
+
+ showMessage("🔄 REBIRTH! +"+gained+"% PERMANENT DAMAGE");
+ renderUI();
 }
 
 function showMessage(text){
-
-  const el=document.getElementById("message");
-
-  el.textContent=text;
-
-  el.classList.add("show");
-
-  clearTimeout(window.messageTimer);
-
-  window.messageTimer=setTimeout(()=>{
-    el.classList.remove("show");
-  },700);
-
+ const m=document.getElementById("message");
+ m.textContent=text;
+ m.classList.add("show");
+ clearTimeout(window.msgTimer);
+ window.msgTimer=setTimeout(()=>m.classList.remove("show"),1200);
 }
 
-createBoard();
+makeBlocks();
+createBall(0);
+renderUI();
+gameLoop();
 
 </script>
-
 </body>
-</html>
+                      </html>
